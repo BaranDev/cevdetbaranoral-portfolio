@@ -1,0 +1,403 @@
+{
+  "personal": {
+    "name": "Cevdet Baran Oral",
+    "title": "Full-Stack Developer",
+    "tagline": "SaaS platforms, mobile apps, and AI-powered products. Two degrees by 22. Teknofest 2024 finalist (top 2%).",
+    "bio": "Full-stack developer experienced in building SaaS platforms, mobile applications, and AI-powered products with React, React Native, Node.js, Python, and AWS. Owns the full development lifecycle from design to deployment in agile, cross-functional teams.",
+    "profileImage": "/assets/me-4125x4125.jpg",
+    "location": "Famagusta, Cyprus",
+    "email": "cevdetbaranoral@gmail.com",
+
+    "website": "https://cevdetbaran.com",
+    "quickStats": {
+      "yearsExperience": 3,
+      "projectsCompleted": 26,
+      "degreesEarned": 2,
+      "hackathonAwards": 3
+    },
+    "socialLinks": {
+      "github": "https://github.com/BaranDev",
+      "linkedin": "https://www.linkedin.com/in/cevdetbaranoral",
+      "website": "https://cevdetbaran.com"
+    }
+  },
+  "experience": [
+    {
+      "id": "emu-it-fullstack",
+      "title": "Full-Stack Web Developer",
+      "company": "Eastern Mediterranean University IT Directorate",
+      "location": "Famagusta, Cyprus",
+      "duration": "May 2025 – Jan 2026",
+      "start": "2025-05",
+      "end": "2026-01",
+      "description": "Developing and maintaining the student portal used by 15,000+ students daily. Modernized key UI sections improving usability and satisfaction.",
+      "achievements": [
+        {
+          "metric": "15K+",
+          "description": "Daily active users on student portal"
+        },
+        {
+          "metric": "UI/UX",
+          "description": "Modernized key university website sections"
+        }
+      ],
+      "technologies": [{ "items": ["React", "Node.js", "JavaScript"] }]
+    },
+    {
+      "id": "emu-it-intern",
+      "title": "Software Engineering Intern",
+      "company": "Eastern Mediterranean University IT Directorate",
+      "location": "Famagusta, Cyprus",
+      "duration": "Aug 2025 – Sep 2025",
+      "start": "2025-08",
+      "end": "2025-09",
+      "description": "Built a RAG-based AI chatbot with dual LLM support (Ollama + OpenRouter), semantic document search over university files, and a Streamlit analytics dashboard.",
+      "achievements": [
+        {
+          "metric": "RAG",
+          "description": "AI chatbot with FastAPI, Qdrant, LangChain"
+        },
+        {
+          "metric": "SSE",
+          "description": "Real-time streaming responses over university PDFs/CSVs/DOCX"
+        },
+        {
+          "metric": "Analytics",
+          "description": "Streamlit dashboard with per-model benchmarking"
+        }
+      ],
+      "technologies": [
+        {
+          "items": [
+            "Python",
+            "FastAPI",
+            "LangChain",
+            "Qdrant",
+            "Ollama",
+            "Streamlit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "havelsan-intern",
+      "title": "Test & Automation Engineering Intern",
+      "company": "HAVELSAN",
+      "location": "Ankara, Turkey",
+      "duration": "Jul 2025 – Aug 2025",
+      "start": "2025-07",
+      "end": "2025-08",
+      "description": "Built complete HDLC protocol implementation from scratch for a defense communication platform, achieving 98% ISO/IEC 13239:2002 compliance.",
+      "achievements": [
+        {
+          "metric": "98%",
+          "description": "ISO/IEC 13239:2002 standards compliance"
+        },
+        {
+          "metric": "340 fps",
+          "description": "High-performance communication system"
+        },
+        { "metric": "149", "description": "Test cases with 98% pass rate" }
+      ],
+      "technologies": [
+        { "items": ["Node.js", "JavaScript", "HDLC Protocol", "ISO Standards"] }
+      ]
+    },
+    {
+      "id": "datamilk-intern",
+      "title": "Software Engineering Intern",
+      "company": "DataMilk",
+      "location": "Remote",
+      "duration": "Jan 2024 – May 2024",
+      "start": "2024-01",
+      "end": "2024-05",
+      "description": "Developed 3 AI-powered solutions reducing data processing time by 40%. Built 5 production-ready web apps. Improved API response times by 65%.",
+      "achievements": [
+        {
+          "metric": "40%",
+          "description": "Reduced data processing time with AI solutions"
+        },
+        {
+          "metric": "5",
+          "description": "Production-ready web applications shipped"
+        },
+        {
+          "metric": "99%",
+          "description": "Test coverage across 15+ microservices"
+        }
+      ],
+      "technologies": [
+        { "items": ["Python", "FastAPI", "Flask", "Redis", "Docker", "ML"] }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Eng. Software Engineering",
+      "school": "Eastern Mediterranean University",
+      "location": "Famagusta, Cyprus",
+      "duration": "Jul 2023 – Jan 2026",
+      "gpa": "3.56",
+      "honors": "High Honor Student · Best Graduation Project Award"
+    },
+    {
+      "degree": "A.D. Computer Programming",
+      "school": "Ufuk University",
+      "location": "Ankara, Turkey",
+      "duration": "Mar 2021 – Sep 2023",
+      "gpa": "3.87",
+      "honors": "High Honor Student · Top Student of Faculty & Program"
+    }
+  ],
+  "projects": [
+    {
+      "id": "taksikibris",
+      "title": "TaksiKıbrıs",
+      "priority": "featured",
+      "award": "Best Graduation Project",
+      "description": "Full-stack taxi booking SaaS: React Native (Expo) mobile apps for passengers/drivers, Node.js API, real-time GPS tracking via Mapbox, Supabase (PostgreSQL) with 12 core tables, JWT auth, and push notifications.",
+      "impact": {
+        "metrics": [
+          { "value": "Best", "label": "Project Award" },
+          { "value": "12", "label": "DB Tables" },
+          { "value": "Real-time", "label": "GPS Tracking" }
+        ]
+      },
+      "technologies": {
+        "Mobile": ["React Native", "Expo", "TypeScript"],
+        "Backend": ["Node.js", "Express", "Supabase", "PostgreSQL"],
+        "DevOps": ["Docker", "Mapbox"]
+      },
+      "repo": "",
+      "status": "awarded",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "emucon-festival",
+      "title": "EMUCON Festival Platform",
+      "priority": "featured",
+      "award": "High Success Award",
+      "description": "Full-stack event management platform for university festival: real-time WebSocket event board, multi-role admin dashboard, 42+ clubs coordinated, 600+ visitors, 500K+ social media impressions.",
+      "impact": {
+        "metrics": [
+          { "value": "600+", "label": "Visitors" },
+          { "value": "42+", "label": "Clubs" },
+          { "value": "500K+", "label": "Impressions" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["React", "Tailwind CSS"],
+        "Backend": ["Python", "FastAPI", "MongoDB"],
+        "Features": ["WebSocket", "Multi-role Auth"]
+      },
+      "repo": "",
+      "status": "awarded",
+      "media": { "image": "", "demo": "https://emucon.emurpg.com" }
+    },
+    {
+      "id": "brainstorm-teknofest",
+      "title": "Brainstorm",
+      "priority": "featured",
+      "award": "Teknofest 2024 Finalist – Top 2%",
+      "description": "Fintech platform with real-time market analysis and transaction processing. Led backend development in a two-person team, architecting the API layer and data pipeline. Top 2% out of 100+ projects.",
+      "impact": {
+        "metrics": [
+          { "value": "Top 2%", "label": "Ranking" },
+          { "value": "2-person", "label": "Team" },
+          { "value": "Fintech", "label": "Category" }
+        ]
+      },
+      "technologies": {
+        "Backend": ["Python", "FastAPI"],
+        "Data": ["Real-time Analytics"]
+      },
+      "repo": "",
+      "status": "finalist",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "ai-marketing-agent",
+      "title": "Calimaia",
+      "priority": "normal",
+      "award": "FutureMinds'25 Hackathon – 3rd Place",
+      "description": "AI-powered marketing agent (Calimaia) using LLM integration with React frontend and MongoDB backend, built during a competitive hackathon.",
+      "impact": {
+        "metrics": [
+          { "value": "3rd", "label": "Place" },
+          { "value": "LLM", "label": "Powered" },
+          { "value": "Hackathon", "label": "Built" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["React"],
+        "Backend": ["MongoDB"],
+        "AI": ["LLM Integration"]
+      },
+      "repo": "",
+      "status": "awarded",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "emurpg-club",
+      "title": "EMURPG Club Platform",
+      "priority": "normal",
+      "description": "Club management platform serving 300+ active members with automated event registration (75% admin time reduction) and 99.9% uptime on custom domain.",
+      "impact": {
+        "metrics": [
+          { "value": "300+", "label": "Members" },
+          { "value": "75%", "label": "Time Saved" },
+          { "value": "99.9%", "label": "Uptime" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["React"],
+        "Backend": ["Python", "FastAPI", "MongoDB"]
+      },
+      "repo": "",
+      "status": "active",
+      "media": { "image": "", "demo": "https://emurpg.com" }
+    },
+    {
+      "id": "avlu-alacati",
+      "title": "Avlu Alaçatı Hotel Website",
+      "priority": "normal",
+      "description": "Responsive boutique hotel website with Framer Motion animations and SEO-optimized mobile-first design. Increased organic traffic by 120% within 3 months.",
+      "impact": {
+        "metrics": [
+          { "value": "120%", "label": "Traffic Growth" },
+          { "value": "SEO", "label": "Optimized" },
+          { "value": "Mobile", "label": "First Design" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["React", "Framer Motion", "CSS3"],
+        "Strategy": ["SEO Optimization"]
+      },
+      "repo": "",
+      "status": "delivered",
+      "media": { "image": "", "demo": "https://avlualacati.com" }
+    },
+    {
+      "id": "spicetify-updater",
+      "title": "Spicetify Updater",
+      "priority": "normal",
+      "description": "Cross-platform CLI tool to update Spicetify. Supports Linux, macOS, and Windows. 9 GitHub stars.",
+      "impact": {
+        "metrics": [
+          { "value": "9", "label": "GitHub Stars" },
+          { "value": "3", "label": "OS Support" },
+          { "value": "CLI", "label": "Interface" }
+        ]
+      },
+      "technologies": {
+        "Languages": ["Python"],
+        "Platforms": ["Linux", "macOS", "Windows"]
+      },
+      "repo": "https://github.com/BaranDev/spicetify-updater",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
+    }
+  ],
+  "skills": {
+    "Languages": {
+      "icon": "💻",
+      "skills": [
+        "Python",
+        "Java",
+        "C/C++",
+        "TypeScript",
+        "JavaScript",
+        "C#",
+        "SQL"
+      ]
+    },
+    "Frontend": {
+      "icon": "🎨",
+      "skills": [
+        "React",
+        "Next.js",
+        "Vue 3",
+        "React Native",
+        "Expo",
+        "Electron",
+        "Tailwind CSS",
+        "Framer Motion"
+      ]
+    },
+    "Backend": {
+      "icon": "⚙️",
+      "skills": ["Node.js", "Express", "NestJS", "FastAPI", "Flask", "Django"]
+    },
+    "Databases": {
+      "icon": "🗄️",
+      "skills": [
+        "MongoDB",
+        "PostgreSQL",
+        "Redis",
+        "SQLite",
+        "Qdrant",
+        "Prisma ORM",
+        "Supabase"
+      ]
+    },
+    "Cloud & DevOps": {
+      "icon": "☁️",
+      "skills": [
+        "Docker",
+        "Kubernetes",
+        "AWS (EC2, S3)",
+        "CI/CD",
+        "GitHub Actions",
+        "Nginx",
+        "Terraform"
+      ]
+    },
+    "AI & ML": {
+      "icon": "🧠",
+      "skills": [
+        "PyTorch",
+        "HuggingFace",
+        "LangChain",
+        "LangGraph",
+        "OpenAI SDK",
+        "TensorFlow.js",
+        "OpenCV"
+      ]
+    },
+    "Tools": {
+      "icon": "🛠️",
+      "skills": [
+        "Git",
+        "JIRA",
+        "Vite",
+        "Playwright",
+        "Jest",
+        "Stripe",
+        "Socket.io",
+        "Sentry",
+        "Three.js"
+      ]
+    }
+  },
+  "certifications": [
+    "IBM Cyberstart – Cyber Security (2024)",
+    "EDA for Machine Learning – IBM (2023)",
+    "MongoDB for SQL Pros M100 (2022)",
+    "EF SET English C2 Proficient (2025)"
+  ],
+  "awards": [
+    "TaksiKıbrıs – Best Graduation Project Award",
+    "EMUCON Festival – High Success Award",
+    "FutureMinds'25 Hackathon – 3rd Place",
+    "Teknofest 2024 Finalist – Top 2%",
+    "Top Student of Faculty & Program – Ufuk University"
+  ],
+  "languages": [
+    { "name": "Turkish", "level": "Native" },
+    { "name": "English", "level": "C2 Proficient" }
+  ],
+  "meta": {
+    "version": 3,
+    "generated": "2026-02-11T00:00:00.000Z"
+  }
+}

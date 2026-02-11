@@ -1,87 +1,158 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-// Container with neumorphic styling
+// Container with medieval neumorphic styling
 export const NeumorphicContainer = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius[props.radius || 'medium']};
-  padding: ${props => props.theme.spacing[props.padding || 'lg']};
-  box-shadow: ${props => props.theme.shadows.medium};
-  transition: all ${props => props.theme.animations.normal};
-  
+  background: ${(props) => props.theme.colors.card};
+  border-radius: ${(props) =>
+    props.theme.borderRadius[props.radius || "medium"]};
+  padding: ${(props) => props.theme.spacing[props.padding || "lg"]};
+  box-shadow: ${(props) => props.theme.shadows.medium};
+  transition: all ${(props) => props.theme.animations.normal};
+  border: 1px solid ${(props) => props.theme.colors.primary}15;
+  position: relative;
+
   &:hover {
-    box-shadow: ${props => props.theme.shadows.large};
+    box-shadow: ${(props) => props.theme.shadows.large};
+    border-color: ${(props) => props.theme.colors.primary}25;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(
+      135deg,
+      ${(props) => props.theme.colors.magical}20,
+      transparent 30%,
+      transparent 70%,
+      ${(props) => props.theme.colors.enchanted}20
+    );
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
 // Inset container (pressed in)
 export const NeumorphicInsetContainer = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius[props.radius || 'medium']};
-  padding: ${props => props.theme.spacing[props.padding || 'lg']};
-  box-shadow: ${props => props.theme.shadows.inset};
+  background-color: ${(props) => props.theme.colors.background};
+  border-radius: ${(props) =>
+    props.theme.borderRadius[props.radius || "medium"]};
+  padding: ${(props) => props.theme.spacing[props.padding || "lg"]};
+  box-shadow: ${(props) => props.theme.shadows.inset};
 `;
 
-// Button with neumorphic styling
+// Button with medieval magical styling
 export const NeumorphicButton = styled.button`
-  background-color: ${props => props.$primary ? props.theme.colors.primary : props.theme.colors.background};
-  color: ${props => props.$primary ? props.theme.colors.white || '#ffffff' : (props.color || props.theme.colors.text)};
-  border: none;
-  border-radius: ${props => props.theme.borderRadius.medium};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.fontSizes.md};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
+  background: ${(props) =>
+    props.$primary
+      ? `linear-gradient(135deg, ${props.theme.colors.primary}, ${props.theme.colors.accent})`
+      : props.theme.colors.card};
+  color: ${(props) =>
+    props.$primary
+      ? props.theme.colors.background === "#1a1611"
+        ? "#1a1611"
+        : "#f4f1e8"
+      : props.color || props.theme.colors.text};
+  border: 1px solid ${(props) => props.theme.colors.primary}30;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-size: ${(props) => props.theme.typography.fontSizes.md};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
   cursor: pointer;
-  box-shadow: ${props => props.$primary ? props.theme.shadows.medium : props.theme.shadows.medium};
-  transition: all ${props => props.theme.animations.normal};
-  
+  box-shadow: ${(props) => props.theme.shadows.medium};
+  transition: all ${(props) => props.theme.animations.normal};
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${(props) => props.theme.colors.magical}30,
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
   &:hover {
-    box-shadow: ${props => props.$primary ? props.theme.shadows.large : props.theme.shadows.large};
+    box-shadow: ${(props) => props.theme.shadows.large};
+    transform: translateY(-2px);
+    border-color: ${(props) => props.theme.colors.primary}50;
+
+    &::before {
+      left: 100%;
+    }
   }
-  
+
   &:active {
-    box-shadow: ${props => props.$primary ? props.theme.shadows.inset : props.theme.shadows.inset};
+    transform: translateY(0);
+    box-shadow: ${(props) => props.theme.shadows.inset};
   }
-  
+
   &:disabled {
-    background-color: ${props => props.theme.colors.disabled || '#e0e0e0'};
-    color: ${props => props.theme.colors.disabledText || '#a0a0a0'};
+    background: ${(props) => props.theme.colors.disabled};
+    color: ${(props) => props.theme.colors.disabledText};
     box-shadow: none;
     cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      &::before {
+        left: -100%;
+      }
+    }
   }
 `;
 
 // Input field with neumorphic styling
 export const NeumorphicInput = styled.input`
-  background-color: ${props => props.theme.colors.background};
-  color: ${props => props.theme.colors.text};
+  background-color: ${(props) => props.theme.colors.background};
+  color: ${(props) => props.theme.colors.text};
   border: none;
-  border-radius: ${props => props.theme.borderRadius.medium};
-  padding: ${props => props.theme.spacing.md};
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.fontSizes.md};
-  box-shadow: ${props => props.theme.shadows.inset};
-  transition: all ${props => props.theme.animations.normal};
-  width: ${props => props.width || '100%'};
-  
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding: ${(props) => props.theme.spacing.md};
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-size: ${(props) => props.theme.typography.fontSizes.md};
+  box-shadow: ${(props) => props.theme.shadows.inset};
+  transition: all ${(props) => props.theme.animations.normal};
+  width: ${(props) => props.width || "100%"};
+
   &:focus {
     outline: none;
-    box-shadow: inset 4px 4px 8px rgba(174, 174, 192, 0.5),
-                inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    box-shadow:
+      inset 4px 4px 8px rgba(174, 174, 192, 0.5),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
   }
 `;
 
 // Card component with neumorphic styling
 export const NeumorphicCard = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  padding: ${props => props.theme.spacing.lg};
-  box-shadow: ${props => props.theme.shadows.medium};
-  transition: all ${props => props.theme.animations.normal};
-  margin: ${props => props.margin || props.theme.spacing.md};
-  
+  background-color: ${(props) => props.theme.colors.background};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding: ${(props) => props.theme.spacing.lg};
+  box-shadow: ${(props) => props.theme.shadows.medium};
+  transition: all ${(props) => props.theme.animations.normal};
+  margin: ${(props) => props.margin || props.theme.spacing.md};
+
   &:hover {
-    box-shadow: ${props => props.theme.shadows.large};
+    box-shadow: ${(props) => props.theme.shadows.large};
     transform: translateY(-2px);
   }
 `;
@@ -95,59 +166,83 @@ export const Divider = styled.div`
     rgba(174, 174, 192, 0.3),
     transparent
   );
-  margin: ${props => props.theme.spacing.lg} 0;
+  margin: ${(props) => props.theme.spacing.lg} 0;
 `;
 
-// Typography components
+// Typography components with medieval styling
 export const Heading = styled.h1`
-  color: ${props => props.theme.colors.text};
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.fontSizes[props.size || 'xxl']};
-  font-weight: ${props => props.theme.typography.fontWeights[props.weight || 'bold']};
-  margin: ${props => props.margin || `${props.theme.spacing.md} 0`};
+  color: ${(props) => props.theme.colors.text};
+  font-family: ${(props) => props.theme.typography.headingFont};
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: ${(props) =>
+    props.theme.typography.fontWeights[props.weight || "bold"]};
+  margin: ${(props) => props.margin || `${props.theme.spacing.md} 0`};
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${(props) => props.theme.colors.primary},
+      transparent
+    );
+    opacity: 0.6;
+  }
 `;
 
 export const SubHeading = styled.h2`
-  color: ${props => props.theme.colors.text};
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.fontSizes[props.size || 'xl']};
-  font-weight: ${props => props.theme.typography.fontWeights[props.weight || 'semiBold']};
-  margin: ${props => props.margin || `${props.theme.spacing.md} 0`};
+  color: ${(props) => props.theme.colors.text};
+  font-family: ${(props) => props.theme.typography.headingFont};
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: ${(props) =>
+    props.theme.typography.fontWeights[props.weight || "semiBold"]};
+  margin: ${(props) => props.margin || `${props.theme.spacing.md} 0`};
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 `;
 
 export const Text = styled.p`
-  color: ${props => props.color || props.theme.colors.text};
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-size: ${props => props.theme.typography.fontSizes[props.size || 'md']};
-  font-weight: ${props => props.theme.typography.fontWeights[props.weight || 'regular']};
+  color: ${(props) => props.color || props.theme.colors.text};
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-size: ${(props) => props.theme.typography.fontSizes[props.size || "md"]};
+  font-weight: ${(props) =>
+    props.theme.typography.fontWeights[props.weight || "regular"]};
   line-height: 1.6;
-  margin: ${props => props.margin || `${props.theme.spacing.sm} 0`};
-  text-align: ${props => props.$center ? 'center' : 'inherit'};
-  max-width: ${props => props.$maxWidth || 'none'};
+  margin: ${(props) => props.margin || `${props.theme.spacing.sm} 0`};
+  text-align: ${(props) => (props.$center ? "center" : "inherit")};
+  max-width: ${(props) => props.$maxWidth || "none"};
 `;
 
 // Flexible layout components
 export const FlexContainer = styled.div`
   display: flex;
-  flex-direction: ${props => props.direction || 'row'};
-  justify-content: ${props => props.justify || 'flex-start'};
-  align-items: ${props => props.align || 'stretch'};
-  flex-wrap: ${props => props.wrap || 'nowrap'};
-  gap: ${props => props.gap || props.theme.spacing.md};
-  width: ${props => props.width || 'auto'};
-  height: ${props => props.height || 'auto'};
-  margin: ${props => props.margin || '0'};
-  padding: ${props => props.padding || '0'};
+  flex-direction: ${(props) => props.direction || "row"};
+  justify-content: ${(props) => props.justify || "flex-start"};
+  align-items: ${(props) => props.align || "stretch"};
+  flex-wrap: ${(props) => props.wrap || "nowrap"};
+  gap: ${(props) => props.gap || props.theme.spacing.md};
+  width: ${(props) => props.width || "auto"};
+  height: ${(props) => props.height || "auto"};
+  margin: ${(props) => props.margin || "0"};
+  padding: ${(props) => props.padding || "0"};
 `;
 
 // Grid layout
 export const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: ${props => props.columns || 'repeat(auto-fill, minmax(250px, 1fr))'};
-  grid-gap: ${props => props.gap || props.theme.spacing.lg};
-  width: ${props => props.width || '100%'};
-  margin: ${props => props.margin || '0'};
-  padding: ${props => props.padding || '0'};
+  grid-template-columns: ${(props) =>
+    props.columns || "repeat(auto-fill, minmax(250px, 1fr))"};
+  grid-gap: ${(props) => props.gap || props.theme.spacing.lg};
+  width: ${(props) => props.width || "100%"};
+  margin: ${(props) => props.margin || "0"};
+  padding: ${(props) => props.padding || "0"};
 `;
 
 // Icon container
@@ -155,29 +250,29 @@ export const NeumorphicIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${props => props.size || '40px'};
-  height: ${props => props.size || '40px'};
-  border-radius: ${props => props.theme.borderRadius.circle};
-  background-color: ${props => props.theme.colors.background};
-  box-shadow: ${props => props.theme.shadows.small};
-  color: ${props => props.color || props.theme.colors.primary};
-  transition: all ${props => props.theme.animations.normal};
-  
+  width: ${(props) => props.size || "40px"};
+  height: ${(props) => props.size || "40px"};
+  border-radius: ${(props) => props.theme.borderRadius.circle};
+  background-color: ${(props) => props.theme.colors.background};
+  box-shadow: ${(props) => props.theme.shadows.small};
+  color: ${(props) => props.color || props.theme.colors.primary};
+  transition: all ${(props) => props.theme.animations.normal};
+
   &:hover {
-    box-shadow: ${props => props.theme.shadows.medium};
+    box-shadow: ${(props) => props.theme.shadows.medium};
     transform: scale(1.05);
   }
 `;
 
 // Main page wrapper
 export const PageWrapper = styled.div`
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${(props) => props.theme.colors.background};
   min-height: 100vh;
   width: 100%;
-  padding: ${props => props.theme.spacing.lg};
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    padding: ${props => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.lg};
+
+  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
+    padding: ${(props) => props.theme.spacing.md};
   }
 `;
 
@@ -185,36 +280,37 @@ export const PageWrapper = styled.div`
 export const ContentContainer = styled.main`
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${props => props.theme.spacing.lg} 0;
+  padding: ${(props) => props.theme.spacing.lg} 0;
 `;
 
 // Section container
 export const Section = styled.section`
-  margin: ${props => props.theme.spacing.xxl} 0;
+  margin: ${(props) => props.theme.spacing.xxl} 0;
 `;
 
 // Animated circle - can be used for skill percentage indicators
 export const ProgressCircle = styled.div`
   position: relative;
-  width: ${props => props.size || '100px'};
-  height: ${props => props.size || '100px'};
-  border-radius: ${props => props.theme.borderRadius.circle};
+  width: ${(props) => props.size || "100px"};
+  height: ${(props) => props.size || "100px"};
+  border-radius: ${(props) => props.theme.borderRadius.circle};
   background: conic-gradient(
-    ${props => props.color || props.theme.colors.primary} ${props => props.progress || '0%'},
-    ${props => props.theme.colors.background} 0
+    ${(props) => props.color || props.theme.colors.primary}
+      ${(props) => props.progress || "0%"},
+    ${(props) => props.theme.colors.background} 0
   );
-  box-shadow: ${props => props.theme.shadows.medium};
-  
+  box-shadow: ${(props) => props.theme.shadows.medium};
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: calc(100% - 20px);
     height: calc(100% - 20px);
-    background: ${props => props.theme.colors.background};
-    border-radius: ${props => props.theme.borderRadius.circle};
-    box-shadow: ${props => props.theme.shadows.inset};
+    background: ${(props) => props.theme.colors.background};
+    border-radius: ${(props) => props.theme.borderRadius.circle};
+    box-shadow: ${(props) => props.theme.shadows.inset};
   }
-`; 
+`;

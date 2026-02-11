@@ -19,6 +19,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "framer-motion": "^12.11.0",
     "gsap": "^3.13.0",
+    "lucide-react": "^0.563.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",

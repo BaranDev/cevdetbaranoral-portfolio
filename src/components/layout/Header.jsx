@@ -1,231 +1,496 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { 
-  NeumorphicContainer, 
-  FlexContainer, 
-  NeumorphicButton 
-} from '../../styles/StyledComponents';
-import ThemeToggle from '../ui/ThemeToggle';
-import CVDownloadButton from '../ui/CVDownloadButton';
-import { useTheme } from '../../context/ThemeContext';
-import logoImage from '../../assets/logo.png';
+import { useState, useEffect, useCallback } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import styled, { keyframes, css } from "styled-components";
+import {
+  Home,
+  Briefcase,
+  FolderGit2,
+  Zap,
+  GraduationCap,
+  Mail,
+  Brain,
+  Sun,
+  Moon,
+  Download,
+  Menu,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import ThemeToggle from "../ui/ThemeToggle";
+import CVDownloadButton from "../ui/CVDownloadButton";
+import CVDownloadModal from "../ui/CVDownloadModal";
+import { useTheme } from "../../context/ThemeContext";
 
-// Keyframe animations
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+/* ── vars ────────────────────────────────────── */
+const NAV_W = 220;
+const NAV_W_MIN = 64;
+
+/* ── keyframes ───────────────────────────────── */
+const glowPulse = keyframes`
+  0%,100%{box-shadow:0 0 8px rgba(218,165,32,.3)}
+  50%{box-shadow:0 0 16px rgba(218,165,32,.5)}
 `;
 
-const textGlow = keyframes`
-  0% { text-shadow: 0 0 5px rgba(75, 112, 226, 0); }
-  50% { text-shadow: 0 0 10px rgba(75, 112, 226, 0.5); }
-  100% { text-shadow: 0 0 5px rgba(75, 112, 226, 0); }
-`;
+/* ── nav items ───────────────────────────────── */
+const NAV_SECTIONS = [
+  { id: "home", label: "Home", icon: Home },
+  { id: "experience", label: "Experience", icon: Briefcase },
+  { id: "projects", label: "Projects", icon: FolderGit2 },
+  { id: "skills", label: "Skills", icon: Zap },
+  { id: "education", label: "Education", icon: GraduationCap },
+  { id: "contact", label: "Contact", icon: Mail },
+];
 
-// Styled components for the header
-const HeaderContainer = styled(NeumorphicContainer)`
+const NAV_ROUTES = [{ to: "/ai-demos", label: "AI Demos", icon: Brain }];
+
+/* ── styled: sidebar (desktop) ───────────────── */
+const Sidebar = styled.nav`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  padding: ${props => props.theme.spacing.md};
-  border-radius: 0 0 ${props => props.theme.borderRadius.medium} ${props => props.theme.borderRadius.medium};
-  background-color: ${props => props.theme.colors.background};
-  transition: all ${props => props.theme.animations.normal};
-`;
-
-const LogoContainer = styled.div`
+  left: 12px;
+  top: 12px;
+  bottom: 12px;
+  width: ${(p) => (p.$collapsed ? NAV_W_MIN : NAV_W)}px;
+  background: ${(p) => p.theme.colors.card}ee;
+  backdrop-filter: blur(16px);
+  border: 1px solid ${(p) => p.theme.colors.primary}20;
+  border-radius: 16px;
   display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  
-  &:hover {
-    div {
-      animation: ${textGlow} 1.5s ease infinite;
-      letter-spacing: 1px;
-    }
-  }
-`;
+  flex-direction: column;
+  z-index: 100;
+  transition: width 0.25s ease;
+  overflow: hidden;
 
-const LogoImage = styled.img`
-  height: 40px;
-  width: auto;
-  margin-right: ${props => props.theme.spacing.sm};
-  border-radius: 8px;
-  padding: 4px;
-  background-color: ${props => props.theme.colors.background};
-  box-shadow: ${props => props.theme.shadows.small};
-  transition: all 0.3s ease;
-  
-  /* Apply theme-specific filters directly */
-  filter: ${props => props.theme.colors.background === '#1a1f2e' 
-    ? 'brightness(0.9) contrast(1.1) saturate(0.9)' 
-    : 'brightness(1.02) contrast(1.05) saturate(0.95)'};
-  
-  /* Hover effect */
-  ${LogoContainer}:hover & {
-    filter: brightness(1.05) contrast(1.05) drop-shadow(0 0 8px ${props => props.theme.colors.primary}40);
-  }
-`;
-
-const LogoText = styled.div`
-  font-size: ${props => props.theme.typography.fontSizes.xl};
-  font-weight: ${props => props.theme.typography.fontWeights.bold};
-  color: ${props => props.theme.colors.primary};
-  background: linear-gradient(135deg, 
-    ${props => props.theme.colors.primary} 0%, 
-    ${props => props.theme.colors.secondary} 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(to right, 
-      transparent 0%, 
-      ${props => props.theme.colors.primary}50 50%,
-      transparent 100%);
-    opacity: 0.6;
-  }
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
 
-const NavLinks = styled(FlexContainer)`
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    display: ${props => (props.$isOpen ? 'flex' : 'none')};
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
+const NavTop = styled.div`
+  padding: 16px 12px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-end")};
+  gap: 8px;
+`;
+
+const CollapseBtn = styled.button`
+  background: ${(p) => p.theme.colors.primary}15;
+  border: 1px solid ${(p) => p.theme.colors.primary}20;
+  border-radius: 8px;
+  color: ${(p) => p.theme.colors.secondary};
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    color: ${(p) => p.theme.colors.primary};
+    background: ${(p) => p.theme.colors.primary}25;
+  }
+`;
+
+const NavItems = styled.div`
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 99px;
+    background: ${(p) => p.theme.colors.primary}30;
+  }
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid ${(p) => p.theme.colors.primary}15;
+  margin: 6px ${(p) => (p.$collapsed ? "8px" : "12px")};
+`;
+
+const NavBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px ${(p) => (p.$collapsed ? "0" : "12px")};
+  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-start")};
+  background: ${(p) =>
+    p.$active ? p.theme.colors.primary + "18" : "transparent"};
+  border: none;
+  border-radius: 10px;
+  color: ${(p) =>
+    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
+  font-size: 0.82rem;
+  font-weight: ${(p) => (p.$active ? "600" : "400")};
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  position: relative;
+
+  ${(p) =>
+    p.$active &&
+    css`
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 20px;
+        background: ${p.theme.colors.primary};
+        border-radius: 0 4px 4px 0;
+      }
+    `}
+
+  &:hover {
+    background: ${(p) => p.theme.colors.primary}12;
+    color: ${(p) => p.theme.colors.primary};
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+  span {
+    opacity: ${(p) => (p.$collapsed ? 0 : 1)};
+    transition: opacity 0.2s;
+    overflow: hidden;
+  }
+`;
+
+const NavRouteLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px ${(p) => (p.$collapsed ? "0" : "12px")};
+  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-start")};
+  background: ${(p) =>
+    p.$active ? p.theme.colors.primary + "18" : "transparent"};
+  border: none;
+  border-radius: 10px;
+  color: ${(p) =>
+    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
+  font-size: 0.82rem;
+  font-weight: ${(p) => (p.$active ? "600" : "400")};
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: ${(p) => p.theme.colors.primary}12;
+    color: ${(p) => p.theme.colors.primary};
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+  span {
+    opacity: ${(p) => (p.$collapsed ? 0 : 1)};
+    transition: opacity 0.2s;
+    overflow: hidden;
+  }
+`;
+
+const NavFooter = styled.div`
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const FooterRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: ${(p) => (p.$collapsed ? "center" : "space-between")};
+  gap: 10px;
+  padding: 6px ${(p) => (p.$collapsed ? "0" : "8px")};
+  flex-direction: ${(p) => (p.$collapsed ? "column" : "row")};
+`;
+
+const MobileThemeToggleWrapper = styled.div`
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+/* ── styled: mobile bar ──────────────────────── */
+const MobileBar = styled.nav`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    position: fixed;
+    bottom: 0;
     left: 0;
     right: 0;
-    background-color: ${props => props.theme.colors.background};
-    padding: ${props => props.theme.spacing.md};
-    box-shadow: ${props => props.theme.shadows.medium};
+    height: 60px;
+    background: ${(p) => p.theme.colors.card}f0;
+    backdrop-filter: blur(16px);
+    border-top: 1px solid ${(p) => p.theme.colors.primary}20;
+    z-index: 100;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 `;
 
-const NavLink = styled(Link)`
-  position: relative;
-  color: ${props => props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  overflow: hidden;
-  
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: ${props => props.$isActive ? '80%' : '0'};
-    height: 2px;
-    background-color: ${props => props.theme.colors.primary};
-    transition: all ${props => props.theme.animations.normal};
-    transform: translateX(-50%);
+const MobBtn = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: none;
+  border: none;
+  color: ${(p) =>
+    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  flex: 1;
+  max-width: 64px;
+
+  &:hover,
+  &:active {
+    color: ${(p) => p.theme.colors.primary};
   }
-  
+`;
+
+const MobMore = styled.div`
+  position: fixed;
+  bottom: 64px;
+  left: 8px;
+  right: 8px;
+  background: ${(p) => p.theme.colors.card}f8;
+  backdrop-filter: blur(16px);
+  border: 1px solid ${(p) => p.theme.colors.primary}20;
+  border-radius: 16px;
+  padding: 12px;
+  z-index: 101;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+`;
+
+const MobMoreBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: ${(p) =>
+    p.$active ? p.theme.colors.primary + "18" : p.theme.colors.primary + "08"};
+  border: 1px solid ${(p) => p.theme.colors.primary}15;
+  border-radius: 10px;
+  color: ${(p) => (p.$active ? p.theme.colors.primary : p.theme.colors.text)};
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
   &:hover {
-    color: ${props => props.theme.colors.primary};
-    
-    &:after {
-      width: 80%;
-    }
+    background: ${(p) => p.theme.colors.primary}18;
   }
 `;
 
-const MobileMenuButton = styled(NeumorphicButton)`
-  display: none;
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    display: block;
+const MobMoreLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: ${(p) => p.theme.colors.primary}08;
+  border: 1px solid ${(p) => p.theme.colors.primary}15;
+  border-radius: 10px;
+  color: ${(p) => p.theme.colors.text};
+  font-size: 0.82rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background: ${(p) => p.theme.colors.primary}18;
   }
 `;
 
-const HeaderActions = styled(FlexContainer)`
-  margin-left: ${props => props.theme.spacing.xl};
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    margin-top: ${props => props.$isOpen ? props.theme.spacing.md : 0};
-    margin-left: 0;
-  }
-`;
-
+/* ── Component ───────────────────────────────── */
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [showCVModal, setShowCVModal] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme } = useTheme();
-  
+  const isHome = location.pathname === "/";
+
+  // track active section via IntersectionObserver
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    if (!isHome) return;
+    const ids = NAV_SECTIONS.map((s) => s.id);
+    const observers = [];
+    const handleIntersect = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActiveSection(entry.target.id);
+      });
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location]);
-  
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-  
-  const isLinkActive = (path) => {
-    return location.pathname === path;
-  };
-  
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        const obs = new IntersectionObserver(handleIntersect, {
+          rootMargin: "-30% 0px -60% 0px",
+        });
+        obs.observe(el);
+        observers.push(obs);
+      }
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, [isHome]);
+
+  const handleNav = useCallback(
+    (id) => {
+      if (!isHome) {
+        navigate("/");
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } else {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      setMoreOpen(false);
+    },
+    [isHome, navigate],
+  );
+
+  // Mobile: show first 4 items + "more"
+  const mobilePrimary = NAV_SECTIONS.slice(0, 4);
+  const mobileSecondary = NAV_SECTIONS.slice(4);
+
   return (
-    <HeaderContainer 
-      style={{ 
-        boxShadow: isScrolled ? theme.shadows.large : theme.shadows.medium,
-      }}
-    >
-      <FlexContainer justify="space-between" align="center">
-        <Link to="/">
-          <LogoContainer>
-            <LogoImage src={logoImage} alt="Barandev Logo" />
-            <LogoText>Barandev</LogoText>
-          </LogoContainer>
-        </Link>
-        
-        <MobileMenuButton onClick={toggleMobileMenu}>
-          <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
-        </MobileMenuButton>
-        
-        <NavLinks $isOpen={isMobileMenuOpen} gap="xl" align="center">
-          <NavLink to="/" $isActive={isLinkActive('/')}>Home</NavLink>
-          <NavLink to="/projects" $isActive={isLinkActive('/projects')}>Projects</NavLink>
-          <NavLink to="/skills" $isActive={isLinkActive('/skills')}>Skills</NavLink>
-          <NavLink to="/case-studies" $isActive={isLinkActive('/case-studies')}>Case Studies</NavLink>
-          <NavLink to="/components" $isActive={isLinkActive('/components')}>UI Components</NavLink>
-          <NavLink to="/contact" $isActive={isLinkActive('/contact')}>Contact</NavLink>
-          
-          <HeaderActions $isOpen={isMobileMenuOpen} gap="xl" align="center">
-            <CVDownloadButton />
+    <>
+      {/* Desktop sidebar */}
+      <Sidebar $collapsed={collapsed}>
+        <NavTop $collapsed={collapsed}>
+          <CollapseBtn
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label="Toggle sidebar"
+          >
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          </CollapseBtn>
+        </NavTop>
+
+        <NavItems>
+          {NAV_SECTIONS.map((s) => (
+            <NavBtn
+              key={s.id}
+              $active={isHome && activeSection === s.id}
+              $collapsed={collapsed}
+              onClick={() => handleNav(s.id)}
+            >
+              <s.icon size={18} />
+              <span>{s.label}</span>
+            </NavBtn>
+          ))}
+
+          <Divider $collapsed={collapsed} />
+
+          {NAV_ROUTES.map((r) => (
+            <NavRouteLink
+              key={r.to}
+              to={r.to}
+              $active={location.pathname === r.to}
+              $collapsed={collapsed}
+            >
+              <r.icon size={18} />
+              <span>{r.label}</span>
+            </NavRouteLink>
+          ))}
+        </NavItems>
+
+        <NavFooter>
+          <Divider $collapsed={collapsed} />
+          <FooterRow $collapsed={collapsed}>
             <ThemeToggle />
-          </HeaderActions>
-        </NavLinks>
-      </FlexContainer>
-    </HeaderContainer>
+            <CVDownloadButton />
+          </FooterRow>
+        </NavFooter>
+      </Sidebar>
+
+      {/* Mobile bottom bar */}
+      <MobileBar>
+        {mobilePrimary.map((s) => (
+          <MobBtn
+            key={s.id}
+            $active={isHome && activeSection === s.id}
+            onClick={() => handleNav(s.id)}
+          >
+            <s.icon size={18} />
+            <span>{s.label}</span>
+          </MobBtn>
+        ))}
+        <MobBtn $active={moreOpen} onClick={() => setMoreOpen((o) => !o)}>
+          {moreOpen ? <X size={18} /> : <Menu size={18} />}
+          <span>More</span>
+        </MobBtn>
+      </MobileBar>
+
+      {/* Mobile "more" drawer */}
+      {moreOpen && (
+        <MobMore>
+          {mobileSecondary.map((s) => (
+            <MobMoreBtn
+              key={s.id}
+              $active={isHome && activeSection === s.id}
+              onClick={() => handleNav(s.id)}
+            >
+              <s.icon size={16} />
+              {s.label}
+            </MobMoreBtn>
+          ))}
+          {NAV_ROUTES.map((r) => (
+            <MobMoreLink
+              key={r.to}
+              to={r.to}
+              onClick={() => setMoreOpen(false)}
+            >
+              <r.icon size={16} />
+              {r.label}
+            </MobMoreLink>
+          ))}
+          <MobMoreBtn
+            onClick={() => {
+              setMoreOpen(false);
+              setShowCVModal(true);
+            }}
+          >
+            <Download size={16} /> CV
+          </MobMoreBtn>
+          <CVDownloadModal
+            isOpen={showCVModal}
+            onClose={() => setShowCVModal(false)}
+          />
+        </MobMore>
+      )}
+
+      {/* Mobile Fixed Theme Toggle */}
+      <MobileThemeToggleWrapper>
+        <ThemeToggle />
+      </MobileThemeToggleWrapper>
+    </>
   );
 };
 
-export default Header; 
+export default Header;

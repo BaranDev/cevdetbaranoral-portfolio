@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { NeumorphicButton } from '../../styles/StyledComponents';
-import CVDownloadModal from './CVDownloadModal';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { NeumorphicButton } from "../../styles/StyledComponents";
+import CVDownloadModal from "./CVDownloadModal";
 
 const DownloadButton = styled(NeumorphicButton)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.md};
+  font-weight: ${(props) => props.theme.typography.fontWeights.medium};
+
   i {
     margin-right: 8px;
   }
-  
+
   &:hover {
     transform: translateY(-3px);
   }
 `;
 
-const CVDownloadButton = () => {
+const CVDownloadButton = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -32,14 +33,14 @@ const CVDownloadButton = () => {
 
   return (
     <>
-      <DownloadButton onClick={openModal}>
+      <DownloadButton onClick={openModal} {...props}>
         <i className="fas fa-download"></i>
         Download CV
       </DownloadButton>
-      
+
       <CVDownloadModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };
 
-export default CVDownloadButton; 
+export default CVDownloadButton;

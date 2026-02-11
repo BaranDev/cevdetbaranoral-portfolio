@@ -1,17 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useTheme } from '../../context/ThemeContext';
-import { NeumorphicContainer } from '../../styles/StyledComponents';
+import React from "react";
+import styled from "styled-components";
+import { useTheme } from "../../context/ThemeContext";
+import { NeumorphicContainer } from "../../styles/StyledComponents";
 
 const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const ToggleLabel = styled.span`
-  margin-right: 8px;
-  font-size: 0.9rem;
-  color: ${props => props.theme.colors.text};
 `;
 
 const ToggleSwitch = styled.label`
@@ -32,39 +26,39 @@ const ToggleSlider = styled(NeumorphicContainer)`
   transition: 0.4s;
   cursor: pointer;
   padding: 0;
-  
+
   &:before {
     position: absolute;
     content: "";
     height: 18px;
     width: 18px;
-    left: ${props => props.checked ? '27px' : '3px'};
+    left: ${(props) => (props.checked ? "27px" : "3px")};
     bottom: 3px;
-    background-color: ${props => props.theme.colors.primary};
+    background-color: ${(props) => props.theme.colors.primary};
     border-radius: 50%;
     transition: 0.4s;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
+
   .icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     font-size: 12px;
   }
-  
+
   .moon {
     right: 7px;
-    color: ${props => props.theme.colors.text};
-    opacity: ${props => props.checked ? '1' : '0.3'};
+    color: ${(props) => props.theme.colors.text};
+    opacity: ${(props) => (props.checked ? "1" : "0.3")};
   }
-  
+
   .sun {
     left: 7px;
-    color: ${props => props.theme.colors.text};
-    opacity: ${props => !props.checked ? '1' : '0.3'};
+    color: ${(props) => props.theme.colors.text};
+    opacity: ${(props) => (!props.checked ? "1" : "0.3")};
   }
 `;
 
@@ -76,23 +70,26 @@ const ToggleInput = styled.input`
 
 const ThemeToggle = () => {
   const { isDarkMode, toggleTheme } = useTheme();
-  
+
   return (
     <ToggleContainer>
-      <ToggleLabel>Theme</ToggleLabel>
       <ToggleSwitch>
-        <ToggleInput 
-          type="checkbox" 
+        <ToggleInput
+          type="checkbox"
           checked={isDarkMode}
           onChange={toggleTheme}
         />
         <ToggleSlider checked={isDarkMode}>
-          <span className="icon sun"><i className="fas fa-sun"></i></span>
-          <span className="icon moon"><i className="fas fa-moon"></i></span>
+          <span className="icon sun">
+            <i className="fas fa-sun"></i>
+          </span>
+          <span className="icon moon">
+            <i className="fas fa-moon"></i>
+          </span>
         </ToggleSlider>
       </ToggleSwitch>
     </ToggleContainer>
   );
 };
 
-export default ThemeToggle; 
+export default ThemeToggle;
