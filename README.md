@@ -1,12 +1,20 @@
-# React + Vite
+# Cevdet Baran Oral
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Full-Stack Developer based in Famagusta, Cyprus
 
-Currently, two official plugins are available:
+### About
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Passionate developer with experience in building SaaS platforms, mobile applications, and AI-powered products. Currently a Software Engineering undergraduate with a strong focus on full-stack development using React, Node.js, and Python.
 
-## Expanding the ESLint configuration
+### Highlights
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   **Experience**: Full-stack roles at Datamilk, Havelsan, and EMU IT Center.
+-   **Projects**: Lead developer for TaksiKibris (Best Graduation Project), EMUCON Festival Platform (High Success Award), Brainstorm (Teknofest Top 2%), Calimaia (Hackathon 3rd Place).
+-   **Education**: Two degrees (Software Engineering & Computer Programming) with High Honors.
+-   **Skills**: React, React Native, Node.js, Python, AWS, MongoDB, PostgreSQL, TensorFlow.js.
+
+### Connect
+
+-   [LinkedIn](https://linkedin.com/in/cevdetbaranoral)
+-   [GitHub](https://github.com/BaranDev)
+-   [Email](mailto:cevdetbaranoral@gmail.com)
