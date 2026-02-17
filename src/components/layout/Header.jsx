@@ -85,14 +85,14 @@ const Header = () => {
 
   // Common classes
   const navItemClasses = (active) => `
-    flex items-center gap-3 p-3 rounded-xl transition-all duration-200 cursor-pointer border-none bg-transparent w-full
+    flex items-center rounded-xl transition-all duration-200 cursor-pointer border-none bg-transparent w-full
     text-[0.82rem] font-medium whitespace-nowrap relative
     ${
       active
         ? "bg-primary/10 text-primary font-semibold"
         : "text-secondary hover:bg-primary/5 hover:text-primary"
     }
-    ${collapsed ? "justify-center px-0" : "px-3"}
+    ${collapsed ? "justify-center px-0 gap-0 h-[44px]" : "px-3 gap-3 p-3"}
   `;
 
   // Active indicator line for desktop sidebar
