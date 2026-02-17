@@ -1,223 +1,176 @@
-@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
+@import "tailwindcss";
 
+@theme {
+  /* Colors - using CSS variables */
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-magical: var(--color-magical);
+  --color-firefly: var(--color-firefly);
+  --color-mushroom: var(--color-mushroom);
+  --color-canopy: var(--color-canopy);
+  --color-glow: var(--color-glow);
+  --color-outline: var(--color-outline);
+  --color-card: var(--color-card);
+  --color-card-alt: var(--color-card-alt);
+  --color-success: var(--color-success);
+  --color-danger: var(--color-danger);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+  --color-disabled: var(--color-disabled);
+  --color-disabled-text: var(--color-disabled-text);
+
+  /* Fonts */
+  --font-body: "Inter", "Poppins", "Roboto", sans-serif;
+  --font-heading: "Inter", "Poppins", "Roboto", sans-serif;
+}
+
+/* Base Theme Variables */
 :root {
-  --background: #b8d4a8;
-  --text: #2c3e2a;
-  --primary: #d4af37;
-  --secondary: #8fbc8f;
-  --transition-speed: 0.3s;
+  /* Light Theme */
+  --color-background: #f1f4f2;
+  --color-surface: #ffffff;
+  --color-text: #2d2d2d;
+  --color-primary: #2f5d3a;
+  --color-secondary: #5a7d4d;
+  --color-accent: #c08d2b;
+  --color-magical: #6d4bb8;
+  --color-firefly: #ffe87a;
+  --color-mushroom: #d94e4e;
+  --color-canopy: #8fbf7a;
+  --color-glow: #dabd63;
+  --color-outline: #324a3a;
+  --color-card: #f8faf9;
+  --color-card-alt: #eef2ef;
+  --color-success: #3d8247;
+  --color-danger: #ba3f3f;
+  --color-warning: #d19b2d;
+  --color-info: #3f6fb8;
+  --color-disabled: #e3e7e4;
+  --color-disabled-text: #9aa9a3;
 }
 
-.dark-theme {
-  --background: #1b2f1b;
-  --text: #e8f5e8;
-  --primary: #ffd700;
-  --secondary: #90ee90;
+.dark {
+  /* Dark Theme */
+  --color-background: #0e1512;
+  --color-surface: #18231d;
+  --color-text: #e3ece8;
+  --color-primary: #3c8c54;
+  --color-secondary: #547a4b;
+  --color-accent: #d7a645;
+  --color-magical: #a184ff;
+  --color-firefly: #ffe87a;
+  --color-mushroom: #ff6d6d;
+  --color-canopy: #2e5c3c;
+  --color-glow: #e2c676;
+  --color-outline: #264232;
+  --color-card: #151f1a;
+  --color-card-alt: #1b2822;
+  --color-success: #64c980;
+  --color-danger: #f07a7a;
+  --color-warning: #e5ba52;
+  --color-info: #6fa8ff;
+  --color-disabled: #1f2c26;
+  --color-disabled-text: #4a5d55;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  transition: background-color var(--transition-speed),
-    color var(--transition-speed), border-color var(--transition-speed);
-}
-
-body {
-  font-family: "Roboto", "Inter", sans-serif;
-  background-color: var(--background);
-  color: var(--text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Pixelart text utility class */
-.pixel-text {
-  font-family: "Press Start 2P", monospace;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-}
-
-/* Medieval heading text */
-.medieval-text {
-  font-family: "MedievalSharp", serif;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-a:hover {
-  color: var(--secondary);
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: "Roboto", "Inter", sans-serif;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--secondary);
-  border-radius: 10px;
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.1);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+@layer base {
+  html {
+    background: var(--color-background);
   }
-  to {
-    opacity: 1;
+
+  body {
+    @apply text-text font-body antialiased;
+    background: transparent;
+    line-height: 1.6;
+    position: relative;
   }
-}
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
+  /* Noise Texture Overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgZmlsbD0nbm9uZSc+PGZpbHRlciBpZD0nbicgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgZmlsdGVyPSd1cmwoI24pJyBvcGFjaXR5PScwLjA1Jy8+PC9zdmc+");
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-magical), transparent 66%);
+    color: var(--color-text);
   }
-}
 
-@keyframes slideInRight {
-  from {
-    transform: translateX(50px);
-    opacity: 0;
+  a,
+  button {
+    @apply focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2;
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+
+  .animate-glow {
+    animation: glow 3s ease-in-out infinite;
   }
-}
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-50px);
-    opacity: 0;
+  @keyframes glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 5px rgba(218, 165, 32, 0.4),
+        0 0 10px rgba(218, 165, 32, 0.2);
+    }
+    50% {
+      box-shadow:
+        0 0 10px rgba(218, 165, 32, 0.7),
+        0 0 20px rgba(218, 165, 32, 0.5);
+    }
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+
+  .animate-celebration {
+    animation: celebration 0.5s ease-in-out;
   }
-}
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+  @keyframes celebration {
+    0% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
-  50% {
-    transform: scale(1.05);
+
+  .animate-text-reveal {
+    animation: textReveal 0.8s forwards;
   }
-  100% {
-    transform: scale(1);
+
+  @keyframes textReveal {
+    0% {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
-}
 
-@keyframes loadingSpinner {
-  0% {
-    transform: rotate(0deg);
+  .animate-shimmer {
+    animation: shimmer 6s linear infinite;
   }
-  100% {
-    transform: rotate(360deg);
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
-}
-
-/* Animation classes */
-.fadeIn {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.slideUp {
-  animation: slideUp 0.5s ease forwards;
-}
-
-.slideInRight {
-  animation: slideInRight 0.5s ease forwards;
-}
-
-.slideInLeft {
-  animation: slideInLeft 0.5s ease forwards;
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-/* Page transition animations */
-.page-enter {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
-}
-
-.page-exit {
-  opacity: 1;
-}
-
-.page-exit-active {
-  opacity: 0;
-  transition: opacity 300ms;
-}
-
-/* Loader styles */
-.loader-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--background);
-  z-index: 1000;
-}
-
-.loader {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(var(--primary-rgb), 0.3);
-  border-radius: 50%;
-  border-top-color: var(--primary);
-  animation: loadingSpinner 1s linear infinite;
 }

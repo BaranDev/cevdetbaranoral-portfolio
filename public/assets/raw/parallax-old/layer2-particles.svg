@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice">
+  <!-- Layer 2: Magical Flow Particles -->
+  <g fill="#dabd63" opacity="0.8">
+    <!-- Fireflies / Particles -->
+    <circle cx="200" cy="500" r="3">
+      <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="800" cy="300" r="2">
+      <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1500" cy="700" r="4">
+      <animate attributeName="opacity" values="0;1;0" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Geometric diamond shapes -->
+    <rect x="400" y="800" width="6" height="6" transform="rotate(45 403 803)" fill="#ffffff"/>
+    <rect x="1200" y="200" width="8" height="8" transform="rotate(45 1204 204)" fill="#ffffff"/>
+  </g>
+  
+  <!-- Digital Leaves -->
+  <g fill="#2f5d3a" opacity="0.6">
+     <path d="M100,100 Q110,90 120,100 T140,100" stroke="#2f5d3a" stroke-width="2" fill="none"/>
+  </g>
+</svg>

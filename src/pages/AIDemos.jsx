@@ -1,201 +1,125 @@
 import React from "react";
-import styled from "styled-components";
-import {
-  Section,
-  Heading,
-  Text,
-  FlexContainer,
-  NeumorphicContainer,
-} from "../styles/StyledComponents";
 import AIDemo from "../components/interactive/AIDemo";
-import { useTheme } from "../context/ThemeContext";
-
-// Page container
-const PageContainer = styled.div`
-  padding: ${(props) => props.theme.spacing.lg} 0;
-`;
-
-// Intro section
-const IntroSection = styled(Section)`
-  text-align: center;
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-`;
-
-// Colored span for highlighting
-const ColoredSpan = styled.span`
-  color: ${(props) => props.theme.colors.primary};
-`;
-
-// Info card
-const InfoCard = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.lg};
-  margin-top: ${(props) => props.theme.spacing.xl};
-
-  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
-    padding: ${(props) => props.theme.spacing.md};
-  }
-`;
-
-// Feature section
-const FeatureSection = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-
-  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
-    flex-direction: column;
-  }
-`;
-
-// Feature icon
-const FeatureIcon = styled.div`
-  width: 50px;
-  min-width: 50px;
-  height: 50px;
-  border-radius: ${(props) => props.theme.borderRadius.circle};
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: ${(props) => props.theme.spacing.md};
-  box-shadow: ${(props) => props.theme.shadows.small};
-  font-size: 24px;
-
-  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
-    margin-bottom: ${(props) => props.theme.spacing.sm};
-  }
-`;
-
-// Feature content
-const FeatureContent = styled.div`
-  flex: 1;
-`;
 
 const AIDemosPage = () => {
-  const { theme } = useTheme();
-
   return (
-    <PageContainer>
-      <IntroSection>
-        <Heading>
-          AI & Machine Learning <ColoredSpan>Demonstrations</ColoredSpan>
-        </Heading>
-        <Text size="lg" $center $maxWidth="800px" margin="16px auto">
-          Explore interactive AI demos powered by TensorFlow.js, running
-          directly in your browser without requiring server-side processing.
-        </Text>
-      </IntroSection>
+    <div className="py-12">
+      <section className="text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-text font-heading">
+          AI & Machine Learning{" "}
+          <span className="text-primary">Demonstrations</span>
+        </h1>
+        <p className="text-lg text-text/80 max-w-[800px] mx-auto leading-relaxed">
+          Explore interactive AI demos powered by TensorFlow.js and face-api.js,
+          running directly in your browser without any server-side processing.
+        </p>
+      </section>
 
       {/* AI Demonstrations Section */}
-      <Section>
+      <section>
         <AIDemo />
-      </Section>
+      </section>
 
-      <Section>
-        <InfoCard>
-          <Heading size="md" margin="0 0 24px 0">
+      <section>
+        <div className="p-8 mt-12 bg-card rounded-2xl shadow-neumorphic">
+          <h2 className="text-2xl font-semibold mb-6 text-text font-heading">
             About These AI Demonstrations
-          </Heading>
+          </h2>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-brain"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
-                TensorFlow.js Integration
-              </Text>
-              <Text size="sm">
-                These demos showcase TensorFlow.js capabilities with real-time
-                object detection using COCO-SSD models and interactive drawing
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">Browser-Based AI</p>
+              <p className="text-sm text-text/80 leading-relaxed">
+                These demos showcase TensorFlow.js and face-api.js with
+                real-time facial emotion analysis and interactive drawing
                 recognition. All processing happens locally in your browser,
                 demonstrating privacy-first machine learning approaches.
-              </Text>
-            </FeatureContent>
-          </FeatureSection>
+              </p>
+            </div>
+          </div>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-camera"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
-                Object Detection
-              </Text>
-              <Text size="sm">
-                The object detection demo uses COCO-SSD (Common Objects in
-                Context - Single Shot MultiBox Detector), a pre-trained model
-                capable of identifying 80 different common objects. The model
-                has been optimized to run efficiently in web browsers through
-                TensorFlow.js.
-              </Text>
-            </FeatureContent>
-          </FeatureSection>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">Emotion Analysis</p>
+              <p className="text-sm text-text/80 leading-relaxed">
+                The emotion analysis demo uses face-api.js with the Tiny Face
+                Detector for fast face detection, combined with expression
+                recognition and age/gender estimation neural networks. It can
+                detect 7 emotions in real-time: happy, sad, angry, fearful,
+                disgusted, surprised, and neutral.
+              </p>
+            </div>
+          </div>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-pencil-alt"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">
                 Drawing Recognition
-              </Text>
-              <Text size="sm">
+              </p>
+              <p className="text-sm text-text/80 leading-relaxed">
                 The drawing recognition component demonstrates the concept of
                 sketch recognition. In a full implementation, it would use a
                 model like SketchRNN or a CNN trained on the Quick Draw dataset
                 to recognize hand-drawn sketches in real-time.
-              </Text>
-            </FeatureContent>
-          </FeatureSection>
+              </p>
+            </div>
+          </div>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-lock"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">
                 Privacy-First Machine Learning
-              </Text>
-              <Text size="sm">
+              </p>
+              <p className="text-sm text-text/80 leading-relaxed">
                 All processing happens locally in your browser - your camera
                 feed and drawings never leave your device. This is a powerful
                 example of how modern web technologies can deliver AI
                 capabilities while preserving user privacy.
-              </Text>
-            </FeatureContent>
-          </FeatureSection>
+              </p>
+            </div>
+          </div>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-microchip"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">
                 Real-Time Performance
-              </Text>
-              <Text size="sm">
+              </p>
+              <p className="text-sm text-text/80 leading-relaxed">
                 Experience the power of browser-based AI with real-time
                 inference. The demos are optimized for performance, showcasing
                 how machine learning models can run efficiently on consumer
                 hardware without cloud dependencies.
-              </Text>
-            </FeatureContent>
-          </FeatureSection>
+              </p>
+            </div>
+          </div>
 
-          <FeatureSection>
-            <FeatureIcon>
+          <div className="flex flex-col md:flex-row items-start mb-8 gap-4">
+            <div className="w-[50px] h-[50px] min-w-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-sm text-2xl shrink-0">
               <i className="fas fa-code"></i>
-            </FeatureIcon>
-            <FeatureContent>
-              <Text weight="semiBold" margin="0 0 8px 0">
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-2 text-text">
                 Technical Implementation
-              </Text>
-              <Text size="sm" margin="0 0 8px 0">
+              </p>
+              <p className="text-sm text-text/80 leading-relaxed mb-2">
                 These demos showcase several advanced technical capabilities:
-              </Text>
-              <ul>
+              </p>
+              <ul className="text-sm text-text/80 list-disc pl-5 leading-relaxed">
                 <li>
                   Integration of TensorFlow.js for in-browser machine learning
                 </li>
@@ -211,22 +135,17 @@ const AIDemosPage = () => {
                 <li>Performance optimization for real-time inference</li>
                 <li>WebGL acceleration for neural network computations</li>
               </ul>
-            </FeatureContent>
-          </FeatureSection>
+            </div>
+          </div>
 
-          <Text
-            color={theme.colors.secondary}
-            margin="24px 0 0 0"
-            size="sm"
-            $center
-          >
+          <p className="text-center mt-6 text-sm text-secondary">
             Note: For the best experience, please use a modern browser and allow
             camera access when prompted. The TensorFlow.js models may take a few
             moments to load on slower connections.
-          </Text>
-        </InfoCard>
-      </Section>
-    </PageContainer>
+          </p>
+        </div>
+      </section>
+    </div>
   );
 };
 

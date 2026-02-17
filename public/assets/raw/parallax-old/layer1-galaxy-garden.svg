@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 3840" preserveAspectRatio="xMidYMid slice">
+  <!-- Layer 1: Galaxy Garden Vertical Panorama -->
+  <defs>
+    <linearGradient id="verticalGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050505"/>   <!-- Deep Space -->
+      <stop offset="30%" stop-color="#0e1512"/>  <!-- Nebula Edge -->
+      <stop offset="60%" stop-color="#1e3526"/>  <!-- Hanging Gardens -->
+      <stop offset="100%" stop-color="#152119"/> <!-- Ancient Roots -->
+    </linearGradient>
+    
+    <radialGradient id="nebula" cx="0.5" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#2f5d3a" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Main Background -->
+  <rect width="1080" height="3840" fill="url(#verticalGrad)"/>
+  
+  <!-- Nebula Glow -->
+  <circle cx="540" cy="800" r="600" fill="url(#nebula)"/>
+  
+  <!-- Stars (Space Section) -->
+  <g fill="#ffffff" opacity="0.8">
+    <circle cx="200" cy="200" r="2"/>
+    <circle cx="800" cy="400" r="3"/>
+    <circle cx="500" cy="100" r="2"/>
+    <circle cx="900" cy="600" r="1.5"/>
+  </g>
+
+  <!-- Digital Vines (Garden Section) -->
+  <g fill="none" stroke="#2f5d3a" stroke-width="4" opacity="0.5">
+    <path d="M0,1500 Q300,1800 600,1500 T1080,1800" />
+    <path d="M1080,2000 Q700,2300 400,2000 T0,2300" />
+  </g>
+
+  <!-- Tech Core (Bottom Section) -->
+  <circle cx="540" cy="3400" r="200" stroke="#dabd63" stroke-width="2" fill="none" opacity="0.3"/>
+  <circle cx="540" cy="3400" r="150" stroke="#dabd63" stroke-width="1" fill="none" opacity="0.5"/>
+</svg>

@@ -1,165 +1,180 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import {
-  Section,
-  Heading,
-  Text,
-  FlexContainer,
-  NeumorphicContainer,
-  NeumorphicButton,
-} from "../styles/StyledComponents";
+import { useState } from "react";
 import QuantumSimulation from "../components/interactive/QuantumSimulation";
 import { useTheme } from "../context/ThemeContext";
 
-// Page container
-const PageContainer = styled.div`
-  padding: ${(props) => props.theme.spacing.lg} 0;
-`;
+// ─── Tailwind Components replacing Styled Components ────────────────
 
-// Intro section
-const IntroSection = styled(Section)`
-  text-align: center;
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-`;
+const PageContainer = ({ children }) => <div className="py-8">{children}</div>;
 
-// Colored span for highlighting
-const ColoredSpan = styled.span`
-  color: ${(props) => props.theme.colors.primary};
-`;
+const IntroSection = ({ children }) => (
+  <section className="text-center mb-12">{children}</section>
+);
 
-// Game elements
-const GameHeader = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.lg};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-  background: linear-gradient(
-    135deg,
-    ${(props) => props.theme.colors.primary}10,
-    ${(props) => props.theme.colors.secondary}10
+const ColoredSpan = ({ children }) => (
+  <span className="text-primary">{children}</span>
+);
+
+const GameHeader = ({ children }) => (
+  <div className="p-8 mb-12 bg-gradient-to-br from-primary/10 to-secondary/10 bg-card rounded-2xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const StatsContainer = ({ children }) => (
+  <div className="flex justify-between mb-8 flex-col md:flex-row gap-4">
+    {children}
+  </div>
+);
+
+const StatCard = ({ children }) => (
+  <div className="p-4 text-center min-w-[120px] bg-card rounded-xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const StatValue = ({ children }) => (
+  <div className="text-xl font-bold text-primary mb-1 font-heading">
+    {children}
+  </div>
+);
+
+const StatLabel = ({ children }) => (
+  <div className="text-sm text-secondary">{children}</div>
+);
+
+const ChallengeSection = ({ children }) => (
+  <div className="p-8 mb-12 bg-card rounded-2xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const ChallengeCard = ({ $active, $completed, onClick, children }) => {
+  let bgClass = "bg-card";
+  let borderClass = "border-transparent";
+
+  if ($completed) {
+    bgClass = "bg-success/10";
+  } else if ($active) {
+    bgClass = "bg-primary/10";
+    borderClass = "border-primary";
+  }
+
+  return (
+    <div
+      onClick={onClick}
+      className={`
+        p-6 m-4 cursor-pointer transition-all duration-300 border-2 rounded-xl shadow-neumorphic hover:-translate-y-1 hover:shadow-lg
+        ${bgClass} ${borderClass}
+      `}
+    >
+      {children}
+    </div>
   );
-`;
+};
 
-const StatsContainer = styled(FlexContainer)`
-  justify-content: space-between;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+const ChallengeDifficulty = ({ children }) => (
+  <div className="flex items-center mb-2">{children}</div>
+);
 
-  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
-    flex-direction: column;
-    gap: ${(props) => props.theme.spacing.md};
-  }
-`;
+const DifficultyDot = ({ level }) => {
+  let colorClass = "bg-secondary";
+  if (level === "easy") colorClass = "bg-success";
+  if (level === "medium") colorClass = "bg-warning";
+  if (level === "hard") colorClass = "bg-danger";
 
-const StatCard = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.md};
-  text-align: center;
-  min-width: 120px;
-  background-color: ${(props) => props.theme.colors.card};
-`;
+  return <div className={`w-2 h-2 rounded-full mr-1 ${colorClass}`} />;
+};
 
-const StatValue = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.xl};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  color: ${(props) => props.theme.colors.primary};
-  margin-bottom: ${(props) => props.theme.spacing.xs};
-`;
+const AchievementBadge = ({ children }) => (
+  <div className="inline-flex items-center px-3 py-1 bg-success/20 text-success rounded text-xs font-semibold m-1">
+    {children}
+  </div>
+);
 
-const StatLabel = styled.div`
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  color: ${(props) => props.theme.colors.secondary};
-`;
+const CelebrationMessage = ({ children }) => (
+  <div className="p-8 text-center bg-gradient-to-br from-success/20 to-primary/20 border-2 border-success rounded-xl shadow-neumorphic mb-8 animate-celebration">
+    {children}
+  </div>
+);
 
-const ChallengeSection = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.xl};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-`;
+// Typography & Layout Helpers
+const Heading = ({ size, style, children, ...props }) => (
+  <h2
+    className={`font-bold text-text font-heading ${size === "lg" ? "text-3xl" : size === "md" ? "text-2xl" : "text-xl"}`}
+    style={style}
+    {...props}
+  >
+    {children}
+  </h2>
+);
 
-const ChallengeCard = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.lg};
-  margin: ${(props) => props.theme.spacing.md};
-  cursor: pointer;
-  transition: all ${(props) => props.theme.animations.normal};
-  border: 2px solid
-    ${(props) => (props.$active ? props.theme.colors.primary : "transparent")};
-  background-color: ${(props) =>
-    props.$completed
-      ? props.theme.colors.success + "15"
-      : props.$active
-      ? props.theme.colors.primary + "10"
-      : props.theme.colors.card};
+const Text = ({
+  size,
+  weight,
+  margin,
+  $center,
+  $maxWidth,
+  style,
+  children,
+  ...props
+}) => (
+  <p
+    className={`
+      ${size === "lg" ? "text-lg" : size === "sm" ? "text-sm" : size === "xs" ? "text-xs" : "text-base"}
+      ${weight === "semiBold" ? "font-semibold" : ""}
+      ${$center ? "text-center" : ""}
+      text-text
+    `}
+    style={{ ...style, margin, maxWidth: $maxWidth }}
+    {...props}
+  >
+    {children}
+  </p>
+);
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: ${(props) => props.theme.shadows.large};
-  }
-`;
+const Section = ({ children }) => <section>{children}</section>;
 
-const ChallengeDifficulty = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
-`;
+const FlexContainer = ({
+  justify,
+  align,
+  gap,
+  direction,
+  wrap,
+  style,
+  children,
+  ...props
+}) => (
+  <div
+    className={`flex ${wrap ? "flex-wrap" : ""} ${direction === "column" ? "flex-col" : ""}`}
+    style={{
+      justifyContent: justify === "space-between" ? "space-between" : justify,
+      alignItems: align === "center" ? "center" : align,
+      gap: gap === "md" ? "1rem" : gap,
+      ...style,
+    }}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-const DifficultyDot = styled.div`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: ${(props) => props.theme.spacing.xs};
-  background-color: ${(props) => {
-    switch (props.level) {
-      case "easy":
-        return props.theme.colors.success;
-      case "medium":
-        return props.theme.colors.warning;
-      case "hard":
-        return props.theme.colors.danger;
-      default:
-        return props.theme.colors.secondary;
-    }
-  }};
-`;
+const NeumorphicButton = ({ size, onClick, children }) => (
+  <button
+    onClick={onClick}
+    className={`
+      px-4 py-2 rounded-xl font-medium bg-background text-text shadow-neumorphic hover:-translate-y-1 hover:shadow-neumorphic-hover transition-all duration-300
+      ${size === "small" ? "text-sm px-3 py-1.5" : ""}
+    `}
+  >
+    {children}
+  </button>
+);
 
-const AchievementBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  padding: ${(props) => props.theme.spacing.xs}
-    ${(props) => props.theme.spacing.sm};
-  background-color: ${(props) => props.theme.colors.success}20;
-  color: ${(props) => props.theme.colors.success};
-  border-radius: ${(props) => props.theme.borderRadius.small};
-  font-size: ${(props) => props.theme.typography.fontSizes.xs};
-  font-weight: ${(props) => props.theme.typography.fontWeights.semiBold};
-  margin: ${(props) => props.theme.spacing.xs};
-
-  i {
-    margin-right: ${(props) => props.theme.spacing.xs};
-  }
-`;
-
-const CelebrationMessage = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.lg};
-  text-align: center;
-  background: linear-gradient(
-    135deg,
-    ${(props) => props.theme.colors.success}20,
-    ${(props) => props.theme.colors.primary}20
-  );
-  border: 2px solid ${(props) => props.theme.colors.success};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  animation: celebration 0.5s ease-in-out;
-
-  @keyframes celebration {
-    0% {
-      transform: scale(0.9);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-`;
+const NeumorphicContainer = ({ style, children }) => (
+  <div className="p-4 bg-card rounded-xl shadow-neumorphic" style={style}>
+    {children}
+  </div>
+);
 
 const challenges = [
   {
@@ -400,7 +415,7 @@ const QuantumDemosPage = () => {
                 onClick={() => handleChallengeSelect(challenge)}
                 $active={gameState.currentChallenge?.id === challenge.id}
                 $completed={gameState.completedChallenges.includes(
-                  challenge.id
+                  challenge.id,
                 )}
               >
                 <FlexContainer
@@ -425,8 +440,8 @@ const QuantumDemosPage = () => {
                       challenge.difficulty === "hard"
                         ? challenge.difficulty
                         : challenge.difficulty === "medium"
-                        ? challenge.difficulty
-                        : "disabled"
+                          ? challenge.difficulty
+                          : "disabled"
                     }
                   />
                   <Text

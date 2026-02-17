@@ -1,146 +1,104 @@
-import styled from "styled-components";
 import { Link } from "react-router-dom";
-import {
-  NeumorphicContainer,
-  FlexContainer,
-  Text,
-  NeumorphicIcon,
-  Divider,
-} from "../../styles/StyledComponents";
-
-const FooterContainer = styled(NeumorphicContainer)`
-  margin-top: ${(props) => props.theme.spacing.xxl};
-  border-radius: ${(props) => props.theme.borderRadius.medium}
-    ${(props) => props.theme.borderRadius.medium} 0 0;
-  padding: ${(props) => props.theme.spacing.xl};
-`;
-
-const FooterColumn = styled.div`
-  flex: 1;
-  min-width: 200px;
-  padding: ${(props) => props.theme.spacing.md};
-
-  @media (max-width: ${(props) => props.theme.breakpoints.md}) {
-    margin-bottom: ${(props) => props.theme.spacing.lg};
-  }
-`;
-
-const FooterHeading = styled.h3`
-  font-size: ${(props) => props.theme.typography.fontSizes.lg};
-  font-weight: ${(props) => props.theme.typography.fontWeights.semiBold};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  color: ${(props) => props.theme.colors.primary};
-`;
-
-const FooterLink = styled(Link)`
-  display: block;
-  color: ${(props) => props.theme.colors.text};
-  margin-bottom: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.xs} 0;
-  transition: all ${(props) => props.theme.animations.fast};
-
-  &:hover {
-    color: ${(props) => props.theme.colors.primary};
-    transform: translateX(5px);
-  }
-`;
-
-const SocialLinks = styled(FlexContainer)`
-  margin-top: ${(props) => props.theme.spacing.md};
-`;
-
-const Copyright = styled(Text)`
-  text-align: center;
-  margin-top: ${(props) => props.theme.spacing.lg};
-  color: ${(props) => props.theme.colors.secondary};
-`;
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <FooterContainer>
-      <FlexContainer wrap="wrap" gap="xl">
-        <FooterColumn>
-          <FooterHeading>Portfolio</FooterHeading>
-          <Text>
+    <footer className="mt-12 rounded-t-2xl bg-card p-8 border-t border-primary/10 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)] relative overflow-hidden">
+      {/* Glow effect background */}
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+      <div className="flex flex-wrap gap-8 justify-between max-w-[1200px] mx-auto">
+        <div className="flex-1 min-w-[200px] mb-6 md:mb-0">
+          <h3 className="text-lg font-semibold mb-4 text-primary">Portfolio</h3>
+          <p className="text-text/90 leading-relaxed mb-6 max-w-sm">
             A showcase of my skills, projects, and experience as a Software
             Engineering undergraduate with expertise in AI technologies and
             full-stack development.
-          </Text>
+          </p>
 
-          <SocialLinks gap="lg">
-            <NeumorphicIcon
-              as="a"
-              href="https://github.com/BaranDev"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-            >
-              <i className="fab fa-github"></i>
-            </NeumorphicIcon>
-            <NeumorphicIcon
-              as="a"
-              href="https://linkedin.com/in/cevdetbaranoral"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-            >
-              <i className="fab fa-linkedin-in"></i>
-            </NeumorphicIcon>
-            <NeumorphicIcon
-              as="a"
-              href="https://cevdetbaran.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Website"
-            >
-              <i className="fas fa-globe"></i>
-            </NeumorphicIcon>
-            <NeumorphicIcon
-              as="a"
-              href="mailto:cevdetbaranoral@gmail.com"
-              aria-label="Email"
-            >
-              <i className="fas fa-envelope"></i>
-            </NeumorphicIcon>
-          </SocialLinks>
-        </FooterColumn>
+          <div className="flex gap-4 mt-4">
+            {[
+              {
+                href: "https://github.com/BaranDev",
+                icon: "fab fa-github",
+                label: "GitHub",
+              },
+              {
+                href: "https://linkedin.com/in/cevdetbaranoral",
+                icon: "fab fa-linkedin-in",
+                label: "LinkedIn",
+              },
+              {
+                href: "https://cevdetbaran.com",
+                icon: "fas fa-globe",
+                label: "Website",
+              },
+              {
+                href: "mailto:cevdetbaranoral@gmail.com",
+                icon: "fas fa-envelope",
+                label: "Email",
+              },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-background shadow-sm text-primary transition-all duration-300 hover:shadow-md hover:scale-110 hover:text-accent border border-primary/10"
+              >
+                <i className={link.icon}></i>
+              </a>
+            ))}
+          </div>
+        </div>
 
-        <FooterColumn>
-          <FooterHeading>Quick Links</FooterHeading>
-          <FooterLink to="/">Home</FooterLink>
-          <FooterLink to="/#projects">Projects</FooterLink>
-          <FooterLink to="/#skills">Skills</FooterLink>
-          <FooterLink to="/#experience">Experience</FooterLink>
-          <FooterLink to="/#contact">Contact</FooterLink>
-          <FooterLink to="/ai-demos">AI Demos</FooterLink>
-        </FooterColumn>
+        <div className="flex-1 min-w-[200px] mb-6 md:mb-0">
+          <h3 className="text-lg font-semibold mb-4 text-primary">
+            Quick Links
+          </h3>
+          <div className="flex flex-col gap-2">
+            {[
+              { to: "/", label: "Home" },
+              { to: "/#projects", label: "Projects" },
+              { to: "/#skills", label: "Skills" },
+              { to: "/#experience", label: "Experience" },
+              { to: "/#contact", label: "Contact" },
+              { to: "/ai-demos", label: "AI Demos" },
+            ].map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="text-text hover:text-primary hover:translate-x-1 transition-all duration-200 block py-1"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-        <FooterColumn>
-          <FooterHeading>Contact</FooterHeading>
-          <Text margin="0 0 12px 0">
-            <i
-              className="fas fa-map-marker-alt"
-              style={{ marginRight: "12px" }}
-            ></i>
+        <div className="flex-1 min-w-[200px]">
+          <h3 className="text-lg font-semibold mb-4 text-primary">Contact</h3>
+          <p className="flex items-center gap-3 mb-3 text-text">
+            <i className="fas fa-map-marker-alt text-primary/80"></i>
             Famagusta, Cyprus
-          </Text>
+          </p>
 
-          <Text margin="0 0 12px 0">
-            <i className="fas fa-envelope" style={{ marginRight: "12px" }}></i>
+          <p className="flex items-center gap-3 mb-3 text-text">
+            <i className="fas fa-envelope text-primary/80"></i>
             cevdetbaranoral@gmail.com
-          </Text>
-        </FooterColumn>
-      </FlexContainer>
+          </p>
+        </div>
+      </div>
 
-      <Divider />
+      <div className="my-8 w-full h-[1px] bg-gradient-to-r from-transparent via-text/10 to-transparent" />
 
-      <Copyright>
+      <p className="text-center text-secondary text-sm">
         © {currentYear} Cevdet Baran Oral. All rights reserved. Designed with
         React and Neumorphism.
-      </Copyright>
-    </FooterContainer>
+      </p>
+    </footer>
   );
 };
 

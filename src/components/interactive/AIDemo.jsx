@@ -1,473 +1,508 @@
-import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
-import * as knnClassifier from '@tensorflow-models/knn-classifier';
-import { 
-  NeumorphicContainer, 
-  NeumorphicButton, 
-  FlexContainer,
-  SubHeading,
-  Text
-} from '../../styles/StyledComponents';
-import { useTheme } from '../../context/ThemeContext';
+import { useState, useEffect, useRef } from "react";
+import * as tf from "@tensorflow/tfjs";
+import * as mobilenet from "@tensorflow-models/mobilenet";
+import * as knnClassifier from "@tensorflow-models/knn-classifier";
+import * as faceapi from "@vladmandic/face-api";
+import { useTheme } from "../../context/ThemeContext";
+import {
+  Smile,
+  Meh,
+  Frown,
+  Angry,
+  Ghost,
+  Skull,
+  Zap,
+  Play,
+  Square,
+  Trash2,
+  Search,
+  GraduationCap,
+  Plus,
+  RotateCcw,
+  Download,
+  Upload,
+  Camera,
+  Save,
+  Settings,
+  Activity,
+  Info,
+  User,
+  Brush,
+  AlertTriangle,
+  Eraser,
+  Heart,
+  Circle,
+  Square as SquareIcon,
+  Triangle,
+  Star,
+  Home as HomeIcon,
+  Trees,
+} from "lucide-react";
 
-// Demo container with neumorphic styling
-const DemoContainer = styled(NeumorphicContainer)`
-  padding: ${props => props.theme.spacing.lg};
-  margin: ${props => props.theme.spacing.xl} 0;
-`;
+// ─── Tailwind Components replacing Styled Components ────────────────
 
-// Demo header
-const DemoHeader = styled(FlexContainer)`
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
+const DemoContainer = ({ children, className = "", ...props }) => (
+  <div
+    className={`p-6 my-8 bg-card rounded-2xl shadow-neumorphic ${className}`}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Demo title
-const DemoTitle = styled(SubHeading)`
-  margin: 0;
-`;
+const DemoHeader = ({ children, justify, align, ...props }) => (
+  <div
+    className={`flex mb-4 ${justify ? `justify-${justify.replace("space-", "")}` : ""} ${align ? `items-${align}` : ""}`}
+    style={{ justifyContent: justify, alignItems: align }}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Tabs container
-const TabsContainer = styled(FlexContainer)`
-  margin-bottom: ${props => props.theme.spacing.md};
-  flex-wrap: wrap;
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    justify-content: center;
-  }
-`;
+const DemoTitle = ({ children, ...props }) => (
+  <h3 className="text-xl font-semibold m-0 text-text font-heading" {...props}>
+    {children}
+  </h3>
+);
 
-// Tab button
-const TabButton = styled(NeumorphicButton)`
-  min-width: 150px;
-  text-align: center;
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: ${props => props.$ready ? props.theme.colors.success : 
-                              props.$loading ? props.theme.colors.warning : 'transparent'};
-    display: ${props => (props.$ready || props.$loading) ? 'block' : 'none'};
-  }
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    margin-bottom: ${props => props.theme.spacing.sm};
-  }
-`;
+const TabsContainer = ({ children, justify, gap, ...props }) => (
+  <div
+    className={`flex flex-wrap mb-4 ${justify === "center" ? "justify-center" : ""} ${gap === "md" ? "gap-4" : "gap-2"}`}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Video container
-const VideoContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  border-radius: ${props => props.theme.borderRadius.medium};
-  overflow: hidden;
-  box-shadow: ${props => props.theme.shadows.inset};
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
+const TabButton = ({ $ready, $loading, $active, children, ...props }) => (
+  <button
+    className={`
+      min-w-[150px] text-center relative px-6 py-3 rounded-xl font-bold transition-all duration-300 md:mb-2
+      ${
+        $active
+          ? "bg-primary text-white shadow-inner transform translate-y-[1px]"
+          : "bg-background text-text shadow-neumorphic hover:-translate-y-1 hover:shadow-neumorphic-hover"
+      }
+    `}
+    {...props}
+  >
+    {children}
+    {($ready || $loading) && (
+      <span
+        className={`absolute top-2.5 right-2.5 w-2 h-2 rounded-full ${$ready ? "bg-success" : "bg-warning"}`}
+      />
+    )}
+  </button>
+);
 
-// Video element
-const Video = styled.video`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
+const VideoContainer = ({ children, ...props }) => (
+  <div
+    className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden shadow-inner mb-4 bg-black/5"
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Canvas for drawing bounding boxes
-const Canvas = styled.canvas`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
+const Video = (props) => (
+  <video
+    className="absolute top-0 left-0 w-full h-full object-cover"
+    {...props}
+  />
+);
 
-// Status indicator
-const StatusIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${props => props.theme.spacing.md};
-  
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: ${props => props.$active ? props.theme.colors.success : props.theme.colors.danger};
-    margin-right: ${props => props.theme.spacing.sm};
-  }
-`;
+const Canvas = (props) => (
+  <canvas className="absolute top-0 left-0 w-full h-full" {...props} />
+);
 
-// Controls container
-const Controls = styled(FlexContainer)`
-  margin-top: ${props => props.theme.spacing.md};
-`;
+const StatusIndicator = ({ $active, children, ...props }) => (
+  <div className="flex items-center mb-4" {...props}>
+    <div
+      className={`w-3 h-3 rounded-full mr-2 ${$active ? "bg-success" : "bg-danger"}`}
+    />
+    {children}
+  </div>
+);
 
-// Detection results container
-const ResultsContainer = styled.div`
-  background-color: ${props => props.theme.colors.background};
-  box-shadow: ${props => props.theme.shadows.inset};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  padding: ${props => props.theme.spacing.md};
-  margin-top: ${props => props.theme.spacing.md};
-  min-height: 100px;
-  max-height: 200px;
-  overflow-y: auto;
-`;
+const Controls = ({ children, gap, justify, ...props }) => (
+  <div
+    className={`flex mt-4 flex-wrap ${gap === "md" ? "gap-4" : "gap-2"} ${justify === "center" ? "justify-center" : ""}`}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Individual detection result
-const Result = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${props => props.theme.spacing.sm} 0;
-  border-bottom: 1px solid ${props => props.$isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
-  
-  &:last-child {
-    border-bottom: none;
-  }
-`;
+const NeumorphicButton = ({ $primary, children, as, ...props }) => {
+  const Component = as || "button";
+  return (
+    <Component
+      className={`
+        px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center cursor-pointer
+        ${
+          $primary
+            ? "bg-primary text-white shadow-md hover:-translate-y-1 hover:shadow-lg"
+            : "bg-background text-text shadow-neumorphic hover:-translate-y-1 hover:shadow-neumorphic-hover"
+        }
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+      `}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+};
 
-// Object name
-const ObjectName = styled.span`
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-`;
+// Results & Emotions
+const PerformanceMetrics = ({ $isDarkMode, children, ...props }) => (
+  <div
+    className={`mt-4 p-4 text-sm rounded-lg ${$isDarkMode ? "bg-white/5" : "bg-black/5"}`}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Confidence score
-const Confidence = styled.span`
-  color: ${props => props.theme.colors.primary};
-  font-weight: ${props => props.theme.typography.fontWeights.semiBold};
-`;
+const MetricsRow = ({ children }) => (
+  <div className="flex mb-1 last:mb-0">{children}</div>
+);
 
-// Drawing canvas container
-const DrawingCanvasContainer = styled.div`
-  position: relative;
-  width: 100%;
-  border-radius: ${props => props.theme.borderRadius.medium};
-  overflow: hidden;
-  box-shadow: ${props => props.theme.shadows.inset};
-  margin: ${props => props.theme.spacing.md} 0;
-  background-color: ${props => props.$isDarkMode ? '#1e2335' : 'white'};
-`;
+const MetricsLabel = ({ children }) => (
+  <div className="font-medium min-w-[160px] text-text">{children}</div>
+);
 
-// Drawing canvas for whiteboard recognition
-const DrawingCanvas = styled.canvas`
-  width: 100%;
-  height: 300px;
-  display: block;
-  cursor: crosshair;
-`;
+const MetricsValue = ({ children }) => (
+  <div className="text-primary font-mono">{children}</div>
+);
 
-// Button to clear the drawing
-const ClearButton = styled(NeumorphicButton)`
-  margin-right: ${props => props.theme.spacing.md};
-`;
+const DominantEmotionBadge = ({ $color, children, ...props }) => (
+  <div
+    className="inline-flex items-center gap-2 px-5 py-2 rounded-full mt-4 text-lg font-semibold bg-opacity-20 border border-opacity-30"
+    style={{ backgroundColor: `${$color}22`, borderColor: `${$color}44` }}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Drawing tools container
-const DrawingTools = styled(FlexContainer)`
-  margin-bottom: ${props => props.theme.spacing.md};
-  flex-wrap: wrap;
-  
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    justify-content: center;
-  }
-`;
+const FaceInfoCard = ({ children, ...props }) => (
+  <div
+    className="p-4 mt-4 flex flex-wrap gap-4 bg-card rounded-2xl shadow-neumorphic"
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-// Color picker button
-const ColorButton = styled.button`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 3px solid ${props => props.isSelected ? props.theme.colors.primary : 'transparent'};
-  background-color: ${props => props.color};
-  margin-right: ${props => props.theme.spacing.sm};
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
+const FaceInfoItem = ({ children }) => (
+  <div className="flex-1 min-w-[120px] text-center">{children}</div>
+);
 
-// Brush size button
-const BrushSizeButton = styled.button`
-  width: ${props => props.size * 2}px;
-  height: ${props => props.size * 2}px;
-  border-radius: 50%;
-  border: 2px solid ${props => props.isSelected ? props.theme.colors.primary : props.$isDarkMode ? '#3a4556' : '#c5cfe0'};
-  background-color: ${props => props.$isDarkMode ? 'white' : 'black'};
-  margin-left: ${props => props.theme.spacing.sm};
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
+const FaceInfoValue = ({ children, style }) => (
+  <div className="text-2xl font-bold text-primary" style={style}>
+    {children}
+  </div>
+);
 
-// Recognition result container
-const RecognitionResult = styled(NeumorphicContainer)`
-  margin-top: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
-  text-align: center;
-  transition: all 0.3s ease;
-  transform: ${props => props.visible ? 'translateY(0)' : 'translateY(20px)'};
-  opacity: ${props => props.visible ? 1 : 0};
-`;
+const FaceInfoLabel = ({ children }) => (
+  <div className="text-xs text-secondary mt-1 flex items-center justify-center gap-1">
+    {children}
+  </div>
+);
 
-// Loading spinner
-const Spinner = styled.div`
-  width: 40px;
-  height: 40px;
-  margin: 0 auto;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: ${props => props.theme.colors.primary};
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-`;
+const EmotionBarContainer = ({ children }) => (
+  <div className="mt-4">{children}</div>
+);
 
-// Drawing categories for recognition
+const EmotionRow = ({ children }) => (
+  <div className="flex items-center mb-1.5 gap-2">{children}</div>
+);
+
+const EmotionLabel = ({ children }) => (
+  <span className="min-w-[100px] text-sm font-medium capitalize text-text">
+    {children}
+  </span>
+);
+
+const EmotionBarTrack = ({ $isDarkMode, children }) => (
+  <div
+    className={`flex-1 h-3.5 rounded-full overflow-hidden relative ${$isDarkMode ? "bg-white/10" : "bg-black/5"}`}
+  >
+    {children}
+  </div>
+);
+
+const EmotionBarFill = ({ $width, $color }) => (
+  <div
+    className="h-full rounded-full transition-all duration-300"
+    style={{ width: `${$width}%`, backgroundColor: $color }}
+  />
+);
+
+const EmotionPercent = ({ children }) => (
+  <span className="min-w-[44px] text-right text-xs font-semibold text-primary">
+    {children}
+  </span>
+);
+
+// Drawing & Training
+const DrawingCanvasContainer = ({ $isDarkMode, children }) => (
+  <div
+    className={`relative w-full rounded-lg overflow-hidden shadow-inner my-4 ${$isDarkMode ? "bg-[#1e2335]" : "bg-white"}`}
+  >
+    {children}
+  </div>
+);
+
+const DrawingCanvas = (props) => (
+  <canvas className="w-full h-[300px] block cursor-crosshair" {...props} />
+);
+
+const DrawingTools = ({ children }) => (
+  <div className="flex flex-wrap mb-4 justify-between items-center sm:justify-center">
+    {children}
+  </div>
+);
+
+const ColorButton = ({ color, isSelected, ...props }) => (
+  <button
+    className={`w-8 h-8 rounded-full border-2 mr-2 cursor-pointer transition-transform hover:scale-110 ${isSelected ? "border-primary" : "border-transparent"}`}
+    style={{ backgroundColor: color }}
+    {...props}
+  />
+);
+
+const BrushSizeButton = ({ size, isSelected, $isDarkMode, ...props }) => (
+  <button
+    className={`rounded-full border-2 ml-2 cursor-pointer transition-transform hover:scale-110 flex items-center justify-center ${isSelected ? "border-primary" : $isDarkMode ? "border-[#3a4556]" : "border-[#c5cfe0]"}`}
+    style={{
+      width: size * 2,
+      height: size * 2,
+      backgroundColor: $isDarkMode ? "white" : "black",
+    }}
+    {...props}
+  />
+);
+
+const ClearButton = (props) => <NeumorphicButton {...props} className="mr-4" />;
+
+const TrainingContainer = ({ $isDarkMode, children }) => (
+  <div
+    className={`flex flex-col mt-4 rounded-lg p-4 ${$isDarkMode ? "bg-white/10" : "bg-black/5"}`}
+  >
+    {children}
+  </div>
+);
+
+const CategoryGrid = ({ children }) => (
+  <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4 my-4">
+    {children}
+  </div>
+);
+
+const CategoryCard = ({ isSelected, children, ...props }) => (
+  <div
+    className={`
+      p-4 rounded-lg bg-card transition-all duration-200 cursor-pointer text-center hover:-translate-y-0.5
+      ${isSelected ? "ring-2 ring-primary shadow-md" : "shadow-sm"}
+    `}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+const CategoryName = ({ children }) => (
+  <div className="font-semibold mb-1 text-text">{children}</div>
+);
+
+const ExampleCount = ({ children }) => (
+  <div className="text-xs text-secondary">{children}</div>
+);
+
+const TrainingProgress = ({ progress, $isDarkMode }) => (
+  <div
+    className={`w-full h-2 rounded-full my-4 overflow-hidden ${$isDarkMode ? "bg-white/10" : "bg-black/10"}`}
+  >
+    <div
+      className="h-full bg-primary transition-all duration-300"
+      style={{ width: `${progress}%` }}
+    />
+  </div>
+);
+
+const ModelControls = ({ children }) => (
+  <div className="flex mt-4 justify-between">{children}</div>
+);
+
+const RecognitionResult = ({ visible, children }) => (
+  <div
+    className={`
+      mt-4 p-4 text-center bg-card rounded-2xl shadow-neumorphic transition-all duration-300
+      ${visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}
+    `}
+  >
+    {children}
+  </div>
+);
+
+const Spinner = () => (
+  <div className="w-10 h-10 mx-auto border-4 border-black/10 border-l-primary rounded-full animate-spin" />
+);
+
+// Info & Typography
+const InfoCard = ({ children }) => (
+  <div className="mt-4 p-4 bg-card rounded-2xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const InfoTitle = ({ size, children }) => (
+  <h3
+    className={`font-semibold mt-0 ${size === "md" ? "text-lg" : "text-base"}`}
+  >
+    {children}
+  </h3>
+);
+
+const InfoContent = ({ children }) => <div className="mt-4">{children}</div>;
+
+const SubHeading = ({ size, margin, children, ...props }) => (
+  <h3
+    className={`font-semibold text-text ${size === "sm" ? "text-base" : "text-xl"}`}
+    style={{ margin }}
+    {...props}
+  >
+    {children}
+  </h3>
+);
+
+const Text = ({
+  size,
+  color,
+  margin,
+  $center,
+  $maxWidth,
+  weight,
+  children,
+}) => (
+  <p
+    className={`
+      ${size === "sm" ? "text-sm" : size === "xs" ? "text-xs" : "text-base"}
+      ${$center ? "text-center" : ""}
+      ${weight === "semiBold" ? "font-semibold" : weight === "medium" ? "font-medium" : ""}
+    `}
+    style={{
+      color,
+      margin,
+      maxWidth: $maxWidth,
+    }}
+  >
+    {children}
+  </p>
+);
+
+const FlexContainer = ({ gap, align, justify, children, ...props }) => (
+  <div
+    className="flex"
+    style={{
+      gap: gap === "xs" ? 4 : 8,
+      alignItems: align,
+      justifyContent: justify,
+    }}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+// ─── Helpers ──────────────────────────────────────────────────
+
+const EMOTION_ICONS = {
+  neutral: Meh,
+  happy: Smile,
+  sad: Frown,
+  angry: Angry,
+  fearful: Ghost,
+  disgusted: Skull,
+  surprised: Zap,
+};
+
+const EMOTION_COLORS = {
+  neutral: "#94a3b8",
+  happy: "#facc15",
+  sad: "#3b82f6",
+  angry: "#ef4444",
+  fearful: "#a855f7",
+  disgusted: "#22c55e",
+  surprised: "#f97316",
+};
+
+const MODEL_URL =
+  "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.14/model";
+
 const drawingCategories = [
-  { id: 'circle', name: 'Circle', description: 'A simple circle or oval shape' },
-  { id: 'square', name: 'Square', description: 'A square or rectangular shape' },
-  { id: 'triangle', name: 'Triangle', description: 'A triangle with three points' },
-  { id: 'star', name: 'Star', description: 'A star shape with points' },
-  { id: 'heart', name: 'Heart', description: 'A heart shape' },
-  { id: 'smiley', name: 'Smiley Face', description: 'A simple smiley face' },
-  { id: 'house', name: 'House', description: 'A simple house with a roof and base' },
-  { id: 'tree', name: 'Tree', description: 'A tree with trunk and foliage' }
+  {
+    id: "star",
+    name: "Star",
+    icon: Star,
+    description: "A classic 5-point star",
+  },
+  {
+    id: "heart",
+    name: "Heart",
+    icon: Heart,
+    description: "A symbol of love",
+  },
+  {
+    id: "tree",
+    name: "Tree",
+    icon: Trees,
+    description: "A simple tree drawing",
+  },
+  {
+    id: "house",
+    name: "House",
+    icon: HomeIcon,
+    description: "A basic house structure",
+  },
+  {
+    id: "circle",
+    name: "Circle",
+    icon: Circle,
+    description: "A perfectly round shape",
+  },
+  {
+    id: "square",
+    name: "Square",
+    icon: SquareIcon,
+    description: "A four-sided shape",
+  },
+  {
+    id: "triangle",
+    name: "Triangle",
+    icon: Triangle,
+    description: "A three-sided shape",
+  },
 ];
 
-// Training mode components
-const TrainingContainer = styled(FlexContainer)`
-  flex-direction: column;
-  margin-top: ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  padding: ${props => props.theme.spacing.md};
-  background-color: ${props => props.$isDarkMode ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.05)'};
-`;
-
-const CategoryGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: ${props => props.theme.spacing.md};
-  margin: ${props => props.theme.spacing.md} 0;
-`;
-
-const CategoryCard = styled.div`
-  padding: ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  background-color: ${props => props.theme.colors.background};
-  box-shadow: ${props => props.isSelected 
-    ? `0 0 0 2px ${props.theme.colors.primary}` 
-    : props.theme.shadows.small};
-  transition: all 0.2s ease;
-  cursor: pointer;
-  text-align: center;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
-
-const CategoryName = styled.div`
-  font-weight: ${props => props.theme.typography.fontWeights.semiBold};
-  margin-bottom: ${props => props.theme.spacing.xs};
-`;
-
-const ExampleCount = styled.div`
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-  color: ${props => props.theme.colors.secondary};
-`;
-
-const TrainingProgress = styled.div`
-  width: 100%;
-  height: 8px;
-  background-color: ${props => props.$isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
-  border-radius: 4px;
-  margin: ${props => props.theme.spacing.md} 0;
-  overflow: hidden;
-  
-  &::after {
-    content: '';
-    display: block;
-    height: 100%;
-    width: ${props => props.progress}%;
-    background-color: ${props => props.theme.colors.primary};
-    transition: width 0.3s ease;
-  }
-`;
-
-const ModelControls = styled(FlexContainer)`
-  margin-top: ${props => props.theme.spacing.md};
-  justify-content: space-between;
-`;
-
-// Detection settings panel
-const SettingsPanel = styled.div`
-  margin-top: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  background-color: ${props => props.$isDarkMode ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.05)'};
-`;
-
-// Settings row
-const SettingsRow = styled(FlexContainer)`
-  margin-bottom: ${props => props.theme.spacing.sm};
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-// Settings label
-const SettingsLabel = styled.div`
-  min-width: 160px;
-`;
-
-// Slider container
-const SliderContainer = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-`;
-
-// Slider input
-const Slider = styled.input`
-  flex-grow: 1;
-  height: 3px;
-  border-radius: 1.5px;
-  background: ${props => props.theme.colors.background};
-  outline: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  
-  &:hover {
-    opacity: 1;
-  }
-  
-  &::-webkit-slider-thumb {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: ${props => props.theme.colors.primary};
-    cursor: pointer;
-  }
-`;
-
-// Slider value
-const SliderValue = styled.div`
-  min-width: 60px;
-  text-align: right;
-  margin-left: ${props => props.theme.spacing.sm};
-`;
-
-// Performance metrics
-const PerformanceMetrics = styled.div`
-  margin-top: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
-  font-size: ${props => props.theme.typography.fontSizes.sm};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  background-color: ${props => props.$isDarkMode ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.05)'};
-`;
-
-// Metrics row
-const MetricsRow = styled(FlexContainer)`
-  margin-bottom: ${props => props.theme.spacing.xs};
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-// Metrics label
-const MetricsLabel = styled.div`
-  font-weight: ${props => props.theme.typography.fontWeights.medium};
-  min-width: 160px;
-`;
-
-// Metrics value
-const MetricsValue = styled.div`
-  color: ${props => props.theme.colors.primary};
-`;
-
-// Class name bubble
-const ClassBubble = styled.div`
-  display: inline-block;
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  margin: 0 ${props => props.theme.spacing.xs} ${props => props.theme.spacing.xs} 0;
-  border-radius: 16px;
-  background-color: ${props => props.theme.colors.background};
-  font-size: ${props => props.theme.typography.fontSizes.xs};
-`;
-
-// Info card
-const InfoCard = styled(NeumorphicContainer)`
-  margin-top: ${props => props.theme.spacing.md};
-  padding: ${props => props.theme.spacing.md};
-`;
-
-// Info title
-const InfoTitle = styled(SubHeading)`
-  margin-top: 0;
-`;
-
-// Info content
-const InfoContent = styled.div`
-  margin-top: ${props => props.theme.spacing.md};
-`;
-
-// Info table
-const InfoTable = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: ${props => props.theme.spacing.sm};
-  margin-top: ${props => props.theme.spacing.md};
-`;
-
-// COCO-SSD common categories
-const cocoCategories = [
-  "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", 
-  "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", 
-  "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", 
-  "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", 
-  "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", 
-  "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", 
-  "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", 
-  "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", 
-  "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", 
-  "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"
-];
+// ─── Component ────────────────────────────────────────────────
 
 const AIDemo = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const drawingCanvasRef = useRef(null);
-  const hiddenCanvasRef = useRef(null); // For preprocessing drawing before recognition
-  
-  // Object Detection States
-  const [objectModel, setObjectModel] = useState(null);
-  const [isModelLoaded, setIsModelLoaded] = useState(false);
+  const hiddenCanvasRef = useRef(null);
+  const isDetectingRef = useRef(false);
+  const animFrameRef = useRef(null);
+
+  // Emotion Analysis States
+  const [isFaceModelLoaded, setIsFaceModelLoaded] = useState(false);
   const [isDetecting, setIsDetecting] = useState(false);
-  const [classifications, setClassifications] = useState([]);
-  
+  const [faceResults, setFaceResults] = useState(null);
+  const [facesCount, setFacesCount] = useState(0);
+
   // Drawing Recognition States
   const [mobilenetModel, setMobilenetModel] = useState(null);
   const [classifier, setClassifier] = useState(null);
@@ -478,499 +513,480 @@ const AIDemo = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [recognitionResult, setRecognitionResult] = useState(null);
   const [isRecognizing, setIsRecognizing] = useState(false);
-  const [drawingMode, setDrawingMode] = useState('draw'); // 'draw' or 'train'
-  
+  const [drawingMode, setDrawingMode] = useState("draw");
+
   // UI States
-  const [errorMessage, setErrorMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('objectDetection');
-  const [drawingColor, setDrawingColor] = useState('#000000');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("emotionAnalysis");
+  const [drawingColor, setDrawingColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(5);
-  
-  // Object Detection Settings
-  const [confidenceThreshold, setConfidenceThreshold] = useState(50);
-  const [maxDetections, setMaxDetections] = useState(20);
-  const [showSettings, setShowSettings] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [classesDetected, setClassesDetected] = useState(new Set());
-  
-  // Performance metrics
+
+  // Performance
   const [fps, setFps] = useState(0);
   const [inferenceTime, setInferenceTime] = useState(0);
-  const lastFrameTime = useRef(0);
-  
+
   const { theme, isDarkMode } = useTheme();
-  
-  // Available drawing colors
-  const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFA500', '#800080'];
-  // Available brush sizes
+
+  const colors = [
+    "#000000",
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFA500",
+    "#800080",
+  ];
   const brushSizes = [3, 5, 8, 12];
-  
-  // Load the image classification model
+
+  // ─── Load face-api.js models ───────────────────────────────
+
   useEffect(() => {
-    if (activeTab === 'objectDetection' && !objectModel) {
-      const loadModel = async () => {
+    if (activeTab === "emotionAnalysis" && !isFaceModelLoaded) {
+      const loadModels = async () => {
         try {
-          console.log('Starting to load MobileNet model for image classification...');
-          setErrorMessage('');
-          await tf.ready();
-          console.log('TensorFlow.js is ready');
-          
-          // Load MobileNet for image classification
-          const model = await mobilenet.load();
-          
-          console.log('MobileNet model loaded successfully for image classification');
-          setObjectModel(model);
-          setIsModelLoaded(true);
+          setErrorMessage("");
+          console.log("Loading face-api.js models from CDN...");
+
+          await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+            faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
+          ]);
+
+          console.log("face-api.js models loaded successfully");
+          setIsFaceModelLoaded(true);
         } catch (error) {
-          console.error('Error loading image classification model:', error);
-          setErrorMessage(`Failed to load the image classification model: ${error.message}`);
+          console.error("Error loading face-api models:", error);
+          setErrorMessage(
+            `Failed to load emotion analysis models: ${error.message}`,
+          );
         }
       };
-      
-      loadModel();
+      loadModels();
     }
-  }, [activeTab, objectModel]);
-  
-  // Setup webcam
+  }, [activeTab, isFaceModelLoaded]);
+
+  // ─── Setup webcam ──────────────────────────────────────────
+
   const setupWebcam = async () => {
     if (!videoRef.current) return null;
-    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
-        audio: false
+        video: {
+          facingMode: "user",
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+        },
+        audio: false,
       });
-      
       videoRef.current.srcObject = stream;
-      
       return new Promise((resolve) => {
-        videoRef.current.onloadedmetadata = () => {
-          resolve(stream);
-        };
+        videoRef.current.onloadedmetadata = () => resolve(stream);
       });
     } catch (error) {
-      console.error('Error accessing webcam:', error);
-      setErrorMessage('Could not access your camera. Please make sure you have granted camera permissions.');
+      console.error("Error accessing webcam:", error);
+      setErrorMessage(
+        "Could not access your camera. Please grant camera permissions.",
+      );
       return null;
     }
   };
-  
-  // Start image classification instead of object detection
-  const startClassification = async () => {
-    if (!isModelLoaded || !objectModel) {
-      setErrorMessage('Image classification model not loaded yet. Please wait.');
+
+  // ─── Start emotion analysis ────────────────────────────────
+
+  const startDetection = async () => {
+    if (!isFaceModelLoaded) {
+      setErrorMessage("Emotion model not loaded yet. Please wait.");
       return;
     }
-    
     const stream = await setupWebcam();
     if (!stream) return;
-    
-    console.log('Starting image classification');
+
+    isDetectingRef.current = true;
     setIsDetecting(true);
-    setErrorMessage('');
-    setClassesDetected(new Set());
+    setErrorMessage("");
     setFps(0);
     setInferenceTime(0);
-    
-    // FPS tracking
+
     let frameCount = 0;
-    let fpsInterval = setInterval(() => {
+    const fpsInterval = setInterval(() => {
       setFps(frameCount);
       frameCount = 0;
     }, 1000);
-    
-    const classifyFrame = async () => {
-      if (!videoRef.current || !canvasRef.current || !isDetecting) return;
-      
-      // Skip this frame if paused
-      if (isPaused) {
-        requestAnimationFrame(classifyFrame);
+
+    const detectFrame = async () => {
+      if (!isDetectingRef.current || !videoRef.current || !canvasRef.current) {
+        clearInterval(fpsInterval);
         return;
       }
-      
+
+      if (videoRef.current.readyState < 2) {
+        animFrameRef.current = requestAnimationFrame(detectFrame);
+        return;
+      }
+
       try {
-        // Count this frame
         frameCount++;
-        
-        // Start inference time measurement
-        const inferenceStart = performance.now();
-        
-        // Ensure video is ready
-        if (videoRef.current.readyState < 2) {
-          requestAnimationFrame(classifyFrame);
-          return;
-        }
-        
-        // Classify the current video frame
-        const predictions = await objectModel.classify(videoRef.current);
-        
-        // End inference time measurement
-        const currentInferenceTime = Math.round(performance.now() - inferenceStart);
-        setInferenceTime(currentInferenceTime);
-        
-        // Filter predictions based on threshold
-        const filteredPredictions = predictions
-          .filter(pred => pred.probability >= confidenceThreshold / 100)
-          .slice(0, maxDetections);
-        
-        console.log(`Classified ${filteredPredictions.length} objects`);
-        
-        // Update detected classes set
-        const newClasses = new Set([...classesDetected]);
-        let hasNewClasses = false;
-        
-        filteredPredictions.forEach(pred => {
-          if (!newClasses.has(pred.className)) {
-            hasNewClasses = true;
-            newClasses.add(pred.className);
+        const start = performance.now();
+
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        const displaySize = {
+          width: video.videoWidth,
+          height: video.videoHeight,
+        };
+
+        canvas.width = displaySize.width;
+        canvas.height = displaySize.height;
+
+        faceapi.matchDimensions(canvas, displaySize);
+
+        const detections = await faceapi
+          .detectAllFaces(
+            video,
+            new faceapi.TinyFaceDetectorOptions({
+              inputSize: 320,
+              scoreThreshold: 0.4,
+            }),
+          )
+          .withFaceLandmarks(true)
+          .withFaceExpressions()
+          .withAgeAndGender();
+
+        const resized = faceapi.resizeResults(detections, displaySize);
+
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw custom overlays
+        resized.forEach((det) => {
+          const { x, y, width, height } = det.detection.box;
+
+          // Determine dominant expression
+          const expressions = det.expressions;
+          let dominant = "neutral";
+          let maxVal = 0;
+          Object.entries(expressions).forEach(([expr, val]) => {
+            if (val > maxVal) {
+              dominant = expr;
+              maxVal = val;
+            }
+          });
+          const boxColor = EMOTION_COLORS[dominant] || "#daa520";
+
+          // Draw face box with rounded corners
+          ctx.strokeStyle = boxColor;
+          ctx.lineWidth = 3;
+          ctx.lineJoin = "round";
+          const r = 8;
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + width - r, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+          ctx.lineTo(x + width, y + height - r);
+          ctx.quadraticCurveTo(
+            x + width,
+            y + height,
+            x + width - r,
+            y + height,
+          );
+          ctx.lineTo(x + r, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+          ctx.closePath();
+          ctx.stroke();
+
+          // Draw label background
+          const label = `${dominant.toUpperCase()} ${Math.round(maxVal * 100)}%`;
+          ctx.font = "bold 14px Inter, Arial, sans-serif";
+          const textW = ctx.measureText(label).width + 16;
+          const labelH = 26;
+          const labelY = y > labelH + 4 ? y - labelH - 4 : y + height + 4;
+
+          ctx.fillStyle = boxColor + "cc";
+          ctx.beginPath();
+          ctx.roundRect(x, labelY, textW, labelH, 6);
+          ctx.fill();
+
+          ctx.fillStyle = "#fff";
+          ctx.textBaseline = "middle";
+          ctx.fillText(label, x + 8, labelY + labelH / 2);
+
+          // Age + Gender label
+          if (det.age && det.gender) {
+            const ageLabel = `${det.gender}, ~${Math.round(det.age)}y`;
+            ctx.font = "13px Inter, Arial, sans-serif";
+            const ageW = ctx.measureText(ageLabel).width + 12;
+            const ageY =
+              labelY === y - labelH - 4
+                ? y - labelH - 4 - 24
+                : labelY + labelH + 4;
+            ctx.fillStyle = "rgba(0,0,0,0.6)";
+            ctx.beginPath();
+            ctx.roundRect(x, ageY, ageW, 22, 4);
+            ctx.fill();
+            ctx.fillStyle = "#fff";
+            ctx.textBaseline = "middle";
+            ctx.fillText(ageLabel, x + 6, ageY + 11);
+          }
+
+          // Draw landmark dots
+          if (det.landmarks) {
+            const positions = det.landmarks.positions;
+            ctx.fillStyle = boxColor + "88";
+            positions.forEach((pt) => {
+              ctx.beginPath();
+              ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+              ctx.fill();
+            });
           }
         });
-        
-        if (hasNewClasses) {
-          setClassesDetected(newClasses);
+
+        setInferenceTime(Math.round(performance.now() - start));
+        setFacesCount(resized.length);
+
+        if (resized.length > 0) {
+          const best = resized[0];
+          setFaceResults({
+            expressions: best.expressions,
+            age: best.age,
+            gender: best.gender,
+            genderProbability: best.genderProbability,
+          });
+        } else {
+          setFaceResults(null);
         }
-        
-        // Set state with classifications
-        setClassifications(filteredPredictions);
-        
-        // Draw a simple indicator on the canvas
-        drawClassificationIndicator(filteredPredictions);
-        
-        // Continue detecting if still active
-        if (isDetecting) {
-          requestAnimationFrame(classifyFrame);
-        }
-      } catch (error) {
-        console.error('Classification error:', error);
-        setErrorMessage(`An error occurred during classification: ${error.message}`);
+      } catch (err) {
+        console.error("Detection error:", err);
+      }
+
+      if (isDetectingRef.current) {
+        animFrameRef.current = requestAnimationFrame(detectFrame);
       }
     };
-    
-    classifyFrame();
-    
-    // Cleanup function
-    return () => {
-      clearInterval(fpsInterval);
-    };
+
+    detectFrame();
   };
-  
-  // Stop classification
-  const stopClassification = () => {
-    console.log('Stopping classification');
+
+  // ─── Stop detection ────────────────────────────────────────
+
+  const stopDetection = () => {
+    isDetectingRef.current = false;
     setIsDetecting(false);
-    
-    // Stop the webcam
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+
     if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
+      videoRef.current.srcObject.getTracks().forEach((t) => t.stop());
       videoRef.current.srcObject = null;
     }
-    
-    // Clear the canvas
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      canvasRef.current
+        .getContext("2d")
+        .clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
-    
-    // Clear detections
-    setClassifications([]);
+    setFaceResults(null);
+    setFacesCount(0);
     setFps(0);
     setInferenceTime(0);
   };
-  
-  // Draw a simplified indicator for classifications
-  const drawClassificationIndicator = (predictions) => {
-    if (!canvasRef.current || !videoRef.current) return;
-    
-    const ctx = canvasRef.current.getContext('2d');
-    const videoWidth = videoRef.current.videoWidth;
-    const videoHeight = videoRef.current.videoHeight;
-    
-    // Set canvas dimensions to match video
-    canvasRef.current.width = videoWidth;
-    canvasRef.current.height = videoHeight;
-    
-    // Clear previous drawings
-    ctx.clearRect(0, 0, videoWidth, videoHeight);
-    
-    // Generate unique colors based on class names for consistent coloring
-    const getColorForClass = (className) => {
-      // Simple hash function to generate a hue value from 0-360
-      let hash = 0;
-      for (let i = 0; i < className.length; i++) {
-        hash = className.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      const hue = hash % 360;
-      return `hsl(${hue}, 70%, 50%)`;
-    };
-    
-    // Draw classification indicator - a semi-transparent overlay at the top
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillRect(0, 0, videoWidth, 60);
-    
-    // Show top prediction
-    if (predictions.length > 0) {
-      const topPrediction = predictions[0];
-      const className = topPrediction.className;
-      const color = getColorForClass(className);
-      
-      // Draw text
-      ctx.fillStyle = color;
-      ctx.font = 'bold 24px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(
-        `${className} (${Math.round(topPrediction.probability * 100)}%)`,
-        videoWidth / 2,
-        30
-      );
-    }
-  };
-  
+
+  // ─── Drawing recognition logic (kept from original) ─────────
+
   // Load MobileNet model for drawing recognition
   useEffect(() => {
-    if (activeTab === 'whiteboard' && !mobilenetModel) {
+    if (activeTab === "whiteboard" && !mobilenetModel) {
       const loadModels = async () => {
         try {
-          console.log('Starting to load MobileNet model...');
-          // Load MobileNet
+          await tf.ready();
           const model = await mobilenet.load();
-          console.log('MobileNet model loaded successfully');
           setMobilenetModel(model);
-          
-          // Create KNN Classifier
           const newClassifier = knnClassifier.create();
           setClassifier(newClassifier);
-          
           setIsDrawingModelLoaded(true);
-          console.log('KNN classifier created');
         } catch (error) {
-          console.error('Error loading drawing recognition models:', error);
-          setErrorMessage(`Failed to load the drawing recognition models: ${error.message}`);
+          console.error("Error loading drawing recognition models:", error);
+          setErrorMessage(
+            `Failed to load drawing recognition models: ${error.message}`,
+          );
         }
       };
-      
       loadModels();
     }
   }, [activeTab, mobilenetModel]);
-  
-  // Setup hidden canvas for drawing preprocessing
+
+  // Setup hidden canvas
   useEffect(() => {
-    if (activeTab === 'whiteboard' && !hiddenCanvasRef.current) {
-      // Create a hidden canvas element for preprocessing
-      const canvas = document.createElement('canvas');
-      canvas.width = 224;  // MobileNet input size
-      canvas.height = 224; // MobileNet input size
-      canvas.style.display = 'none';
+    if (activeTab === "whiteboard" && !hiddenCanvasRef.current) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 224;
+      canvas.height = 224;
+      canvas.style.display = "none";
       hiddenCanvasRef.current = canvas;
       document.body.appendChild(canvas);
-      
       return () => {
-        if (hiddenCanvasRef.current) {
+        if (
+          hiddenCanvasRef.current &&
+          document.body.contains(hiddenCanvasRef.current)
+        ) {
           document.body.removeChild(hiddenCanvasRef.current);
+          hiddenCanvasRef.current = null;
         }
       };
     }
   }, [activeTab]);
-  
+
   // Setup drawing canvas
   useEffect(() => {
-    if (activeTab === 'whiteboard' && drawingCanvasRef.current) {
+    if (activeTab === "whiteboard" && drawingCanvasRef.current) {
       const canvas = drawingCanvasRef.current;
-      const ctx = canvas.getContext('2d');
-      
-      // Set canvas dimensions to match container size
+      const ctx = canvas.getContext("2d");
       const resizeCanvas = () => {
         const rect = canvas.parentElement.getBoundingClientRect();
         canvas.width = rect.width;
-        canvas.height = 300; // Fixed height
+        canvas.height = 300;
       };
-      
       resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Clear canvas initially
-      ctx.fillStyle = isDarkMode ? '#1e2335' : 'white';
+      window.addEventListener("resize", resizeCanvas);
+      ctx.fillStyle = isDarkMode ? "#1e2335" : "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Set drawing style
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
       ctx.strokeStyle = drawingColor;
       ctx.lineWidth = brushSize;
-      
-      return () => {
-        window.removeEventListener('resize', resizeCanvas);
-      };
+      return () => window.removeEventListener("resize", resizeCanvas);
     }
-  }, [activeTab, isDarkMode]);
-  
-  // Update drawing color and brush size
+  }, [activeTab, brushSize, drawingColor, isDarkMode]);
+
   useEffect(() => {
-    if (drawingCanvasRef.current && activeTab === 'whiteboard') {
-      const ctx = drawingCanvasRef.current.getContext('2d');
+    if (drawingCanvasRef.current && activeTab === "whiteboard") {
+      const ctx = drawingCanvasRef.current.getContext("2d");
       ctx.strokeStyle = drawingColor;
       ctx.lineWidth = brushSize;
     }
   }, [drawingColor, brushSize, activeTab]);
-  
-  // Implement drawing functionality
+
+  // Drawing functionality
   useEffect(() => {
-    if (activeTab === 'whiteboard' && drawingCanvasRef.current) {
+    if (activeTab === "whiteboard" && drawingCanvasRef.current) {
       const canvas = drawingCanvasRef.current;
-      const ctx = canvas.getContext('2d');
-      
+      const ctx = canvas.getContext("2d");
       let isDrawing = false;
       let lastX = 0;
       let lastY = 0;
-      
-      // Start drawing
+
+      const getCoordinates = (event) => {
+        if (event.type.includes("mouse")) {
+          return { offsetX: event.offsetX, offsetY: event.offsetY };
+        }
+        const rect = canvas.getBoundingClientRect();
+        const touch = event.touches[0];
+        return {
+          offsetX: touch.clientX - rect.left,
+          offsetY: touch.clientY - rect.top,
+        };
+      };
+
       const startDrawing = (e) => {
         isDrawing = true;
         const { offsetX, offsetY } = getCoordinates(e);
         lastX = offsetX;
         lastY = offsetY;
       };
-      
-      // Draw line
+
       const draw = (e) => {
         if (!isDrawing) return;
-        
         const { offsetX, offsetY } = getCoordinates(e);
-        
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
         ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
-        
         lastX = offsetX;
         lastY = offsetY;
       };
-      
-      // Stop drawing
+
       const stopDrawing = () => {
         isDrawing = false;
       };
-      
-      // Get coordinates for both mouse and touch events
-      const getCoordinates = (event) => {
-        let offsetX, offsetY;
-        
-        if (event.type.includes('mouse')) {
-          offsetX = event.offsetX;
-          offsetY = event.offsetY;
-        } else {
-          const rect = canvas.getBoundingClientRect();
-          const touch = event.touches[0];
-          offsetX = touch.clientX - rect.left;
-          offsetY = touch.clientY - rect.top;
-        }
-        
-        return { offsetX, offsetY };
-      };
-      
-      // Add event listeners
-      canvas.addEventListener('mousedown', startDrawing);
-      canvas.addEventListener('mousemove', draw);
-      canvas.addEventListener('mouseup', stopDrawing);
-      canvas.addEventListener('mouseout', stopDrawing);
-      
-      // Touch events
-      canvas.addEventListener('touchstart', (e) => {
+
+      canvas.addEventListener("mousedown", startDrawing);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", stopDrawing);
+      canvas.addEventListener("mouseout", stopDrawing);
+
+      const touchStart = (e) => {
         e.preventDefault();
         startDrawing(e);
-      });
-      
-      canvas.addEventListener('touchmove', (e) => {
+      };
+      const touchMove = (e) => {
         e.preventDefault();
         draw(e);
-      });
-      
-      canvas.addEventListener('touchend', (e) => {
+      };
+      const touchEnd = (e) => {
         e.preventDefault();
         stopDrawing();
-      });
-      
-      // Clean up
+      };
+
+      canvas.addEventListener("touchstart", touchStart);
+      canvas.addEventListener("touchmove", touchMove);
+      canvas.addEventListener("touchend", touchEnd);
+
       return () => {
-        canvas.removeEventListener('mousedown', startDrawing);
-        canvas.removeEventListener('mousemove', draw);
-        canvas.removeEventListener('mouseup', stopDrawing);
-        canvas.removeEventListener('mouseout', stopDrawing);
-        canvas.removeEventListener('touchstart', startDrawing);
-        canvas.removeEventListener('touchmove', draw);
-        canvas.removeEventListener('touchend', stopDrawing);
+        canvas.removeEventListener("mousedown", startDrawing);
+        canvas.removeEventListener("mousemove", draw);
+        canvas.removeEventListener("mouseup", stopDrawing);
+        canvas.removeEventListener("mouseout", stopDrawing);
+        canvas.removeEventListener("touchstart", touchStart);
+        canvas.removeEventListener("touchmove", touchMove);
+        canvas.removeEventListener("touchend", touchEnd);
       };
     }
   }, [activeTab, drawingColor, brushSize]);
-  
-  // Clear the drawing canvas
+
   const clearDrawing = () => {
     if (!drawingCanvasRef.current) return;
-    
-    const canvas = drawingCanvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    // Fill with background color
-    ctx.fillStyle = isDarkMode ? '#1e2335' : 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Reset recognition result
+    const ctx = drawingCanvasRef.current.getContext("2d");
+    ctx.fillStyle = isDarkMode ? "#1e2335" : "white";
+    ctx.fillRect(
+      0,
+      0,
+      drawingCanvasRef.current.width,
+      drawingCanvasRef.current.height,
+    );
     setRecognitionResult(null);
   };
-  
-  // Preprocess drawing for recognition
+
   const preprocessDrawing = () => {
-    if (!drawingCanvasRef.current || !hiddenCanvasRef.current) {
-      console.error('Drawing canvas or hidden canvas not available');
-      return null;
-    }
-    
+    if (!drawingCanvasRef.current || !hiddenCanvasRef.current) return null;
     const drawingCanvas = drawingCanvasRef.current;
     const hiddenCanvas = hiddenCanvasRef.current;
-    const hiddenCtx = hiddenCanvas.getContext('2d');
-    
-    // Get canvas dimensions
+    const hiddenCtx = hiddenCanvas.getContext("2d");
     const drawingWidth = drawingCanvas.width;
     const drawingHeight = drawingCanvas.height;
-    
-    console.log(`Drawing canvas dimensions: ${drawingWidth}x${drawingHeight}`);
-    console.log(`Hidden canvas dimensions: ${hiddenCanvas.width}x${hiddenCanvas.height}`);
-    
-    // Clear hidden canvas with white background (for MobileNet)
-    hiddenCtx.fillStyle = 'white';
+
+    hiddenCtx.fillStyle = "white";
     hiddenCtx.fillRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
-    
-    // Get drawing bounds
-    const imageData = drawingCanvas.getContext('2d').getImageData(0, 0, drawingWidth, drawingHeight);
+
+    const imageData = drawingCanvas
+      .getContext("2d")
+      .getImageData(0, 0, drawingWidth, drawingHeight);
     const data = imageData.data;
-    
-    let minX = drawingWidth, minY = drawingHeight, maxX = 0, maxY = 0;
+    let minX = drawingWidth,
+      minY = drawingHeight,
+      maxX = 0,
+      maxY = 0;
     let hasDrawing = false;
-    
-    // Determine if we're in dark mode
-    const isDarkMode = document.body.classList.contains('dark');
-    
-    // Find drawing boundaries
-    for (let y = 0; y < drawingHeight; y += 4) { // Sample every 4 pixels for performance
+
+    for (let y = 0; y < drawingHeight; y += 4) {
       for (let x = 0; x < drawingWidth; x += 4) {
         const idx = (y * drawingWidth + x) * 4;
-        
-        // Check if pixel is not background
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
-        const a = data[idx + 3];
-        
-        let isDrawingPixel = false;
-        if (isDarkMode) {
-          // In dark mode, lighter pixels are the drawing
-          isDrawingPixel = (r > 150 || g > 150 || b > 150) && a > 100;
-        } else {
-          // In light mode, darker pixels are the drawing
-          isDrawingPixel = (r < 200 || g < 200 || b < 200) && a > 100;
-        }
-        
+        const r = data[idx],
+          g = data[idx + 1],
+          b = data[idx + 2],
+          a = data[idx + 3];
+        const isDrawingPixel = isDarkMode
+          ? (r > 150 || g > 150 || b > 150) && a > 100
+          : (r < 200 || g < 200 || b < 200) && a > 100;
         if (isDrawingPixel) {
           minX = Math.min(minX, x);
           minY = Math.min(minY, y);
@@ -980,534 +996,438 @@ const AIDemo = () => {
         }
       }
     }
-    
-    if (!hasDrawing) {
-      console.warn('No drawing detected on canvas');
-      return null;
-    }
-    
-    console.log(`Drawing bounds: (${minX},${minY}) to (${maxX},${maxY})`);
-    
-    // Add padding
+
+    if (!hasDrawing) return null;
+
     const padding = 20;
     minX = Math.max(0, minX - padding);
     minY = Math.max(0, minY - padding);
     maxX = Math.min(drawingWidth, maxX + padding);
     maxY = Math.min(drawingHeight, maxY + padding);
-    
-    const drawingBoxWidth = maxX - minX;
-    const drawingBoxHeight = maxY - minY;
-    
-    // If drawing is too small, return null
-    if (drawingBoxWidth < 20 || drawingBoxHeight < 20) {
-      console.warn('Drawing is too small to process');
-      return null;
-    }
-    
-    try {
-      // Center and scale drawing to fit in hidden canvas while maintaining aspect ratio
-      const scale = Math.min(
-        (hiddenCanvas.width - 40) / drawingBoxWidth,
-        (hiddenCanvas.height - 40) / drawingBoxHeight
+    const bw = maxX - minX,
+      bh = maxY - minY;
+    if (bw < 20 || bh < 20) return null;
+
+    const scale = Math.min(
+      (hiddenCanvas.width - 40) / bw,
+      (hiddenCanvas.height - 40) / bh,
+    );
+    const cx = (hiddenCanvas.width - bw * scale) / 2;
+    const cy = (hiddenCanvas.height - bh * scale) / 2;
+    hiddenCtx.drawImage(
+      drawingCanvas,
+      minX,
+      minY,
+      bw,
+      bh,
+      cx,
+      cy,
+      bw * scale,
+      bh * scale,
+    );
+
+    if (isDarkMode) {
+      const hd = hiddenCtx.getImageData(
+        0,
+        0,
+        hiddenCanvas.width,
+        hiddenCanvas.height,
       );
-      
-      const centerX = (hiddenCanvas.width - drawingBoxWidth * scale) / 2;
-      const centerY = (hiddenCanvas.height - drawingBoxHeight * scale) / 2;
-      
-      // Draw the isolated drawing onto the hidden canvas
-      hiddenCtx.drawImage(
-        drawingCanvas,
-        minX, minY, drawingBoxWidth, drawingBoxHeight,
-        centerX, centerY, drawingBoxWidth * scale, drawingBoxHeight * scale
-      );
-      
-      // Invert colors if needed (MobileNet expects black drawing on white background)
-      // In dark mode, we're drawing white on dark so we need to invert
-      if (isDarkMode) {
-        const hiddenData = hiddenCtx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
-        const hiddenPixels = hiddenData.data;
-        
-        for (let i = 0; i < hiddenPixels.length; i += 4) {
-          // Invert colors
-          hiddenPixels[i] = 255 - hiddenPixels[i];       // R
-          hiddenPixels[i + 1] = 255 - hiddenPixels[i + 1]; // G
-          hiddenPixels[i + 2] = 255 - hiddenPixels[i + 2]; // B
-        }
-        
-        hiddenCtx.putImageData(hiddenData, 0, 0);
+      for (let i = 0; i < hd.data.length; i += 4) {
+        hd.data[i] = 255 - hd.data[i];
+        hd.data[i + 1] = 255 - hd.data[i + 1];
+        hd.data[i + 2] = 255 - hd.data[i + 2];
       }
-      
-      // For debugging - Add a border to see the processed area
-      hiddenCtx.strokeStyle = 'blue';
-      hiddenCtx.lineWidth = 2;
-      hiddenCtx.strokeRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
-      
-      // Debug to see what we're passing to the model
-      console.log('Drawing preprocessed for recognition');
-      
-      return hiddenCanvas;
-    } catch (error) {
-      console.error('Error preprocessing drawing:', error);
-      return null;
+      hiddenCtx.putImageData(hd, 0, 0);
     }
+    return hiddenCanvas;
   };
-  
-  // Add example to classifier - improved error handling
+
   const addExample = async (classId) => {
     if (!mobilenetModel || !classifier || !isDrawingModelLoaded) {
-      setErrorMessage('Drawing recognition model not ready. Please try again.');
+      setErrorMessage("Drawing recognition model not ready.");
       return;
     }
-    
-    const processedCanvas = preprocessDrawing();
-    if (!processedCanvas) {
-      setErrorMessage('Please draw something first.');
+    const canvas = preprocessDrawing();
+    if (!canvas) {
+      setErrorMessage("Please draw something first.");
       return;
     }
-    
+
     try {
       setIsTraining(true);
-      console.log(`Adding example for class: ${classId}`);
-      
-      // Get activation from MobileNet
-      const activation = mobilenetModel.infer(processedCanvas, true);
-      
-      // Add example to classifier
+      const activation = mobilenetModel.infer(canvas, true);
       classifier.addExample(activation, classId);
-      
-      // Get example counts
-      const exampleCounts = classifier.getClassExampleCount();
-      console.log('Example counts:', exampleCounts);
-      const exampleCount = exampleCounts[classId] || 0;
-      
-      // Indicate training progress
-      setTrainingProgress(exampleCount);
-      
-      // Clear canvas for next example
+      const counts = classifier.getClassExampleCount();
+      setTrainingProgress(counts[classId] || 0);
       clearDrawing();
-      
-      // Update classifier state
-      const classCount = Object.keys(exampleCounts).length;
-      const totalExamples = Object.values(exampleCounts).reduce((a, b) => a + b, 0);
-      console.log(`Classes: ${classCount}, Total examples: ${totalExamples}`);
-      
-      if (classCount >= 2 && totalExamples >= 2) {
-        setIsClassifierTrained(true);
-        console.log('Classifier is now trained');
-      }
-      
+      const classCount = Object.keys(counts).length;
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+      if (classCount >= 2 && total >= 2) setIsClassifierTrained(true);
     } catch (error) {
-      console.error('Error adding example:', error);
       setErrorMessage(`Error adding example: ${error.message}`);
     } finally {
       setIsTraining(false);
     }
   };
-  
-  // Recognize drawing with improved error handling
+
   const recognizeDrawing = async () => {
     if (!mobilenetModel || !classifier || !isDrawingModelLoaded) {
-      setErrorMessage('Drawing recognition model not ready. Please try again.');
+      setErrorMessage("Drawing recognition model not ready.");
       return;
     }
-    
     if (!isClassifierTrained) {
-      setErrorMessage('Please train the model with examples first.');
-      setDrawingMode('train');
+      setErrorMessage("Please train the model with examples first.");
+      setDrawingMode("train");
       return;
     }
-    
-    const processedCanvas = preprocessDrawing();
-    if (!processedCanvas) {
-      setErrorMessage('Please draw something to recognize.');
+    const canvas = preprocessDrawing();
+    if (!canvas) {
+      setErrorMessage("Please draw something to recognize.");
       return;
     }
-    
+
     setIsRecognizing(true);
     setRecognitionResult(null);
-    setErrorMessage('');
-    
+    setErrorMessage("");
+
     try {
-      console.log('Starting recognition...');
-      
-      // Get activation from MobileNet
-      const activation = mobilenetModel.infer(processedCanvas, true);
-      
-      // Check if classifier has examples
-      const exampleCounts = classifier.getClassExampleCount();
-      const totalExamples = Object.values(exampleCounts).reduce((a, b) => a + b, 0);
-      
-      if (totalExamples === 0) {
-        throw new Error('No training examples available');
-      }
-      
-      // Get prediction from classifier
+      const activation = mobilenetModel.infer(canvas, true);
       const result = await classifier.predictClass(activation);
-      console.log('Recognition result:', result);
-      
-      // Find matching category
-      const category = drawingCategories.find(cat => cat.id === result.label);
-      
-      if (result && result.label) {
-        setRecognitionResult({
-          name: category ? category.name : result.label,
-          confidence: Math.round((result.confidences[result.label] || 0) * 100),
-          description: category ? category.description : 'Custom drawing'
-        });
-      } else {
-        throw new Error('Classifier returned invalid result');
-      }
-      
+      const category = drawingCategories.find((c) => c.id === result.label);
+      setRecognitionResult({
+        name: category ? category.name : result.label,
+        confidence: Math.round((result.confidences[result.label] || 0) * 100),
+        description: category ? category.description : "Custom drawing",
+      });
     } catch (error) {
-      console.error('Recognition error:', error);
       setErrorMessage(`Error recognizing drawing: ${error.message}`);
-      setRecognitionResult(null);
     } finally {
       setIsRecognizing(false);
     }
   };
-  
-  // Toggle drawing mode between drawing and training
+
   const toggleDrawingMode = () => {
-    const newMode = drawingMode === 'draw' ? 'train' : 'draw';
+    const newMode = drawingMode === "draw" ? "train" : "draw";
     setDrawingMode(newMode);
-    
-    // If switching to training mode, set the first category as selected by default
-    if (newMode === 'train' && !selectedCategory) {
+    if (newMode === "train" && !selectedCategory)
       setSelectedCategory(drawingCategories[0]);
-    } else {
-      setSelectedCategory(null);
-    }
-    
+    else setSelectedCategory(null);
     setRecognitionResult(null);
     clearDrawing();
   };
-  
-  // Switch tabs
+
   const handleTabChange = (tab) => {
-    // Clean up current tab
-    if (activeTab === 'objectDetection' && isDetecting) {
-      stopClassification();
-    } else if (activeTab === 'whiteboard') {
+    if (activeTab === "emotionAnalysis" && isDetecting) stopDetection();
+    if (activeTab === "whiteboard") {
       setRecognitionResult(null);
       setSelectedCategory(null);
     }
-    
     setActiveTab(tab);
+    setErrorMessage("");
   };
-  
-  // Add a function to capture and save the current detection
-  const captureClassification = () => {
-    if (!videoRef.current || !canvasRef.current) return;
-    
-    try {
-      // Create a composite canvas with both video and overlay
-      const compositeCanvas = document.createElement('canvas');
-      const video = videoRef.current;
-      const overlayCanvas = canvasRef.current;
-      
-      compositeCanvas.width = video.videoWidth;
-      compositeCanvas.height = video.videoHeight;
-      
-      const ctx = compositeCanvas.getContext('2d');
-      
-      // Draw video frame
-      ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
-      
-      // Draw overlay with classifications
-      ctx.drawImage(overlayCanvas, 0, 0, compositeCanvas.width, compositeCanvas.height);
-      
-      // Create download link
-      const link = document.createElement('a');
-      link.download = `classification-${new Date().toISOString().replace(/:/g, '-')}.png`;
-      link.href = compositeCanvas.toDataURL('image/png');
-      link.click();
-    } catch (error) {
-      console.error('Error saving classification:', error);
-      setErrorMessage('Failed to save the classification image.');
-    }
-  };
-  
-  // Add a toggle for pausing detection
-  const togglePause = () => {
-    setIsPaused(!isPaused);
-  };
-  
-  // Utility to check model availability
-  const checkModelStatus = () => {
-    console.log('Checking model status...');
-    console.log('Object Detection Model:', objectModel ? 'Loaded' : 'Not loaded');
-    console.log('MobileNet Model:', mobilenetModel ? 'Loaded' : 'Not loaded');
-    console.log('Classifier:', classifier ? 'Created' : 'Not created');
-    
-    if (classifier) {
-      const counts = classifier.getClassExampleCount();
-      console.log('Classifier example counts:', counts);
-      console.log('Total examples:', Object.values(counts).reduce((a, b) => a + b, 0));
-    }
-    
-    return {
-      objectDetection: !!objectModel,
-      drawingRecognition: !!mobilenetModel && !!classifier
-    };
-  };
-  
-  // Call the check function when tab changes
-  useEffect(() => {
-    // Short delay to ensure models have time to initialize
-    const timer = setTimeout(() => {
-      checkModelStatus();
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [activeTab, isModelLoaded, isDrawingModelLoaded]);
-  
+
+  // ─── Derive dominant emotion ───────────────────────────────
+
+  const dominantEmotion = faceResults?.expressions
+    ? Object.entries(faceResults.expressions).reduce(
+        (a, b) => (b[1] > a[1] ? b : a),
+        ["neutral", 0],
+      )
+    : null;
+
+  // ─── Render ────────────────────────────────────────────────
+
   return (
     <DemoContainer>
       <DemoHeader justify="space-between" align="center">
         <DemoTitle>AI Demonstrations</DemoTitle>
       </DemoHeader>
-      
+
       <TabsContainer justify="center" gap="md">
-        <TabButton 
-          onClick={() => handleTabChange('objectDetection')}
-          $active={activeTab === 'objectDetection'}
-          $ready={isModelLoaded}
-          $loading={activeTab === 'objectDetection' && !isModelLoaded}
+        <TabButton
+          onClick={() => handleTabChange("emotionAnalysis")}
+          $active={activeTab === "emotionAnalysis"}
+          $ready={isFaceModelLoaded}
+          $loading={activeTab === "emotionAnalysis" && !isFaceModelLoaded}
         >
-          Object Detection
+          Emotion Analysis
         </TabButton>
-        <TabButton 
-          onClick={() => handleTabChange('whiteboard')}
-          $active={activeTab === 'whiteboard'}
+        <TabButton
+          onClick={() => handleTabChange("whiteboard")}
+          $active={activeTab === "whiteboard"}
           $ready={isDrawingModelLoaded}
-          $loading={activeTab === 'whiteboard' && !isDrawingModelLoaded}
+          $loading={activeTab === "whiteboard" && !isDrawingModelLoaded}
         >
           Drawing Recognition
         </TabButton>
       </TabsContainer>
-      
-      {activeTab === 'objectDetection' && (
+
+      {/* ─────────── EMOTION ANALYSIS TAB ─────────── */}
+      {activeTab === "emotionAnalysis" && (
         <>
           <Text size="sm" margin="0 0 16px 0">
-            This demo uses TensorFlow.js and the MobileNet model to classify objects in real-time using your camera.
-            All processing happens locally in your browser - no images are sent to any server.
+            Real-time facial emotion analysis powered by face-api.js. Detects
+            faces, recognizes expressions, and estimates age &amp; gender — all
+            running locally in your browser. No data is sent to any server.
           </Text>
-          
-          <StatusIndicator $active={isModelLoaded}>
-            Model Status: {isModelLoaded ? 'Loaded' : 'Loading TensorFlow model...'}
+
+          <StatusIndicator $active={isFaceModelLoaded}>
+            <Activity
+              size={14}
+              style={{ marginRight: 8 }}
+              color={
+                isFaceModelLoaded ? theme.colors.success : theme.colors.danger
+              }
+            />
+            Model Status:{" "}
+            {isFaceModelLoaded
+              ? "Loaded & Ready"
+              : "Loading face detection models..."}
           </StatusIndicator>
-          
+
           {errorMessage && (
             <Text color={theme.colors.danger} margin="0 0 16px 0">
+              <AlertTriangle
+                size={14}
+                style={{ marginRight: 4, verticalAlign: "middle" }}
+              />
               {errorMessage}
             </Text>
           )}
-          
-          {!isDetecting && isModelLoaded && (
+
+          {!isDetecting && isFaceModelLoaded && (
             <InfoCard>
-              <InfoTitle size="md">About MobileNet Image Classification</InfoTitle>
+              <InfoTitle size="md">
+                <Info
+                  size={18}
+                  style={{ marginRight: 8, verticalAlign: "middle" }}
+                />
+                About Face Emotion Analysis
+              </InfoTitle>
               <InfoContent>
                 <Text size="sm">
-                  The MobileNet model can classify images into 1000 different categories in real-time. 
-                  Classifications happen entirely in your browser using TensorFlow.js - 
-                  no video is sent to any server.
+                  This demo uses <strong>Tiny Face Detector</strong> for fast
+                  face detection, combined with expression recognition and
+                  age/gender estimation neural networks. It can detect 7
+                  emotions:{" "}
+                  <em>
+                    happy, sad, angry, fearful, disgusted, surprised, and
+                    neutral
+                  </em>
+                  . All inference runs on your device via WebGL acceleration.
                 </Text>
-                
-                <Text size="xs" margin="16px 0 0 0" color={theme.colors.secondary}>
-                  Note: Classification accuracy may vary based on lighting conditions, camera quality, 
-                  and object visibility. For best results, ensure good lighting and center the main object in the frame.
+                <Text
+                  size="xs"
+                  margin="16px 0 0 0"
+                  color={theme.colors.secondary}
+                >
+                  <Camera
+                    size={12}
+                    style={{ marginRight: 4, verticalAlign: "middle" }}
+                  />
+                  Tip: For best results, ensure good lighting and face the
+                  camera directly. The front-facing camera is used by default.
                 </Text>
               </InfoContent>
             </InfoCard>
           )}
-          
+
           <VideoContainer>
-            <Video 
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-            />
+            <Video ref={videoRef} autoPlay playsInline muted />
             <Canvas ref={canvasRef} />
           </VideoContainer>
-          
+
           <Controls gap="md" justify="center">
             {!isDetecting ? (
-              <NeumorphicButton 
-                onClick={startClassification}
-                disabled={!isModelLoaded}
+              <NeumorphicButton
+                onClick={startDetection}
+                disabled={!isFaceModelLoaded}
                 $primary
               >
-                Start Camera Classification
+                <Camera size={18} style={{ marginRight: 8 }} />
+                Start Emotion Analysis
               </NeumorphicButton>
             ) : (
-              <>
-                <NeumorphicButton 
-                  onClick={stopClassification}
-                  $primary
-                >
-                  Stop Camera
-                </NeumorphicButton>
-                
-                <NeumorphicButton 
-                  onClick={togglePause}
-                >
-                  {isPaused ? 'Resume Classification' : 'Pause Classification'}
-                </NeumorphicButton>
-                
-                <NeumorphicButton 
-                  onClick={captureClassification}
-                  disabled={isPaused || classifications.length === 0}
-                >
-                  Save Screenshot
-                </NeumorphicButton>
-                
-                <NeumorphicButton 
-                  onClick={() => setShowSettings(!showSettings)}
-                >
-                  {showSettings ? 'Hide Settings' : 'Show Settings'}
-                </NeumorphicButton>
-              </>
+              <NeumorphicButton onClick={stopDetection} $primary>
+                <Square size={18} style={{ marginRight: 8 }} />
+                Stop Camera
+              </NeumorphicButton>
             )}
           </Controls>
-          
-          {showSettings && isDetecting && (
-            <SettingsPanel $isDarkMode={isDarkMode}>
-              <SubHeading size="sm" margin="0 0 16px 0">
-                Classification Settings
-              </SubHeading>
-              
-              <SettingsRow align="center">
-                <SettingsLabel>
-                  Confidence Threshold:
-                </SettingsLabel>
-                <SliderContainer>
-                  <Slider 
-                    type="range"
-                    min="1"
-                    max="100"
-                    value={confidenceThreshold}
-                    onChange={e => setConfidenceThreshold(parseInt(e.target.value))}
-                    theme={theme}
-                  />
-                  <SliderValue>{confidenceThreshold}%</SliderValue>
-                </SliderContainer>
-              </SettingsRow>
-              
-              <SettingsRow align="center">
-                <SettingsLabel>
-                  Max Results:
-                </SettingsLabel>
-                <SliderContainer>
-                  <Slider 
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={maxDetections}
-                    onChange={e => setMaxDetections(parseInt(e.target.value))}
-                    theme={theme}
-                  />
-                  <SliderValue>{maxDetections}</SliderValue>
-                </SliderContainer>
-              </SettingsRow>
-            </SettingsPanel>
-          )}
-          
-          {isDetecting && !isPaused && (
+
+          {isDetecting && (
             <PerformanceMetrics $isDarkMode={isDarkMode}>
-              <SubHeading size="sm" margin="0 0 16px 0">
-                Performance Metrics
+              <SubHeading size="sm" margin="0 0 12px 0">
+                <Activity
+                  size={16}
+                  style={{ marginRight: 8, verticalAlign: "middle" }}
+                />
+                Performance
               </SubHeading>
-              
               <MetricsRow>
                 <MetricsLabel>FPS:</MetricsLabel>
                 <MetricsValue>{fps}</MetricsValue>
               </MetricsRow>
-              
               <MetricsRow>
                 <MetricsLabel>Inference Time:</MetricsLabel>
                 <MetricsValue>{inferenceTime} ms</MetricsValue>
               </MetricsRow>
-              
               <MetricsRow>
-                <MetricsLabel>Classifications:</MetricsLabel>
-                <MetricsValue>{classifications.length}</MetricsValue>
+                <MetricsLabel>Faces Detected:</MetricsLabel>
+                <MetricsValue>{facesCount}</MetricsValue>
               </MetricsRow>
             </PerformanceMetrics>
           )}
-          
-          {classifications.length > 0 && (
+
+          {faceResults && (
             <>
-              <SubHeading size="md" margin="24px 0 8px 0">
-                Classification Results
-              </SubHeading>
-              
-              <ResultsContainer>
-                {classifications
-                  .filter(classification => classification.probability >= confidenceThreshold / 100)
-                  .map((classification, index) => (
-                    <Result key={index} $isDarkMode={isDarkMode}>
-                      <ObjectName>{classification.className}</ObjectName>
-                      <Confidence>{Math.round(classification.probability * 100)}%</Confidence>
-                    </Result>
-                  ))}
-                
-                {classifications.filter(classification => classification.probability >= confidenceThreshold / 100).length === 0 && (
-                  <Text size="sm" center margin="16px 0">
-                    No classifications with current confidence threshold
-                  </Text>
-                )}
-              </ResultsContainer>
-            </>
-          )}
-          
-          {classesDetected.size > 0 && (
-            <>
-              <SubHeading size="sm" margin="24px 0 8px 0">
-                Classes Detected in This Session:
-              </SubHeading>
-              
-              <div>
-                {Array.from(classesDetected).map(className => (
-                  <ClassBubble key={className} theme={theme}>
-                    {className}
-                  </ClassBubble>
-                ))}
-              </div>
+              {/* Dominant emotion badge */}
+              {dominantEmotion && (
+                <div style={{ textAlign: "center" }}>
+                  <DominantEmotionBadge
+                    $color={EMOTION_COLORS[dominantEmotion[0]]}
+                  >
+                    {(() => {
+                      const Icon = EMOTION_ICONS[dominantEmotion[0]] || Meh;
+                      return (
+                        <Icon
+                          size={24}
+                          color={EMOTION_COLORS[dominantEmotion[0]]}
+                        />
+                      );
+                    })()}
+                    <span
+                      style={{ textTransform: "capitalize", marginLeft: 8 }}
+                    >
+                      {dominantEmotion[0]} —{" "}
+                      {Math.round(dominantEmotion[1] * 100)}%
+                    </span>
+                  </DominantEmotionBadge>
+                </div>
+              )}
+
+              {/* Age & Gender info */}
+              <FaceInfoCard>
+                <FaceInfoItem>
+                  <FaceInfoValue>~{Math.round(faceResults.age)}</FaceInfoValue>
+                  <FaceInfoLabel>
+                    <User
+                      size={12}
+                      style={{ marginRight: 4, verticalAlign: "middle" }}
+                    />
+                    Estimated Age
+                  </FaceInfoLabel>
+                </FaceInfoItem>
+                <FaceInfoItem>
+                  <FaceInfoValue style={{ textTransform: "capitalize" }}>
+                    {faceResults.gender}
+                  </FaceInfoValue>
+                  <FaceInfoLabel>
+                    <User
+                      size={12}
+                      style={{ marginRight: 4, verticalAlign: "middle" }}
+                    />
+                    Gender ({Math.round(faceResults.genderProbability * 100)}%
+                    confidence)
+                  </FaceInfoLabel>
+                </FaceInfoItem>
+                <FaceInfoItem>
+                  <FaceInfoValue>{facesCount}</FaceInfoValue>
+                  <FaceInfoLabel>
+                    <Camera
+                      size={12}
+                      style={{ marginRight: 4, verticalAlign: "middle" }}
+                    />
+                    Face{facesCount !== 1 ? "s" : ""} Detected
+                  </FaceInfoLabel>
+                </FaceInfoItem>
+              </FaceInfoCard>
+
+              {/* Expression bars */}
+              <EmotionBarContainer>
+                <SubHeading size="sm" margin="16px 0 12px 0">
+                  <Activity
+                    size={16}
+                    style={{ marginRight: 8, verticalAlign: "middle" }}
+                  />
+                  Expression Breakdown
+                </SubHeading>
+                {Object.entries(faceResults.expressions)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([emotion, value]) => {
+                    const Icon = EMOTION_ICONS[emotion] || Meh;
+                    return (
+                      <EmotionRow key={emotion}>
+                        <Icon
+                          size={18}
+                          color={EMOTION_COLORS[emotion]}
+                          style={{ width: 24 }}
+                        />
+                        <EmotionLabel>{emotion}</EmotionLabel>
+                        <EmotionBarTrack $isDarkMode={isDarkMode}>
+                          <EmotionBarFill
+                            $width={Math.round(value * 100)}
+                            $color={EMOTION_COLORS[emotion]}
+                          />
+                        </EmotionBarTrack>
+                        <EmotionPercent>
+                          {Math.round(value * 100)}%
+                        </EmotionPercent>
+                      </EmotionRow>
+                    );
+                  })}
+              </EmotionBarContainer>
             </>
           )}
         </>
       )}
-      
-      {activeTab === 'whiteboard' && (
+
+      {/* ─────────── DRAWING RECOGNITION TAB ────────── */}
+      {activeTab === "whiteboard" && (
         <>
           <Text size="sm" margin="0 0 16px 0">
-            {drawingMode === 'draw' 
-              ? 'Draw a shape on the canvas and the trained AI model will try to recognize it.' 
-              : 'Draw examples of different shapes to train the AI. Select a category and add examples.'}
+            {drawingMode === "draw"
+              ? "Draw a shape on the canvas and the trained AI model will try to recognize it."
+              : "Draw examples of different shapes to train the AI. Select a category and add examples."}
           </Text>
-          
+
           <StatusIndicator $active={isDrawingModelLoaded}>
-            Model Status: {isDrawingModelLoaded 
-              ? isClassifierTrained 
-                ? 'Trained and ready' 
-                : 'Loaded (needs training)' 
-              : 'Loading TensorFlow models...'}
+            <Activity
+              size={14}
+              style={{ marginRight: 8 }}
+              color={
+                isDrawingModelLoaded
+                  ? theme.colors.success
+                  : theme.colors.danger
+              }
+            />
+            Model Status:{" "}
+            {isDrawingModelLoaded
+              ? isClassifierTrained
+                ? "Trained and ready"
+                : "Loaded (needs training)"
+              : "Loading TensorFlow models..."}
           </StatusIndicator>
-          
+
           {errorMessage && (
             <Text color={theme.colors.danger} margin="0 0 16px 0">
+              <AlertTriangle
+                size={14}
+                style={{ marginRight: 4, verticalAlign: "middle" }}
+              />
               {errorMessage}
             </Text>
           )}
-          
+
           <DrawingTools align="center" justify="space-between">
             <FlexContainer gap="xs" align="center">
-              <Text size="sm" margin="0 8px 0 0">Brush Color:</Text>
-              {colors.map(color => (
-                <ColorButton 
-                  key={color} 
+              <Text size="sm" margin="0 8px 0 0">
+                Brush Color:
+              </Text>
+              {colors.map((color) => (
+                <ColorButton
+                  key={color}
                   color={color}
                   isSelected={drawingColor === color}
                   onClick={() => setDrawingColor(color)}
@@ -1515,11 +1435,10 @@ const AIDemo = () => {
                 />
               ))}
             </FlexContainer>
-            
             <FlexContainer gap="xs" align="center">
               <Text size="sm">Brush Size:</Text>
-              {brushSizes.map(size => (
-                <BrushSizeButton 
+              {brushSizes.map((size) => (
+                <BrushSizeButton
                   key={size}
                   size={size}
                   isSelected={brushSize === size}
@@ -1530,89 +1449,104 @@ const AIDemo = () => {
               ))}
             </FlexContainer>
           </DrawingTools>
-          
+
           <DrawingCanvasContainer $isDarkMode={isDarkMode}>
             <DrawingCanvas ref={drawingCanvasRef} />
           </DrawingCanvasContainer>
-          
+
           <Controls gap="md" justify="center">
             <ClearButton onClick={clearDrawing}>
+              <Eraser size={18} style={{ marginRight: 8 }} />
               Clear Canvas
             </ClearButton>
-            
-            {drawingMode === 'draw' ? (
+            {drawingMode === "draw" ? (
               <>
-                <NeumorphicButton 
+                <NeumorphicButton
                   onClick={recognizeDrawing}
                   disabled={isRecognizing || !isClassifierTrained}
                   $primary
                 >
-                  {isRecognizing ? 'Analyzing...' : 'Recognize Drawing'}
+                  <Search size={18} style={{ marginRight: 8 }} />
+                  {isRecognizing ? "Analyzing..." : "Recognize Drawing"}
                 </NeumorphicButton>
-                
-                <NeumorphicButton 
-                  onClick={toggleDrawingMode}
-                >
+                <NeumorphicButton onClick={toggleDrawingMode}>
+                  <GraduationCap size={18} style={{ marginRight: 8 }} />
                   Switch to Training Mode
                 </NeumorphicButton>
               </>
             ) : (
               <>
-                <NeumorphicButton 
-                  onClick={() => selectedCategory && addExample(selectedCategory.id)}
-                  disabled={!selectedCategory || !isDrawingModelLoaded || isTraining}
+                <NeumorphicButton
+                  onClick={() =>
+                    selectedCategory && addExample(selectedCategory.id)
+                  }
+                  disabled={
+                    !selectedCategory || !isDrawingModelLoaded || isTraining
+                  }
                   $primary
                 >
-                  {isTraining ? 'Adding Example...' : 'Add Example'}
+                  <Plus size={18} style={{ marginRight: 8 }} />
+                  {isTraining ? "Adding Example..." : "Add Example"}
                 </NeumorphicButton>
-                
-                <NeumorphicButton 
-                  onClick={toggleDrawingMode}
-                >
+                <NeumorphicButton onClick={toggleDrawingMode}>
+                  <Brush size={18} style={{ marginRight: 8 }} />
                   Switch to Recognition Mode
                 </NeumorphicButton>
               </>
             )}
           </Controls>
-          
-          {drawingMode === 'train' && (
+
+          {drawingMode === "train" && (
             <TrainingContainer $isDarkMode={isDarkMode}>
               <SubHeading size="md" margin="0 0 16px 0">
+                <GraduationCap
+                  size={20}
+                  style={{ marginRight: 8, verticalAlign: "middle" }}
+                />
                 Training Mode
               </SubHeading>
-              
               <Text size="sm" margin="0 0 16px 0">
-                Select a category, draw an example, then click "Add Example". 
+                Select a category, draw an example, then click "Add Example".
                 Add multiple examples per category for better recognition.
               </Text>
-              
               <CategoryGrid>
-                {drawingCategories.map(category => {
-                  const exampleCount = classifier && classifier.getClassExampleCount()[category.id] || 0;
+                {drawingCategories.map((category) => {
+                  const exampleCount =
+                    (classifier &&
+                      classifier.getClassExampleCount()[category.id]) ||
+                    0;
+                  const CategoryIcon = category.icon;
                   return (
-                    <CategoryCard 
+                    <CategoryCard
                       key={category.id}
-                      isSelected={selectedCategory && selectedCategory.id === category.id}
+                      isSelected={
+                        selectedCategory && selectedCategory.id === category.id
+                      }
                       theme={theme}
                       onClick={() => setSelectedCategory(category)}
                     >
+                      <CategoryIcon
+                        size={24}
+                        color={theme.colors.primary}
+                        style={{ marginBottom: 8 }}
+                      />
                       <CategoryName>{category.name}</CategoryName>
                       <ExampleCount>
-                        {exampleCount} example{exampleCount !== 1 ? 's' : ''}
+                        {exampleCount} example{exampleCount !== 1 ? "s" : ""}
                       </ExampleCount>
                     </CategoryCard>
                   );
                 })}
               </CategoryGrid>
-              
+
               {isClassifierTrained && (
-                <TrainingProgress 
-                  progress={Math.min(100, trainingProgress * 10)} 
+                <TrainingProgress
+                  progress={Math.min(100, trainingProgress * 10)}
                   theme={theme}
                   $isDarkMode={isDarkMode}
                 />
               )}
-              
+
               <ModelControls>
                 <NeumorphicButton
                   onClick={() => {
@@ -1621,88 +1555,85 @@ const AIDemo = () => {
                     setTrainingProgress(0);
                   }}
                 >
+                  <RotateCcw size={18} style={{ marginRight: 8 }} />
                   Reset Training
                 </NeumorphicButton>
-                
+
                 <NeumorphicButton
                   onClick={() => {
-                    // Export trained model as JSON
                     if (classifier) {
                       const dataset = classifier.getClassifierDataset();
-                      const datasetObj = {};
+                      const obj = {};
                       Object.keys(dataset).forEach((key) => {
-                        const data = dataset[key].dataSync();
-                        datasetObj[key] = Array.from(data);
+                        obj[key] = Array.from(dataset[key].dataSync());
                       });
-                      
-                      // Create download link
-                      const jsonStr = JSON.stringify(datasetObj);
-                      const blob = new Blob([jsonStr], {type: 'application/json'});
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.download = 'drawing-model.json';
-                      a.href = url;
+                      const blob = new Blob([JSON.stringify(obj)], {
+                        type: "application/json",
+                      });
+                      const a = document.createElement("a");
+                      a.download = "drawing-model.json";
+                      a.href = URL.createObjectURL(blob);
                       a.click();
-                      URL.revokeObjectURL(url);
                     }
                   }}
                   disabled={!isClassifierTrained}
                 >
+                  <Download size={18} style={{ marginRight: 8 }} />
                   Export Model
                 </NeumorphicButton>
-                
+
                 <label htmlFor="upload-model">
                   <input
                     id="upload-model"
                     type="file"
                     accept=".json"
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                     onChange={async (e) => {
                       try {
                         const file = e.target.files[0];
                         const reader = new FileReader();
-                        
-                        reader.onload = async (event) => {
+                        reader.onload = (event) => {
                           const datasetObj = JSON.parse(event.target.result);
                           const newClassifier = knnClassifier.create();
-                          
-                          // Load the dataset into the classifier
                           Object.keys(datasetObj).forEach((key) => {
-                            const data = tf.tensor(datasetObj[key]);
-                            newClassifier.addExample(data, key);
+                            newClassifier.addExample(
+                              tf.tensor(datasetObj[key]),
+                              key,
+                            );
                           });
-                          
                           setClassifier(newClassifier);
                           setIsClassifierTrained(true);
-                          
-                          // Update training progress
-                          const exampleCount = Object.values(newClassifier.getClassExampleCount())
-                            .reduce((a, b) => a + b, 0);
-                          setTrainingProgress(exampleCount);
+                          setTrainingProgress(
+                            Object.values(
+                              newClassifier.getClassExampleCount(),
+                            ).reduce((a, b) => a + b, 0),
+                          );
                         };
-                        
                         reader.readAsText(file);
                       } catch (error) {
-                        console.error('Error loading model:', error);
-                        setErrorMessage('Failed to load the model file. Please try again.');
+                        setErrorMessage(
+                          `Failed to load the model file. ${error}`,
+                        );
                       }
                     }}
                   />
                   <NeumorphicButton as="span">
+                    <Upload size={18} style={{ marginRight: 8 }} />
                     Import Model
                   </NeumorphicButton>
                 </label>
               </ModelControls>
             </TrainingContainer>
           )}
-          
-          {drawingMode === 'draw' && !isClassifierTrained && (
+
+          {drawingMode === "draw" && !isClassifierTrained && (
             <RecognitionResult visible theme={theme}>
               <Text size="sm" margin="16px 0 0 0">
                 The model needs to be trained before it can recognize drawings.
-                Switch to Training Mode and add examples for different categories.
+                Switch to Training Mode and add examples for different
+                categories.
               </Text>
-              <NeumorphicButton 
+              <NeumorphicButton
                 onClick={toggleDrawingMode}
                 margin="16px 0 0 0"
                 size="sm"
@@ -1711,7 +1642,7 @@ const AIDemo = () => {
               </NeumorphicButton>
             </RecognitionResult>
           )}
-          
+
           {isRecognizing && (
             <RecognitionResult visible theme={theme}>
               <Spinner theme={theme} />
@@ -1720,20 +1651,21 @@ const AIDemo = () => {
               </Text>
             </RecognitionResult>
           )}
-          
+
           {recognitionResult && !isRecognizing && (
             <RecognitionResult visible theme={theme}>
               <SubHeading size="md" margin="0 0 16px 0">
+                <Search
+                  size={20}
+                  style={{ marginRight: 8, verticalAlign: "middle" }}
+                />
                 Recognition Result
               </SubHeading>
-              
               <Text size="lg" color={theme.colors.primary} margin="0 0 8px 0">
-                {recognitionResult.name} ({recognitionResult.confidence}% confidence)
+                {recognitionResult.name} ({recognitionResult.confidence}%
+                confidence)
               </Text>
-              
-              <Text size="sm">
-                {recognitionResult.description}
-              </Text>
+              <Text size="sm">{recognitionResult.description}</Text>
             </RecognitionResult>
           )}
         </>
@@ -1742,4 +1674,4 @@ const AIDemo = () => {
   );
 };
 
-export default AIDemo; 
+export default AIDemo;

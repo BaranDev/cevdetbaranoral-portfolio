@@ -1,7 +1,8 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
+
+const MotionDiv = motion.div;
+
 import {
   Briefcase,
   GraduationCap,
@@ -15,7 +16,6 @@ import {
   ExternalLink,
   Github,
   Linkedin,
-  ArrowRight,
   FileText,
   ChevronRight,
   Code2,
@@ -25,26 +25,17 @@ import {
   Wrench,
   Palette,
 } from "lucide-react";
-import {
-  Section,
-  NeumorphicContainer,
-  NeumorphicButton,
-  FlexContainer,
-} from "../styles/StyledComponents";
 import CVDownloadButton from "../components/ui/CVDownloadButton";
-import { useTheme } from "../context/ThemeContext";
 import portfolioData from "../data/portfolioData.json";
 
 /* ── animation ────────────────────────────────── */
-const glow = keyframes`
-  0%,100%{box-shadow:0 0 5px rgba(218,165,32,.4),0 0 10px rgba(218,165,32,.2)}
-  50%{box-shadow:0 0 10px rgba(218,165,32,.7),0 0 20px rgba(218,165,32,.5)}
-`;
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
-const A = ({ children, id, ...r }) => (
-  <motion.div
+
+const A = ({ children, id, className, ...r }) => (
+  <MotionDiv
     id={id}
+    className={className}
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, amount: 0.12 }}
@@ -52,16 +43,17 @@ const A = ({ children, id, ...r }) => (
     {...r}
   >
     {children}
-  </motion.div>
+  </MotionDiv>
 );
-const I = ({ children, ...r }) => (
-  <motion.div
+const I = ({ children, className, ...r }) => (
+  <MotionDiv
+    className={className}
     variants={fadeUp}
     transition={{ duration: 0.4, ease: "easeOut" }}
     {...r}
   >
     {children}
-  </motion.div>
+  </MotionDiv>
 );
 
 const ICON_MAP = {
@@ -74,492 +66,387 @@ const ICON_MAP = {
   Tools: Wrench,
 };
 
-/* ── styled ───────────────────────────────────── */
-const Page = styled.div`
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 ${(p) => p.theme.spacing.lg};
-  @media (max-width: 768px) {
-    padding: 0 ${(p) => p.theme.spacing.md};
-  }
-`;
+/* ── Tailwind Components replacing Styled Components ──────────────── */
 
-const Hero = styled(Section)`
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  padding: ${(p) => p.theme.spacing.lg} 0;
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    min-height: auto;
-    padding: ${(p) => p.theme.spacing.sm} 0;
+const Page = ({ children }) => (
+  <div className="w-full max-w-[1100px] mx-auto px-8 md:px-8">{children}</div>
+);
+
+const Hero = ({ children, id }) => (
+  <section id={id} className="flex items-center py-12 md:py-8">
+    {children}
+  </section>
+);
+
+const HeroCard = ({ children }) => (
+  <div className="p-8 grid grid-cols-1 md:grid-cols-[1fr_180px] gap-8 items-center text-center md:text-left bg-card rounded-2xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+// Helper for ordering
+const HeroText = ({ children }) => (
+  <div className="order-2 md:order-1">{children}</div>
+);
+
+const AvatarWrap = ({ children }) => (
+  <div className="order-1 md:order-2 flex justify-center">{children}</div>
+);
+
+const Name = ({ children }) => (
+  <h1 className="font-heading text-[clamp(1.6rem,4.5vw,2.6rem)] font-bold tracking-tight mb-1 bg-gradient-to-br from-primary via-accent to-magical text-transparent bg-clip-text">
+    {children}
+  </h1>
+);
+
+const Title = ({ children }) => (
+  <p className="text-secondary text-[clamp(0.95rem,2vw,1.15rem)] mb-1.5 font-medium">
+    {children}
+  </p>
+);
+
+const Tagline = ({ children }) => (
+  <p className="text-accent italic text-sm mb-4 leading-relaxed">{children}</p>
+);
+
+const Bio = ({ children }) => (
+  <p className="text-text text-[0.88rem] leading-relaxed mb-4 max-w-[520px] mx-auto md:mx-0">
+    {children}
+  </p>
+);
+
+const Avatar = ({ children }) => (
+  <div className="w-[170px] h-[170px] relative mx-auto before:absolute before:-inset-1.5 before:bg-gradient-to-tr before:from-primary before:to-magical before:rounded-full before:-z-10 before:animate-glow">
+    {children}
+  </div>
+);
+
+const AvatarImage = (props) => (
+  <img
+    className="w-full h-full rounded-full object-cover border-[3px] border-card"
+    {...props}
+  />
+);
+
+const Btn = ({
+  as,
+  $primary,
+  children,
+  href,
+  to,
+  onClick,
+  className = "",
+  ...props
+}) => {
+  const classes = `
+    inline-flex items-center justify-center gap-1.5 px-[18px] py-2 
+    text-[0.82rem] font-semibold rounded-xl transition-all duration-300
+    ${
+      $primary
+        ? "bg-primary text-white shadow-md hover:-translate-y-[2px] hover:animate-glow"
+        : "bg-background text-text shadow-neumorphic hover:-translate-y-[2px] hover:animate-glow"
+    }
+    ${className}
+  `;
+
+  if (as === Link && to) {
+    return (
+      <Link to={to} className={classes} {...props}>
+        {children}
+      </Link>
+    );
   }
-`;
-const HeroCard = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.xl};
-  display: grid;
-  grid-template-columns: 1fr 180px;
-  gap: ${(p) => p.theme.spacing.lg};
-  align-items: center;
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    grid-template-columns: 1fr;
-    text-align: center;
-    padding: ${(p) => p.theme.spacing.lg};
+  if (as === "a" || href) {
+    return (
+      <a href={href} className={classes} {...props}>
+        {children}
+      </a>
+    );
   }
-`;
-const HeroText = styled.div`
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    order: 2;
-  }
-`;
-const AvatarWrap = styled.div`
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    order: 1;
-  }
-`;
-const Name = styled.h1`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
-  margin: 0 0 4px;
-  background: linear-gradient(
-    135deg,
-    ${(p) => p.theme.colors.primary},
-    ${(p) => p.theme.colors.accent},
-    ${(p) => p.theme.colors.magical}
+  return (
+    <button onClick={onClick} className={classes} {...props}>
+      {children}
+    </button>
   );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`;
-const Title = styled.p`
-  color: ${(p) => p.theme.colors.secondary};
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
-  margin: 0 0 6px;
-  font-weight: ${(p) => p.theme.typography.fontWeights.medium};
-`;
-const Tagline = styled.p`
-  color: ${(p) => p.theme.colors.accent};
-  font-style: italic;
-  font-size: 0.9rem;
-  margin: 0 0 ${(p) => p.theme.spacing.md};
-  line-height: 1.5;
-`;
-const Bio = styled.p`
-  color: ${(p) => p.theme.colors.text};
-  font-size: 0.88rem;
-  line-height: 1.6;
-  margin: 0 0 ${(p) => p.theme.spacing.md};
-  max-width: 520px;
-`;
-const Avatar = styled.div`
-  width: 170px;
-  height: 170px;
-  position: relative;
-  margin: 0 auto;
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    background: linear-gradient(
-      45deg,
-      ${(p) => p.theme.colors.primary},
-      ${(p) => p.theme.colors.magical}
-    );
-    border-radius: 50%;
-    z-index: -1;
-    animation: ${glow} 3s ease-in-out infinite;
-  }
-  img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid ${(p) => p.theme.colors.card};
-  }
-`;
-const Btn = styled(NeumorphicButton)`
-  font-weight: ${(p) => p.theme.typography.fontWeights.semiBold};
-  font-size: 0.82rem;
-  padding: 8px 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.3s;
-  &:hover {
-    animation: ${glow} 2s ease-in-out infinite;
-    transform: translateY(-2px);
-  }
-`;
-const BtnGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${(p) => p.theme.spacing.sm};
-  width: 100%;
-  max-width: 400px;
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    max-width: 100%;
-  }
-`;
+};
 
-/* stats */
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${(p) => p.theme.spacing.sm};
-  margin: ${(p) => p.theme.spacing.md} 0;
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`;
-const Stat = styled(NeumorphicContainer)`
-  text-align: center;
-  padding: ${(p) => p.theme.spacing.md};
-  transition: all 0.3s;
-  &:hover {
-    transform: translateY(-3px);
-  }
-`;
-const StatNum = styled.div`
-  font-size: ${(p) => p.theme.typography.fontSizes.xl};
-  font-weight: bold;
-  color: ${(p) => p.theme.colors.primary};
-  font-family: ${(p) => p.theme.typography.headingFont};
-`;
-const StatLbl = styled.div`
-  font-size: 0.7rem;
-  color: ${(p) => p.theme.colors.secondary};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-`;
+const BtnGrid = ({ children }) => (
+  <div className="grid grid-cols-2 gap-2 w-full max-w-[400px] mx-auto md:mx-0 md:max-w-full">
+    {children}
+  </div>
+);
 
-/* section header */
-const SH = styled.h2`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  color: ${(p) => p.theme.colors.text};
-  font-size: clamp(1.2rem, 3vw, 1.6rem);
-  margin: 0 0 ${(p) => p.theme.spacing.md};
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-`;
+// Stats
+const StatsRow = ({ children }) => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">{children}</div>
+);
 
-/* experience */
-const Timeline = styled.div`
-  position: relative;
-  margin-top: ${(p) => p.theme.spacing.md};
-  &::before {
-    content: "";
-    position: absolute;
-    left: 18px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      to bottom,
-      ${(p) => p.theme.colors.primary},
-      ${(p) => p.theme.colors.magical}
-    );
-  }
-`;
-const Job = styled(NeumorphicContainer)`
-  position: relative;
-  margin: ${(p) => p.theme.spacing.sm} 0 ${(p) => p.theme.spacing.sm} 44px;
-  padding: ${(p) => p.theme.spacing.md};
-  &::before {
-    content: "";
-    position: absolute;
-    left: -36px;
-    top: 14px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: ${(p) => p.theme.colors.primary};
-    box-shadow: 0 0 8px ${(p) => p.theme.colors.magical};
-  }
-`;
-const JobTitle = styled.h3`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  color: ${(p) => p.theme.colors.primary};
-  margin: 0 0 2px;
-  font-size: 0.95rem;
-`;
-const JobMeta = styled.div`
-  font-size: 0.78rem;
-  color: ${(p) => p.theme.colors.secondary};
-  margin-bottom: 4px;
-`;
-const JobDesc = styled.p`
-  font-size: 0.82rem;
-  color: ${(p) => p.theme.colors.text};
-  margin: 0 0 6px;
-  line-height: 1.5;
-`;
-const Chips = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-`;
-const Chip = styled.span`
-  background: ${(p) => p.theme.colors.primary}15;
-  color: ${(p) => p.theme.colors.primary};
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  border: 1px solid ${(p) => p.theme.colors.primary}20;
-`;
-const Metric = styled.span`
-  background: ${(p) => p.theme.colors.primary}20;
-  color: ${(p) => p.theme.colors.primary};
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 0.75rem;
-  min-width: 48px;
-  text-align: center;
-`;
-const AchRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 3px;
-  font-size: 0.8rem;
-`;
+const Stat = ({ children }) => (
+  <div className="text-center p-4 bg-card rounded-xl shadow-neumorphic transition-transform duration-300 hover:-translate-y-[3px]">
+    {children}
+  </div>
+);
 
-/* projects */
-const PGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: ${(p) => p.theme.spacing.md};
-  margin-top: ${(p) => p.theme.spacing.md};
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-`;
-const PCard = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.md};
-  transition: all 0.3s;
-  &:hover {
-    transform: translateY(-5px);
-    animation: ${glow} 2s ease-in-out infinite;
-  }
-`;
-const PHead = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-`;
-const PTitle = styled.h3`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  color: ${(p) => p.theme.colors.text};
-  margin: 0;
-  font-size: 0.95rem;
-`;
-const Badge = styled.span`
-  background: ${(p) => p.theme.colors.primary}20;
-  color: ${(p) => p.theme.colors.primary};
-  padding: 1px 8px;
-  border-radius: 12px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-`;
-const PDesc = styled.p`
-  font-size: 0.8rem;
-  color: ${(p) => p.theme.colors.text};
-  line-height: 1.5;
-  margin: 4px 0 8px;
-`;
-const PAward = styled.div`
-  font-size: 0.75rem;
-  color: ${(p) => p.theme.colors.accent};
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-const PActions = styled.div`
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-`;
-const PLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: ${(p) => p.theme.colors.primary};
-  text-decoration: none;
-  padding: 4px 10px;
-  border-radius: ${(p) => p.theme.borderRadius.small};
-  border: 1px solid ${(p) => p.theme.colors.primary}30;
-  transition: all 0.2s;
-  &:hover {
-    background: ${(p) => p.theme.colors.primary}15;
-    transform: translateY(-1px);
-  }
-`;
-const PImpact = styled.div`
-  display: flex;
-  gap: ${(p) => p.theme.spacing.sm};
-  margin: 8px 0;
-  flex-wrap: wrap;
-`;
-const PImpactItem = styled.div`
-  text-align: center;
-  min-width: 70px;
-`;
-const PImpactVal = styled.div`
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: ${(p) => p.theme.colors.primary};
-  font-family: ${(p) => p.theme.typography.headingFont};
-`;
-const PImpactLbl = styled.div`
-  font-size: 0.6rem;
-  color: ${(p) => p.theme.colors.secondary};
-  text-transform: uppercase;
-`;
+const StatNum = ({ children }) => (
+  <div className="text-xl md:text-2xl font-bold text-primary font-heading">
+    {children}
+  </div>
+);
 
-/* skills */
-const SGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: ${(p) => p.theme.spacing.sm};
-  margin-top: ${(p) => p.theme.spacing.md};
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-`;
-const SCat = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.md};
-`;
-const SCatHead = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-`;
-const SCatTitle = styled.h4`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  margin: 0;
-  color: ${(p) => p.theme.colors.primary};
-  font-size: 0.85rem;
-`;
-const SkillList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-`;
+const StatLbl = ({ children }) => (
+  <div className="text-[0.7rem] text-secondary uppercase tracking-wide mt-0.5">
+    {children}
+  </div>
+);
 
-/* education */
-const EduGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: ${(p) => p.theme.spacing.md};
-  margin-top: ${(p) => p.theme.spacing.md};
-`;
-const EduCard = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.md};
-`;
-const EduDegree = styled.h3`
-  font-family: ${(p) => p.theme.typography.headingFont};
-  color: ${(p) => p.theme.colors.primary};
-  margin: 0 0 2px;
-  font-size: 0.9rem;
-`;
-const EduMeta = styled.div`
-  font-size: 0.78rem;
-  color: ${(p) => p.theme.colors.secondary};
-  margin-bottom: 4px;
-`;
-const EduBadge = styled.div`
-  font-size: 0.75rem;
-  color: ${(p) => p.theme.colors.accent};
-  font-weight: 500;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-`;
+// Section Header
+const SH = ({ children, style }) => (
+  <h2
+    className="flex items-center justify-center gap-2.5 font-heading text-text text-[clamp(1.2rem,3vw,1.6rem)] font-semibold tracking-tight mb-4 text-center sticky top-0 z-10 py-3.5 backdrop-blur-md bg-card/80 rounded-b-xl -mx-4 md:-mx-8 px-4 md:px-8 shadow-sm"
+    style={style}
+  >
+    {children}
+  </h2>
+);
 
-/* awards & certs */
-const AwardRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: ${(p) => p.theme.spacing.sm};
-  margin-top: ${(p) => p.theme.spacing.md};
-`;
-const AwardCard = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
-  font-size: 0.82rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
+// Experience
+const Timeline = ({ children }) => (
+  <div className="relative mt-4 before:absolute before:left-[18px] before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-primary before:to-magical">
+    {children}
+  </div>
+);
 
-/* contact */
-const ContactRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${(p) => p.theme.spacing.lg};
-  margin-top: ${(p) => p.theme.spacing.md};
-  @media (max-width: ${(p) => p.theme.breakpoints.md}) {
-    grid-template-columns: 1fr;
-  }
-`;
-const CInfo = styled(NeumorphicContainer)`
-  padding: ${(p) => p.theme.spacing.lg};
-`;
-const SocBtn = styled(NeumorphicButton)`
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  &:hover {
-    animation: ${glow} 2s ease-in-out infinite;
-  }
-`;
-const ContactItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-const ContactIcon = styled.div`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${(p) => p.theme.colors.primary}15;
-  border-radius: 50%;
-  color: ${(p) => p.theme.colors.primary};
-`;
-const ContactLabel = styled.div`
-  font-size: 0.72rem;
-  color: ${(p) => p.theme.colors.secondary};
-`;
-const ContactValue = styled.div`
-  font-weight: 500;
-  font-size: 0.88rem;
-`;
+const Job = ({ children }) => (
+  <div className="relative ml-[44px] my-2 p-4 bg-card rounded-xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const JobTitle = ({ children }) => (
+  <h3 className="font-heading text-primary m-0 mb-0.5 text-[0.95rem] font-semibold">
+    {children}
+  </h3>
+);
+
+const JobMeta = ({ children }) => (
+  <div className="text-[0.78rem] text-secondary mb-1">{children}</div>
+);
+
+const JobDesc = ({ children }) => (
+  <p className="text-[0.82rem] text-text mb-1.5 leading-relaxed">{children}</p>
+);
+
+const Chips = ({ children }) => (
+  <div className="flex flex-wrap gap-1">{children}</div>
+);
+
+const Chip = ({ children }) => (
+  <span className="bg-primary/10 text-primary px-2 py-[2px] rounded-xl text-[0.7rem] font-medium border border-primary/20">
+    {children}
+  </span>
+);
+
+const AchRow = ({ children }) => (
+  <div className="flex items-center gap-2 mb-[3px] text-[0.8rem]">
+    {children}
+  </div>
+);
+
+const Metric = ({ children }) => (
+  <span className="bg-primary/20 text-primary px-2 py-[2px] rounded font-bold text-[0.75rem] min-w-[48px] text-center">
+    {children}
+  </span>
+);
+
+// Projects
+const PGrid = ({ children }) => (
+  <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4 mt-4">
+    {children}
+  </div>
+);
+
+const PCard = ({ children, ...props }) => (
+  <div
+    className="p-4 bg-card rounded-xl shadow-neumorphic transition-all duration-300 hover:-translate-y-1 hover:animate-glow"
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+const PHead = ({ children }) => (
+  <div className="flex items-center justify-between mb-1">{children}</div>
+);
+
+const PTitle = ({ children }) => (
+  <h3 className="font-heading text-text m-0 text-[0.95rem] font-semibold">
+    {children}
+  </h3>
+);
+
+const Badge = ({ children }) => (
+  <span className="bg-primary/20 text-primary px-2 py-[1px] rounded-xl text-[0.65rem] font-semibold uppercase tracking-wide whitespace-nowrap">
+    {children}
+  </span>
+);
+
+const PAward = ({ children }) => (
+  <div className="text-[0.75rem] text-accent font-semibold mb-1.5 flex items-center gap-1">
+    {children}
+  </div>
+);
+
+const PDesc = ({ children }) => (
+  <p className="text-[0.8rem] text-text leading-relaxed my-1 mb-2">
+    {children}
+  </p>
+);
+
+const PImpact = ({ children }) => (
+  <div className="flex gap-2 my-2 flex-wrap">{children}</div>
+);
+
+const PImpactItem = ({ children }) => (
+  <div className="text-center min-w-[70px]">{children}</div>
+);
+
+const PImpactVal = ({ children }) => (
+  <div className="text-[0.85rem] font-bold text-primary font-heading">
+    {children}
+  </div>
+);
+
+const PImpactLbl = ({ children }) => (
+  <div className="text-[0.6rem] text-secondary uppercase">{children}</div>
+);
+
+const PActions = ({ children }) => (
+  <div className="flex gap-1.5 mt-2">{children}</div>
+);
+
+const PLink = ({ href, children, ...props }) => (
+  <a
+    href={href}
+    className="inline-flex items-center gap-1 text-[0.75rem] font-semibold text-primary px-2.5 py-1 rounded border border-primary/30 transition-all duration-200 hover:bg-primary/15 hover:-translate-y-[1px]"
+    {...props}
+  >
+    {children}
+  </a>
+);
+
+// Skills
+const SGrid = ({ children }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 mt-4">
+    {children}
+  </div>
+);
+
+const SCat = ({ children }) => (
+  <div className="p-4 bg-card rounded-xl shadow-neumorphic">{children}</div>
+);
+
+const SCatHead = ({ children }) => (
+  <div className="flex items-center gap-2 mb-2">{children}</div>
+);
+
+const SCatTitle = ({ children }) => (
+  <h4 className="font-heading m-0 text-primary text-[0.85rem] font-semibold">
+    {children}
+  </h4>
+);
+
+const SkillList = ({ children }) => (
+  <div className="flex flex-wrap gap-1">{children}</div>
+);
+
+// Education
+const EduGrid = ({ children }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4 mt-4">
+    {children}
+  </div>
+);
+
+const EduCard = ({ children }) => (
+  <div className="p-4 bg-card rounded-xl shadow-neumorphic">{children}</div>
+);
+
+const EduDegree = ({ children }) => (
+  <h3 className="font-heading text-primary m-0 mb-0.5 text-[0.9rem] font-semibold">
+    {children}
+  </h3>
+);
+
+const EduMeta = ({ children }) => (
+  <div className="text-[0.78rem] text-secondary mb-1">{children}</div>
+);
+
+const EduBadge = ({ children }) => (
+  <div className="text-[0.75rem] text-accent font-medium flex flex-wrap gap-1.5 items-center">
+    {children}
+  </div>
+);
+
+// Awards
+const AwardRow = ({ children }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-2 mt-4">
+    {children}
+  </div>
+);
+
+const AwardCard = ({ children }) => (
+  <div className="px-4 py-2 text-[0.82rem] flex items-center gap-2 bg-card rounded-xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+// Contact
+const ContactRow = ({ children }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">{children}</div>
+);
+
+const CInfo = ({ children, style, className = "" }) => (
+  <div
+    className={`p-8 bg-card rounded-xl shadow-neumorphic ${className}`}
+    style={style}
+  >
+    {children}
+  </div>
+);
+
+const SocBtn = ({ as, href, children, ...props }) => {
+  const Component = as || "button";
+  return (
+    <Component
+      href={href}
+      className="w-11 h-11 p-0 rounded-full flex items-center justify-center text-[1.1rem] bg-background text-text shadow-neumorphic hover:animate-glow transition-all duration-300"
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+};
+
+const ContactItem = ({ children }) => (
+  <div className="flex items-center gap-3">{children}</div>
+);
+
+const ContactIcon = ({ children }) => (
+  <div className="w-9 h-9 flex items-center justify-center bg-primary/15 rounded-full text-primary">
+    {children}
+  </div>
+);
+
+const ContactLabel = ({ children }) => (
+  <div className="text-[0.72rem] text-secondary">{children}</div>
+);
+
+const ContactValue = ({ children }) => (
+  <div className="font-medium text-[0.88rem]">{children}</div>
+);
 
 /* ── Component ────────────────────────────────── */
+
 const Home = () => {
-  const { theme } = useTheme();
   const d = portfolioData;
   const featured = d.projects.filter((p) => p.priority === "featured");
   const other = d.projects.filter((p) => p.priority !== "featured");
@@ -623,7 +510,7 @@ const Home = () => {
     <Page>
       {/* Hero */}
       <Hero id="home">
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -649,15 +536,18 @@ const Home = () => {
             </HeroText>
             <AvatarWrap>
               <Avatar>
-                <img src={d.personal.profileImage} alt={d.personal.name} />
+                <AvatarImage
+                  src={d.personal.profileImage}
+                  alt={d.personal.name}
+                />
               </Avatar>
             </AvatarWrap>
           </HeroCard>
-        </motion.div>
+        </MotionDiv>
       </Hero>
 
       {/* Stats */}
-      <A>
+      <A id="stats">
         <StatsRow>
           {[
             { n: d.personal.quickStats.yearsExperience + "+", l: "Years Exp." },
@@ -676,7 +566,7 @@ const Home = () => {
       </A>
 
       {/* Experience */}
-      <A id="experience" style={{ padding: `${theme.spacing.lg} 0` }}>
+      <A id="experience" className="py-8 content-visibility-auto">
         <I>
           <SH>
             <Briefcase size={22} /> Experience
@@ -691,13 +581,11 @@ const Home = () => {
                   {j.company} · {j.duration}
                 </JobMeta>
                 <JobDesc>{j.description}</JobDesc>
-                <div style={{ marginBottom: 6 }}>
+                <div className="mb-1.5">
                   {j.achievements.map((a, i) => (
                     <AchRow key={i}>
                       <Metric>{a.metric}</Metric>
-                      <span style={{ color: theme.colors.text }}>
-                        {a.description}
-                      </span>
+                      <span className="text-text">{a.description}</span>
                     </AchRow>
                   ))}
                 </div>
@@ -713,10 +601,7 @@ const Home = () => {
       </A>
 
       {/* Featured Projects */}
-      <A
-        id="projects"
-        style={{ padding: `${theme.spacing.lg} 0`, contentVisibility: "auto" }}
-      >
+      <A id="projects" className="py-8 content-visibility-auto">
         <I>
           <SH>
             <FolderGit2 size={22} /> Featured Projects
@@ -727,7 +612,7 @@ const Home = () => {
         {other.length > 0 && (
           <>
             <I>
-              <SH style={{ marginTop: theme.spacing.lg, fontSize: "1.1rem" }}>
+              <SH style={{ marginTop: "2rem", fontSize: "1.1rem" }}>
                 <ChevronRight size={18} /> More Projects
               </SH>
             </I>
@@ -737,10 +622,7 @@ const Home = () => {
       </A>
 
       {/* Skills */}
-      <A
-        id="skills"
-        style={{ padding: `${theme.spacing.lg} 0`, contentVisibility: "auto" }}
-      >
+      <A id="skills" className="py-8 content-visibility-auto">
         <I>
           <SH>
             <Zap size={22} /> Technical Skills
@@ -753,7 +635,7 @@ const Home = () => {
               <I key={name}>
                 <SCat>
                   <SCatHead>
-                    <Icon size={18} color={theme.colors.primary} />
+                    <Icon size={18} className="text-primary" />
                     <SCatTitle>{name}</SCatTitle>
                   </SCatHead>
                   <SkillList>
@@ -769,10 +651,7 @@ const Home = () => {
       </A>
 
       {/* Education */}
-      <A
-        id="education"
-        style={{ padding: `${theme.spacing.lg} 0`, contentVisibility: "auto" }}
-      >
+      <A id="education" className="py-8 content-visibility-auto">
         <I>
           <SH>
             <GraduationCap size={22} /> Education
@@ -798,9 +677,7 @@ const Home = () => {
       </A>
 
       {/* Awards & Certs */}
-      <A
-        style={{ padding: `${theme.spacing.lg} 0`, contentVisibility: "auto" }}
-      >
+      <A className="py-8 content-visibility-auto">
         <I>
           <SH>
             <Award size={22} /> Awards & Certifications
@@ -810,16 +687,16 @@ const Home = () => {
           {d.awards.map((a, i) => (
             <I key={i}>
               <AwardCard>
-                <Trophy size={14} color={theme.colors.primary} />
-                <span style={{ color: theme.colors.text }}>{a}</span>
+                <Trophy size={14} className="text-primary" />
+                <span className="text-text">{a}</span>
               </AwardCard>
             </I>
           ))}
           {d.certifications.map((c, i) => (
             <I key={"c" + i}>
               <AwardCard>
-                <FileText size={14} color={theme.colors.primary} />
-                <span style={{ color: theme.colors.text }}>{c}</span>
+                <FileText size={14} className="text-primary" />
+                <span className="text-text">{c}</span>
               </AwardCard>
             </I>
           ))}
@@ -827,10 +704,7 @@ const Home = () => {
       </A>
 
       {/* Contact */}
-      <A
-        id="contact"
-        style={{ padding: `${theme.spacing.xl} 0`, contentVisibility: "auto" }}
-      >
+      <A id="contact" className="py-12 content-visibility-auto">
         <I>
           <SH>
             <Mail size={22} /> Let's Connect
@@ -839,13 +713,7 @@ const Home = () => {
         <ContactRow>
           <I>
             <CInfo>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: theme.spacing.md,
-                }}
-              >
+              <div className="flex flex-col gap-4">
                 <ContactItem>
                   <ContactIcon>
                     <Mail size={16} />
@@ -874,7 +742,7 @@ const Home = () => {
                   </div>
                 </ContactItem>
               </div>
-              <FlexContainer gap="sm" style={{ marginTop: theme.spacing.lg }}>
+              <div className="flex gap-2 mt-6">
                 <SocBtn
                   as="a"
                   href={d.personal.socialLinks.github}
@@ -900,28 +768,12 @@ const Home = () => {
                 >
                   <i className="fas fa-envelope"></i>
                 </SocBtn>
-              </FlexContainer>
+              </div>
             </CInfo>
           </I>
           <I>
-            <CInfo
-              style={{
-                textAlign: "center",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: theme.spacing.md,
-              }}
-            >
-              <h3
-                style={{
-                  fontFamily: theme.typography.headingFont,
-                  color: theme.colors.primary,
-                  margin: 0,
-                  fontSize: "1.05rem",
-                }}
-              >
+            <CInfo className="text-center flex flex-col items-center justify-center gap-4">
+              <h3 className="font-heading text-primary m-0 text-lg font-bold">
                 Ready to Build Together?
               </h3>
               <Btn $primary as="a" href={`mailto:${d.personal.email}`}>

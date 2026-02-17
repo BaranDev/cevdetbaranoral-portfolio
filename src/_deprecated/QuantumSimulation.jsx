@@ -1,109 +1,142 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import {
-  NeumorphicContainer,
-  NeumorphicButton,
-  FlexContainer,
-  Text,
-  Heading,
-  SubHeading,
-} from "../../styles/StyledComponents";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "../../context/ThemeContext";
 
-const SimulationContainer = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.xl};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-`;
+// ─── Tailwind Components replacing Styled Components ────────────────
 
-const CircuitCanvas = styled.canvas`
-  width: 100%;
-  max-width: 800px;
-  height: 400px;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  background: ${(props) => props.theme.colors.background};
-  box-shadow: ${(props) => props.theme.shadows.inset};
-  margin: ${(props) => props.theme.spacing.lg} 0;
-`;
+const SimulationContainer = ({ children, className = "", ...props }) => (
+  <div
+    className={`p-8 mb-8 bg-card rounded-2xl shadow-neumorphic ${className}`}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-const ControlPanel = styled(FlexContainer)`
-  flex-wrap: wrap;
-  gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-`;
-
-const GateButton = styled(NeumorphicButton)`
-  min-width: 80px;
-  font-size: ${(props) => props.theme.typography.fontSizes.sm};
-  font-weight: ${(props) => props.theme.typography.fontWeights.bold};
-  background-color: ${(props) =>
-    props.$active ? props.theme.colors.primary : "transparent"};
-  color: ${(props) => (props.$active ? "white" : props.theme.colors.text)};
-`;
-
-const StateDisplay = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.md};
-  margin-top: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.card};
-`;
-
-const ProbabilityBar = styled.div`
-  width: 100%;
-  height: 8px;
-  background-color: ${(props) => props.theme.colors.background};
-  border-radius: 4px;
-  overflow: hidden;
-  margin: ${(props) => props.theme.spacing.xs} 0;
-`;
-
-const ProbabilityFill = styled.div`
-  height: 100%;
-  width: ${(props) => props.width}%;
-  background-color: ${(props) => props.theme.colors.primary};
-  transition: width 0.3s ease;
-`;
-
-const QubitState = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
-`;
-
-const MeasurementResult = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.md};
-  margin-top: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.success}15;
-  border-left: 4px solid ${(props) => props.theme.colors.success};
-`;
-
-const ChallengeStatus = styled(NeumorphicContainer)`
-  padding: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  background: linear-gradient(
-    135deg,
-    ${(props) => props.theme.colors.primary}10,
-    ${(props) => props.theme.colors.secondary}10
+const CircuitCanvas = ({ ...props }) => {
+  const { theme } = useTheme();
+  return (
+    <canvas
+      className={`w-full max-w-[800px] h-[400px] rounded-lg shadow-inner my-6 ${theme.name === "dark" ? "bg-[#1a1f2e]" : "bg-[#f0f2f5]"}`}
+      {...props}
+    />
   );
-  border-left: 4px solid ${(props) => props.theme.colors.primary};
-`;
+};
 
-const ProgressIndicator = styled.div`
-  margin-top: ${(props) => props.theme.spacing.sm};
+const ControlPanel = ({ children, ...props }) => (
+  <div className="flex flex-wrap gap-4 mb-6" {...props}>
+    {children}
+  </div>
+);
 
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background-color: ${(props) => props.theme.colors.background};
-    border-radius: 3px;
-    overflow: hidden;
-  }
+const GateButton = ({ $active, children, primary, ...props }) => (
+  <button
+    className={`
+      min-w-[80px] text-sm font-bold px-4 py-2 rounded-xl transition-all duration-200
+      ${
+        $active
+          ? "bg-primary text-white shadow-inner"
+          : primary
+            ? "bg-primary text-white shadow-md hover:shadow-lg hover:-translate-y-0.5"
+            : "bg-transparent text-text hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-text/10"
+      }
+    `}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
-  .progress-fill {
-    height: 100%;
-    background-color: ${(props) => props.theme.colors.success};
-    transition: width 0.5s ease;
-  }
-`;
+const StateDisplay = ({ children, style, ...props }) => (
+  <div
+    className="p-4 mt-4 bg-card rounded-2xl shadow-neumorphic"
+    style={style}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+const ProbabilityBar = ({ children }) => (
+  <div className="w-full h-2 bg-background rounded-full overflow-hidden my-1">
+    {children}
+  </div>
+);
+
+const ProbabilityFill = ({ width }) => (
+  <div
+    className="h-full bg-primary transition-all duration-300"
+    style={{ width: `${width}%` }}
+  />
+);
+
+const QubitState = ({ children }) => (
+  <div className="flex justify-between items-center mb-2">{children}</div>
+);
+
+const MeasurementResult = ({ children }) => (
+  <div className="p-4 mt-4 bg-success/10 border-l-4 border-success rounded-xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const ChallengeStatus = ({ children }) => (
+  <div className="p-4 mb-6 bg-gradient-to-br from-primary/10 to-secondary/10 border-l-4 border-primary rounded-xl shadow-neumorphic">
+    {children}
+  </div>
+);
+
+const ProgressIndicator = ({ children }) => (
+  <div className="mt-2">{children}</div>
+);
+
+// Typography & Layout Helpers
+const Heading = ({ children, style, ...props }) => (
+  <h2
+    className="text-2xl font-bold text-text font-heading"
+    style={style}
+    {...props}
+  >
+    {children}
+  </h2>
+);
+
+const SubHeading = ({ children, style, ...props }) => (
+  <h3
+    className="text-xl font-semibold text-text font-heading"
+    style={style}
+    {...props}
+  >
+    {children}
+  </h3>
+);
+
+const Text = ({ size, weight, children, style, ...props }) => (
+  <p
+    className={`
+      ${size === "sm" ? "text-sm" : "text-base"}
+      ${weight === "semiBold" ? "font-semibold" : weight === "medium" ? "font-medium" : ""}
+      text-text
+    `}
+    style={style}
+    {...props}
+  >
+    {children}
+  </p>
+);
+
+const FlexContainer = ({ justify, align, gap, children, ...props }) => (
+  <div
+    className="flex"
+    style={{
+      justifyContent: justify === "space-between" ? "space-between" : justify,
+      alignItems: align === "center" ? "center" : align,
+      gap: gap === "sm" ? "0.5rem" : gap,
+    }}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
 // Quantum computing simulation class
 class QuantumSimulator {
@@ -201,7 +234,7 @@ class QuantumSimulator {
   checkState(targetProbabilities, tolerance = 0.05) {
     const currentProbs = this.getProbabilities();
     return targetProbabilities.every(
-      (target, index) => Math.abs(currentProbs[index] - target) < tolerance
+      (target, index) => Math.abs(currentProbs[index] - target) < tolerance,
     );
   }
 }
@@ -226,7 +259,7 @@ const QuantumSimulation = ({
     setProbabilities(simulator.getProbabilities());
   };
 
-  const checkChallengeCompletion = () => {
+  const checkChallengeCompletion = useCallback(() => {
     if (!gameMode || !currentChallenge || !gameState || !setGameState) return;
 
     let completed = false;
@@ -244,7 +277,7 @@ const QuantumSimulation = ({
       case 2: {
         // Bell State Creator
         const hasH0 = simulator.gates.some(
-          (gate) => gate.type === "H" && gate.qubit === 0
+          (gate) => gate.type === "H" && gate.qubit === 0,
         );
         const hasCNOT = simulator.gates.some((gate) => gate.type === "CNOT");
         const bellState = hasH0 && hasCNOT;
@@ -266,7 +299,7 @@ const QuantumSimulation = ({
       case 4: {
         // Measurement Master
         const hasSuperposition = simulator.gates.some(
-          (gate) => gate.type === "H"
+          (gate) => gate.type === "H",
         );
         completed = hasSuperposition && simulator.measurementCount >= 5;
         progress = hasSuperposition
@@ -279,10 +312,10 @@ const QuantumSimulation = ({
         // Equal Probabilities
         completed = simulator.checkState([0.25, 0.25, 0.25, 0.25]);
         const h0 = simulator.gates.some(
-          (gate) => gate.type === "H" && gate.qubit === 0
+          (gate) => gate.type === "H" && gate.qubit === 0,
         );
         const h1 = simulator.gates.some(
-          (gate) => gate.type === "H" && gate.qubit === 1
+          (gate) => gate.type === "H" && gate.qubit === 1,
         );
         progress = h0 ? (h1 ? (completed ? 100 : 80) : 50) : 0;
         break;
@@ -325,9 +358,16 @@ const QuantumSimulation = ({
         points: finalPoints,
       });
     }
-  };
+  }, [
+    gameMode,
+    currentChallenge,
+    gameState,
+    setGameState,
+    simulator,
+    onChallengeComplete,
+  ]);
 
-  const drawCircuit = () => {
+  const drawCircuit = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -416,7 +456,7 @@ const QuantumSimulation = ({
     });
 
     ctx.textAlign = "left";
-  };
+  }, [theme, simulator]);
 
   const applyGate = (gateType, qubit = 0) => {
     setIsAnimating(true);
@@ -488,13 +528,19 @@ const QuantumSimulation = ({
       canvas.height = rect.height;
       drawCircuit();
     }
-  }, [gateOperations, theme]);
+  }, [gateOperations, theme, drawCircuit]);
 
   useEffect(() => {
     if (gameMode) {
       checkChallengeCompletion();
     }
-  }, [probabilities, simulator.gates, simulator.measurementCount]);
+  }, [
+    probabilities,
+    simulator.gates,
+    simulator.measurementCount,
+    gameMode,
+    checkChallengeCompletion,
+  ]);
 
   const stateLabels = ["|00⟩", "|01⟩", "|10⟩", "|11⟩"];
 

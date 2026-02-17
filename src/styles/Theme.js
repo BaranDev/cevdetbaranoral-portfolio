@@ -67,7 +67,7 @@ const lightTheme = {
 
   // Typography
   typography: {
-    fontFamily: "'Poppins', 'Roboto', sans-serif",
+    fontFamily: "'Inter', 'Poppins', 'Roboto', sans-serif",
     fontSizes: {
       xs: "0.75rem",
       sm: "0.875rem",
@@ -168,21 +168,18 @@ const darkTheme = {
 };
 
 // Shared typography extension (applied to both themes after definition)
-const fantasyHeading = "'Cinzel', 'Times New Roman', serif";
-const pixelFont = "'Press Start 2P', 'Pixelify Sans', monospace";
+const headingFont = "'Inter', 'Poppins', 'Roboto', sans-serif";
 
 lightTheme.typography = {
   ...lightTheme.typography,
-  headingFont: fantasyHeading,
-  pixelFont,
-  bodyFont: "'Poppins', 'Roboto', sans-serif",
+  headingFont,
+  bodyFont: "'Inter', 'Poppins', 'Roboto', sans-serif",
 };
 
 darkTheme.typography = {
   ...darkTheme.typography,
-  headingFont: fantasyHeading,
-  pixelFont,
-  bodyFont: "'Poppins', 'Roboto', sans-serif",
+  headingFont,
+  bodyFont: "'Inter', 'Poppins', 'Roboto', sans-serif",
 };
 
 // Additional effect tokens

@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 CHECKLIST FOR REVISION.md
+
+# Parallax HD images (large files, not for git)
+public/parallax/
+.github/copilot-instructions.md
+prompts_for_background.md

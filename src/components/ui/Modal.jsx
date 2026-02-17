@@ -1,194 +1,102 @@
-import React, { useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { NeumorphicButton } from '../../styles/StyledComponents';
+import React, { useEffect } from "react";
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const slideIn = keyframes`
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${props => props.theme.colors.modalBackground};
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  animation: ${fadeIn} 0.3s ease-out;
-`;
-
-const ModalContainer = styled.div`
-  position: relative;
-  background: ${props => props.theme.colors.glassMorphism};
-  border-radius: ${props => props.theme.borderRadius.large};
-  padding: ${props => props.theme.spacing.xl};
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid ${props => props.theme.colors.glassMorphismBorder};
-  max-width: 800px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  animation: ${slideIn} 0.4s ease-out;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${props => props.theme.spacing.lg};
-`;
-
-const ModalTitle = styled.h2`
-  margin: 0;
-  color: ${props => props.theme.colors.text};
-  font-size: ${props => props.theme.typography.fontSizes.xl};
-  font-weight: ${props => props.theme.typography.fontWeights.semiBold};
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: ${props => props.theme.colors.text};
-  font-size: ${props => props.theme.typography.fontSizes.lg};
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    color: ${props => props.theme.colors.primary};
-    transform: scale(1.1);
-  }
-`;
-
-const ModalContent = styled.div`
-  margin-bottom: ${props => props.theme.spacing.lg};
-  color: ${props => props.theme.colors.text};
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: ${props => props.theme.spacing.md};
-`;
-
-const StartButton = styled(NeumorphicButton)`
-  background-color: ${props => props.theme.colors.primary};
-  color: white;
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.lg};
-  
-  &:hover {
-    transform: translateY(-3px);
-  }
-`;
-
-const CancelButton = styled(NeumorphicButton)`
-  color: ${props => props.theme.colors.text};
-  
-  &:hover {
-    transform: translateY(-3px);
-  }
-`;
-
-const Modal = ({ 
-  title, 
-  children, 
-  isOpen, 
-  onClose, 
-  onStart, 
+const Modal = ({
+  title,
+  children,
+  isOpen,
+  onClose,
+  onStart,
   startButtonText = "Start",
   showCancel = true,
-  showStartButton = true
+  showStartButton = true,
 }) => {
   // Handle escape key press and scrolling
   useEffect(() => {
     const handleEscPress = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         onClose();
       }
     };
-    
-    window.addEventListener('keydown', handleEscPress);
-    
+
+    window.addEventListener("keydown", handleEscPress);
+
     // Store original overflow value
     const originalOverflow = document.body.style.overflow;
-    
+
     // Prevent body scrolling when modal is open
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
-    
+
     return () => {
-      window.removeEventListener('keydown', handleEscPress);
+      window.removeEventListener("keydown", handleEscPress);
       // Always restore scrolling on unmount, regardless of isOpen state
-      document.body.style.overflow = originalOverflow || 'auto';
+      document.body.style.overflow = originalOverflow || "auto";
     };
   }, [isOpen, onClose]);
-  
+
   // Don't render anything if modal is not open
   if (!isOpen) {
-    // Ensure scrolling is restored even if component isn't unmounted
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
     return null;
   }
-  
+
   // Close if overlay is clicked
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
-  
+
   // Handle close button click
   const handleClose = () => {
-    // Ensure scrolling is restored before closing
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
     onClose();
   };
-  
+
   return (
-    <ModalOverlay onClick={handleOverlayClick}>
-      <ModalContainer>
-        <ModalHeader>
-          <ModalTitle>{title}</ModalTitle>
-          <CloseButton onClick={handleClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-black/40 backdrop-blur-md animate-[fadeIn_0.3s_ease-out]"
+      onClick={handleOverlayClick}
+    >
+      <div className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto bg-glass-morphism rounded-3xl p-8 shadow-2xl backdrop-blur-md border border-glass-border animate-[slideIn_0.4s_ease-out]">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="m-0 text-text text-xl font-semibold">{title}</h2>
+          <button
+            onClick={handleClose}
+            className="bg-none border-none text-text text-lg cursor-pointer transition-all duration-200 hover:text-primary hover:scale-110"
+          >
             <i className="fas fa-times"></i>
-          </CloseButton>
-        </ModalHeader>
-        
-        <ModalContent>{children}</ModalContent>
-        
-        <ModalActions>
+          </button>
+        </div>
+
+        <div className="mb-6 text-text">{children}</div>
+
+        <div className="flex justify-end gap-4">
           {showCancel && (
-            <CancelButton onClick={handleClose}>Cancel</CancelButton>
+            <button
+              onClick={handleClose}
+              className="px-6 py-2 font-medium bg-card text-text border border-primary/30 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 cursor-pointer"
+            >
+              Cancel
+            </button>
           )}
           {showStartButton && (
-            <StartButton onClick={onStart}>{startButtonText}</StartButton>
+            <button
+              onClick={onStart}
+              className="px-6 py-2 font-medium bg-primary text-white border border-primary/30 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 cursor-pointer"
+            >
+              {startButtonText}
+            </button>
           )}
-        </ModalActions>
-      </ModalContainer>
-    </ModalOverlay>
+        </div>
+      </div>
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      `}</style>
+    </div>
   );
 };
 
-export default Modal; 
+export default Modal;

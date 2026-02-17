@@ -1,94 +1,59 @@
 import React from "react";
-import styled from "styled-components";
 import { useTheme } from "../../context/ThemeContext";
-import { NeumorphicContainer } from "../../styles/StyledComponents";
+import { Sun, Moon } from "lucide-react";
 
-const ToggleContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ToggleSwitch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 24px;
-  cursor: pointer;
-`;
-
-const ToggleSlider = styled(NeumorphicContainer)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 34px;
-  transition: 0.4s;
-  cursor: pointer;
-  padding: 0;
-
-  &:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: ${(props) => (props.checked ? "27px" : "3px")};
-    bottom: 3px;
-    background-color: ${(props) => props.theme.colors.primary};
-    border-radius: 50%;
-    transition: 0.4s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-  }
-
-  .moon {
-    right: 7px;
-    color: ${(props) => props.theme.colors.text};
-    opacity: ${(props) => (props.checked ? "1" : "0.3")};
-  }
-
-  .sun {
-    left: 7px;
-    color: ${(props) => props.theme.colors.text};
-    opacity: ${(props) => (!props.checked ? "1" : "0.3")};
-  }
-`;
-
-const ToggleInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-`;
-
-const ThemeToggle = () => {
+const ThemeToggle = ({ collapsed }) => {
   const { isDarkMode, toggleTheme } = useTheme();
 
+  const containerClasses = `
+    flex items-center justify-center overflow-hidden rounded-xl bg-card transition-all duration-300
+    border border-primary/15 shadow-md hover:shadow-lg hover:border-primary/25 relative
+    ${collapsed ? "w-10 h-10 rounded-full p-0 cursor-pointer" : "w-full min-h-[40px] p-0 flex-row"}
+  `;
+
+  const btnClasses = `
+    w-full flex-1 border-none bg-transparent flex items-center justify-center gap-2 cursor-pointer py-3 transition-all duration-200
+    hover:bg-primary/10 hover:opacity-100 disabled:opacity-50
+  `;
+
+  // If sidebar is collapsed, show minimal round toggle
+  if (collapsed) {
+    return (
+      <div
+        className={containerClasses}
+        onClick={toggleTheme}
+        title="Toggle Theme"
+      >
+        <button className="w-full h-full flex items-center justify-center border-none bg-transparent text-primary hover:text-accent cursor-pointer">
+          {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
+      </div>
+    );
+  }
+
+  // Expanded sidebar: Vertical split toggle with divider
   return (
-    <ToggleContainer>
-      <ToggleSwitch>
-        <ToggleInput
-          type="checkbox"
-          checked={isDarkMode}
-          onChange={toggleTheme}
-        />
-        <ToggleSlider checked={isDarkMode}>
-          <span className="icon sun">
-            <i className="fas fa-sun"></i>
-          </span>
-          <span className="icon moon">
-            <i className="fas fa-moon"></i>
-          </span>
-        </ToggleSlider>
-      </ToggleSwitch>
-    </ToggleContainer>
+    <div className={containerClasses}>
+      {/* Day Mode Button (Top) */}
+      <button
+        className={`${btnClasses} ${!isDarkMode ? "bg-primary/15 text-primary opacity-100" : "text-text opacity-50"}`}
+        onClick={() => isDarkMode && toggleTheme()}
+        title="Switch to Light Mode"
+      >
+        <Sun size={18} />
+      </button>
+
+      <div className="h-[60%] w-[1px] bg-text/15 my-0.5" />
+
+      {/* Night Mode Button (Bottom) */}
+      <button
+        className={`${btnClasses} ${isDarkMode ? "bg-primary/15 text-primary opacity-100" : "text-text opacity-50"}`}
+        onClick={() => !isDarkMode && toggleTheme()}
+        title="Switch to Dark Mode"
+      >
+        <Moon size={18} />
+      </button>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import styled, { keyframes, css } from "styled-components";
 import {
   Home,
   Briefcase,
@@ -9,8 +8,6 @@ import {
   GraduationCap,
   Mail,
   Brain,
-  Sun,
-  Moon,
   Download,
   Menu,
   X,
@@ -18,19 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ThemeToggle from "../ui/ThemeToggle";
-import CVDownloadButton from "../ui/CVDownloadButton";
 import CVDownloadModal from "../ui/CVDownloadModal";
-import { useTheme } from "../../context/ThemeContext";
-
-/* ── vars ────────────────────────────────────── */
-const NAV_W = 220;
-const NAV_W_MIN = 64;
-
-/* ── keyframes ───────────────────────────────── */
-const glowPulse = keyframes`
-  0%,100%{box-shadow:0 0 8px rgba(218,165,32,.3)}
-  50%{box-shadow:0 0 16px rgba(218,165,32,.5)}
-`;
 
 /* ── nav items ───────────────────────────────── */
 const NAV_SECTIONS = [
@@ -44,286 +29,6 @@ const NAV_SECTIONS = [
 
 const NAV_ROUTES = [{ to: "/ai-demos", label: "AI Demos", icon: Brain }];
 
-/* ── styled: sidebar (desktop) ───────────────── */
-const Sidebar = styled.nav`
-  position: fixed;
-  left: 12px;
-  top: 12px;
-  bottom: 12px;
-  width: ${(p) => (p.$collapsed ? NAV_W_MIN : NAV_W)}px;
-  background: ${(p) => p.theme.colors.card}ee;
-  backdrop-filter: blur(16px);
-  border: 1px solid ${(p) => p.theme.colors.primary}20;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  transition: width 0.25s ease;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const NavTop = styled.div`
-  padding: 16px 12px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-end")};
-  gap: 8px;
-`;
-
-const CollapseBtn = styled.button`
-  background: ${(p) => p.theme.colors.primary}15;
-  border: 1px solid ${(p) => p.theme.colors.primary}20;
-  border-radius: 8px;
-  color: ${(p) => p.theme.colors.secondary};
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  &:hover {
-    color: ${(p) => p.theme.colors.primary};
-    background: ${(p) => p.theme.colors.primary}25;
-  }
-`;
-
-const NavItems = styled.div`
-  flex: 1;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 99px;
-    background: ${(p) => p.theme.colors.primary}30;
-  }
-`;
-
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid ${(p) => p.theme.colors.primary}15;
-  margin: 6px ${(p) => (p.$collapsed ? "8px" : "12px")};
-`;
-
-const NavBtn = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px ${(p) => (p.$collapsed ? "0" : "12px")};
-  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-start")};
-  background: ${(p) =>
-    p.$active ? p.theme.colors.primary + "18" : "transparent"};
-  border: none;
-  border-radius: 10px;
-  color: ${(p) =>
-    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
-  font-size: 0.82rem;
-  font-weight: ${(p) => (p.$active ? "600" : "400")};
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  position: relative;
-
-  ${(p) =>
-    p.$active &&
-    css`
-      &::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 20px;
-        background: ${p.theme.colors.primary};
-        border-radius: 0 4px 4px 0;
-      }
-    `}
-
-  &:hover {
-    background: ${(p) => p.theme.colors.primary}12;
-    color: ${(p) => p.theme.colors.primary};
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
-  span {
-    opacity: ${(p) => (p.$collapsed ? 0 : 1)};
-    transition: opacity 0.2s;
-    overflow: hidden;
-  }
-`;
-
-const NavRouteLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px ${(p) => (p.$collapsed ? "0" : "12px")};
-  justify-content: ${(p) => (p.$collapsed ? "center" : "flex-start")};
-  background: ${(p) =>
-    p.$active ? p.theme.colors.primary + "18" : "transparent"};
-  border: none;
-  border-radius: 10px;
-  color: ${(p) =>
-    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
-  font-size: 0.82rem;
-  font-weight: ${(p) => (p.$active ? "600" : "400")};
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-
-  &:hover {
-    background: ${(p) => p.theme.colors.primary}12;
-    color: ${(p) => p.theme.colors.primary};
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
-  span {
-    opacity: ${(p) => (p.$collapsed ? 0 : 1)};
-    transition: opacity 0.2s;
-    overflow: hidden;
-  }
-`;
-
-const NavFooter = styled.div`
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const FooterRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: ${(p) => (p.$collapsed ? "center" : "space-between")};
-  gap: 10px;
-  padding: 6px ${(p) => (p.$collapsed ? "0" : "8px")};
-  flex-direction: ${(p) => (p.$collapsed ? "column" : "row")};
-`;
-
-const MobileThemeToggleWrapper = styled.div`
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-
-  @media (min-width: 769px) {
-    display: none;
-  }
-`;
-
-/* ── styled: mobile bar ──────────────────────── */
-const MobileBar = styled.nav`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: ${(p) => p.theme.colors.card}f0;
-    backdrop-filter: blur(16px);
-    border-top: 1px solid ${(p) => p.theme.colors.primary}20;
-    z-index: 100;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 4px;
-    padding-bottom: env(safe-area-inset-bottom, 0);
-  }
-`;
-
-const MobBtn = styled.button`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 4px 6px;
-  background: none;
-  border: none;
-  color: ${(p) =>
-    p.$active ? p.theme.colors.primary : p.theme.colors.secondary};
-  font-size: 0.6rem;
-  cursor: pointer;
-  transition: color 0.2s;
-  flex: 1;
-  max-width: 64px;
-
-  &:hover,
-  &:active {
-    color: ${(p) => p.theme.colors.primary};
-  }
-`;
-
-const MobMore = styled.div`
-  position: fixed;
-  bottom: 64px;
-  left: 8px;
-  right: 8px;
-  background: ${(p) => p.theme.colors.card}f8;
-  backdrop-filter: blur(16px);
-  border: 1px solid ${(p) => p.theme.colors.primary}20;
-  border-radius: 16px;
-  padding: 12px;
-  z-index: 101;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
-`;
-
-const MobMoreBtn = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: ${(p) =>
-    p.$active ? p.theme.colors.primary + "18" : p.theme.colors.primary + "08"};
-  border: 1px solid ${(p) => p.theme.colors.primary}15;
-  border-radius: 10px;
-  color: ${(p) => (p.$active ? p.theme.colors.primary : p.theme.colors.text)};
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  &:hover {
-    background: ${(p) => p.theme.colors.primary}18;
-  }
-`;
-
-const MobMoreLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: ${(p) => p.theme.colors.primary}08;
-  border: 1px solid ${(p) => p.theme.colors.primary}15;
-  border-radius: 10px;
-  color: ${(p) => p.theme.colors.text};
-  font-size: 0.82rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  &:hover {
-    background: ${(p) => p.theme.colors.primary}18;
-  }
-`;
-
 /* ── Component ───────────────────────────────── */
 const Header = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -332,7 +37,6 @@ const Header = () => {
   const [showCVModal, setShowCVModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const isHome = location.pathname === "/";
 
   // track active section via IntersectionObserver
@@ -379,116 +83,190 @@ const Header = () => {
   const mobilePrimary = NAV_SECTIONS.slice(0, 4);
   const mobileSecondary = NAV_SECTIONS.slice(4);
 
+  // Common classes
+  const navItemClasses = (active) => `
+    flex items-center gap-3 p-3 rounded-xl transition-all duration-200 cursor-pointer border-none bg-transparent w-full
+    text-[0.82rem] font-medium whitespace-nowrap relative
+    ${
+      active
+        ? "bg-primary/10 text-primary font-semibold"
+        : "text-secondary hover:bg-primary/5 hover:text-primary"
+    }
+    ${collapsed ? "justify-center px-0" : "px-3"}
+  `;
+
+  // Active indicator line for desktop sidebar
+  const ActiveIndicator = () => (
+    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-md" />
+  );
+
   return (
     <>
       {/* Desktop sidebar */}
-      <Sidebar $collapsed={collapsed}>
-        <NavTop $collapsed={collapsed}>
-          <CollapseBtn
+      <nav
+        className={`
+          hidden md:flex fixed top-3 left-3 bottom-3 flex-col bg-card/95 backdrop-blur-md 
+          border border-primary/20 rounded-2xl z-[100] transition-[width] duration-300 overflow-hidden
+          ${collapsed ? "w-[64px]" : "w-[220px]"}
+        `}
+      >
+        {/* Top: Collapse Button */}
+        <div
+          className={`p-4 pb-2 flex items-center gap-2 ${collapsed ? "justify-center" : "justify-end"}`}
+        >
+          <button
             onClick={() => setCollapsed((c) => !c)}
             aria-label="Toggle sidebar"
+            className="w-7 h-7 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-secondary hover:text-primary border border-primary/20 rounded-lg transition-all"
           >
             {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-          </CollapseBtn>
-        </NavTop>
+          </button>
+        </div>
 
-        <NavItems>
-          {NAV_SECTIONS.map((s) => (
-            <NavBtn
+        {/* Middle: Navigation Items */}
+        <div className="flex-1 p-3 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden scrollbar-thin">
+          {NAV_SECTIONS.map((s) => {
+            const isActive = isHome && activeSection === s.id;
+            return (
+              <button
+                key={s.id}
+                className={navItemClasses(isActive)}
+                onClick={() => handleNav(s.id)}
+                title={collapsed ? s.label : ""}
+              >
+                {isActive && <ActiveIndicator />}
+                <s.icon size={18} className="shrink-0" />
+                <span
+                  className={`transition-opacity duration-200 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"}`}
+                >
+                  {s.label}
+                </span>
+              </button>
+            );
+          })}
+
+          <div
+            className={`my-1.5 border-t border-primary/10 ${collapsed ? "mx-2" : "mx-3"}`}
+          />
+
+          {NAV_ROUTES.map((r) => {
+            const isActive = location.pathname === r.to;
+            return (
+              <Link
+                key={r.to}
+                to={r.to}
+                className={navItemClasses(isActive)}
+                title={collapsed ? r.label : ""}
+              >
+                {isActive && <ActiveIndicator />}
+                <r.icon size={18} className="shrink-0" />
+                <span
+                  className={`transition-opacity duration-200 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"}`}
+                >
+                  {r.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Bottom: Theme Toggle */}
+        <div className="p-2 flex flex-col gap-1">
+          <div
+            className={`my-1.5 border-t border-primary/10 ${collapsed ? "mx-2" : "mx-3"}`}
+          />
+          <div
+            className={`flex items-center gap-2.5 p-1.5 ${collapsed ? "justify-center flex-col" : "justify-between"}`}
+          >
+            <ThemeToggle collapsed={collapsed} />
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile bottom bar */}
+      <nav className="md:hidden flex fixed bottom-0 left-0 right-0 h-[60px] bg-card/95 backdrop-blur-md border-t border-primary/20 z-[100] items-center justify-around px-1 pb-[env(safe-area-inset-bottom)]">
+        {mobilePrimary.map((s) => {
+          const isActive = isHome && activeSection === s.id;
+          return (
+            <button
               key={s.id}
-              $active={isHome && activeSection === s.id}
-              $collapsed={collapsed}
+              className={`
+                flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+                ${isActive ? "text-primary" : "text-secondary hover:text-primary"}
+              `}
               onClick={() => handleNav(s.id)}
             >
               <s.icon size={18} />
-              <span>{s.label}</span>
-            </NavBtn>
-          ))}
-
-          <Divider $collapsed={collapsed} />
-
-          {NAV_ROUTES.map((r) => (
-            <NavRouteLink
-              key={r.to}
-              to={r.to}
-              $active={location.pathname === r.to}
-              $collapsed={collapsed}
-            >
-              <r.icon size={18} />
-              <span>{r.label}</span>
-            </NavRouteLink>
-          ))}
-        </NavItems>
-
-        <NavFooter>
-          <Divider $collapsed={collapsed} />
-          <FooterRow $collapsed={collapsed}>
-            <ThemeToggle />
-            <CVDownloadButton />
-          </FooterRow>
-        </NavFooter>
-      </Sidebar>
-
-      {/* Mobile bottom bar */}
-      <MobileBar>
-        {mobilePrimary.map((s) => (
-          <MobBtn
-            key={s.id}
-            $active={isHome && activeSection === s.id}
-            onClick={() => handleNav(s.id)}
-          >
-            <s.icon size={18} />
-            <span>{s.label}</span>
-          </MobBtn>
-        ))}
-        <MobBtn $active={moreOpen} onClick={() => setMoreOpen((o) => !o)}>
+              <span className="text-[0.6rem]">{s.label}</span>
+            </button>
+          );
+        })}
+        <button
+          className={`
+            flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+            ${moreOpen ? "text-primary" : "text-secondary hover:text-primary"}
+          `}
+          onClick={() => setMoreOpen((o) => !o)}
+        >
           {moreOpen ? <X size={18} /> : <Menu size={18} />}
-          <span>More</span>
-        </MobBtn>
-      </MobileBar>
+          <span className="text-[0.6rem]">More</span>
+        </button>
+      </nav>
 
       {/* Mobile "more" drawer */}
       {moreOpen && (
-        <MobMore>
-          {mobileSecondary.map((s) => (
-            <MobMoreBtn
-              key={s.id}
-              $active={isHome && activeSection === s.id}
-              onClick={() => handleNav(s.id)}
-            >
-              <s.icon size={16} />
-              {s.label}
-            </MobMoreBtn>
-          ))}
+        <div className="fixed bottom-[64px] left-2 right-2 bg-card/95 backdrop-blur-md border border-primary/20 rounded-2xl p-3 z-[101] flex flex-wrap gap-2 justify-center pb-[calc(12px+env(safe-area-inset-bottom))]">
+          {mobileSecondary.map((s) => {
+            const isActive = isHome && activeSection === s.id;
+            return (
+              <button
+                key={s.id}
+                className={`
+                  flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] cursor-pointer transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-primary/15 text-primary border-primary/20"
+                      : "bg-primary/5 text-secondary hover:bg-primary/15"
+                  }
+                `}
+                onClick={() => handleNav(s.id)}
+              >
+                <s.icon size={16} />
+                {s.label}
+              </button>
+            );
+          })}
           {NAV_ROUTES.map((r) => (
-            <MobMoreLink
+            <Link
               key={r.to}
               to={r.to}
               onClick={() => setMoreOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 no-underline"
             >
               <r.icon size={16} />
               {r.label}
-            </MobMoreLink>
+            </Link>
           ))}
-          <MobMoreBtn
+          <button
             onClick={() => {
               setMoreOpen(false);
               setShowCVModal(true);
             }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 cursor-pointer"
           >
             <Download size={16} /> CV
-          </MobMoreBtn>
+          </button>
           <CVDownloadModal
             isOpen={showCVModal}
             onClose={() => setShowCVModal(false)}
           />
-        </MobMore>
+        </div>
       )}
 
       {/* Mobile Fixed Theme Toggle */}
-      <MobileThemeToggleWrapper>
-        <ThemeToggle />
-      </MobileThemeToggleWrapper>
+      <div className="md:hidden fixed top-2.5 right-2.5 z-[1000]">
+        <ThemeToggle collapsed={true} />
+      </div>
     </>
   );
 };

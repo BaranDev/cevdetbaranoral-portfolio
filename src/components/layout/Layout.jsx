@@ -1,34 +1,7 @@
 import { useEffect } from "react";
-import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
-import CursorLight from "../ui/CursorLight";
-import MedievalForestBackground from "../ui/MedievalForestBackground";
-import { PageWrapper, ContentContainer } from "../../styles/StyledComponents";
-
-const MainContent = styled(ContentContainer)`
-  padding-left: 76px;
-  min-height: calc(100vh - 200px);
-  transition: padding-left 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    padding-left: 0;
-    padding-bottom: 70px;
-  }
-`;
-
-const FooterWrapper = styled.div`
-  padding-left: 76px;
-  transition: padding-left 0.25s ease;
-
-  @media (max-width: 768px) {
-    padding-left: 0;
-    margin-bottom: 60px;
-  }
-`;
+import ParallaxBackground from "../ui/ParallaxBackground";
 
 // Add Font Awesome for icons
 const FontAwesomeScript = () => {
@@ -52,16 +25,24 @@ const FontAwesomeScript = () => {
 
 const Layout = ({ children }) => {
   return (
-    <PageWrapper>
+    <div className="min-h-screen w-full bg-transparent relative">
+      <ParallaxBackground />
       <FontAwesomeScript />
-      <MedievalForestBackground />
-      <CursorLight />
-      <Header />
-      <MainContent>{children}</MainContent>
-      <FooterWrapper>
-        <Footer />
-      </FooterWrapper>
-    </PageWrapper>
+
+      <div className="relative z-10">
+        <Header />
+
+        <main className="pl-0 md:pl-[76px] min-h-[calc(100vh-80px)] transition-[padding] duration-300 flex flex-col items-center pb-[70px] md:pb-0">
+          <div className="w-full max-w-[1200px] mx-auto px-4 py-2">
+            {children}
+          </div>
+        </main>
+
+        <div className="mb-[40px] md:mb-0 md:pl-[15px] transition-[padding] duration-300">
+          <Footer />
+        </div>
+      </div>
+    </div>
   );
 };
 
