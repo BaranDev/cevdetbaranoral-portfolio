@@ -496,6 +496,15 @@ const Home = () => {
               <ExternalLink size={12} /> Live Site
             </PLink>
           )}
+          {p.media?.mock_demo && (
+            <PLink
+              href={p.media.mock_demo}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Zap size={12} /> Live Board Demo
+            </PLink>
+          )}
           {p.repo && (
             <PLink href={p.repo} target="_blank" rel="noopener noreferrer">
               <Github size={12} /> Source

@@ -192,7 +192,11 @@
       },
       "repo": "",
       "status": "awarded",
-      "media": { "image": "", "demo": "https://emurpg.com/emucon" }
+      "media": {
+        "image": "",
+        "demo": "https://emurpg.com/emucon",
+        "mock_demo": "https://emurpg.com/demo/emucon"
+      }
     },
     {
       "id": "brainstorm-teknofest",
