@@ -2,13 +2,149 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BASIC SEO
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Primary page title — appears in browser tabs, search results, and
+         as the fallback for social platforms that don't read og:title -->
+    <title>Cevdet Baran Oral | Full-Stack Developer Portfolio</title>
+
+    <!-- Meta description — 110-160 chars, optimized for SERP click-through.
+         Also used as fallback by platforms that skip og:description -->
     <meta
       name="description"
-      content="Cevdet Baran Oral - Software Engineering Portfolio showcasing projects, skills, and interactive demos"
+      content="Full-stack developer portfolio — SaaS, AI products, and cloud systems. React, Node.js, Python, AWS. Teknofest finalist, 26+ projects shipped."
     />
-    <title>Cevdet Baran Oral | Portfolio</title>
+
+    <!-- Tell search engines this page is indexable and links are followable.
+         Explicit is better than relying on default behavior. -->
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical URL — prevents duplicate-content penalties when scrapers
+         or CDN edge URLs differ from the primary domain. -->
+    <link rel="canonical" href="https://cevdetbaran.com/" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Discord, Telegram)
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- og:type — "website" for homepages; use "article" on blog posts -->
+    <meta property="og:type" content="website" />
+
+    <!-- og:title — The headline platforms show in the link preview card.
+         Kept ≤60 chars to avoid truncation on mobile feeds. -->
+    <meta
+      property="og:title"
+      content="Cevdet Baran Oral — Full-Stack Developer"
+    />
+
+    <!-- og:description — 110-160 chars. This is the subtitle shown below
+         the title in link previews. Optimized for recruiter click-through. -->
+    <meta
+      property="og:description"
+      content="SaaS platforms, AI products & cloud systems. React · Node.js · Python · AWS. Teknofest finalist, two degrees by 22, 26+ projects shipped."
+    />
+
+    <!-- Primary OG image — pixel-perfect 1200×630 (1.91:1 exact).
+         This is the exact size recommended by Facebook, LinkedIn, X, Discord,
+         and WhatsApp. At 142 KB it loads fast even on LinkedIn's strict
+         scraper timeout. Declared FIRST so scrapers that only read the
+         first og:image get the optimized version. -->
+    <meta
+      property="og:image"
+      content="https://cevdetbaran.com/assets/banner_1200x630.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+
+    <!-- Hi-res fallback for platforms that support Retina/HiDPI cards
+         (newer Discord embeds, Telegram). Declared second so it only
+         gets picked by platforms that want a higher-resolution option. -->
+    <meta
+      property="og:image"
+      content="https://cevdetbaran.com/assets/banner.jpg"
+    />
+    <meta property="og:image:width" content="2752" />
+    <meta property="og:image:height" content="1536" />
+    <meta property="og:image:type" content="image/jpeg" />
+
+    <!-- og:image:alt — Accessibility for screen readers and platforms
+         that display alt text on image load failure. -->
+    <meta
+      property="og:image:alt"
+      content="Cevdet Baran Oral portfolio banner — full-stack developer specializing in AI and cloud systems"
+    />
+
+    <!-- og:url — The canonical URL that the shared link resolves to.
+         Prevents share-count fragmentation across URL variants. -->
+    <meta property="og:url" content="https://cevdetbaran.com/" />
+
+    <!-- og:site_name — Shown as a subtle label above the title on
+         Facebook and LinkedIn previews. -->
+    <meta property="og:site_name" content="Cevdet Baran Oral" />
+
+    <!-- og:locale — Primary language/region. Helps platforms serve
+         the correct preview to users. -->
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TWITTER / X CARDS
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- twitter:card — "summary_large_image" gives the biggest preview on
+         X (formerly Twitter). Falls back to og:* values for missing fields. -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- twitter:title — Override for X feeds; kept concise for mobile. -->
+    <meta
+      name="twitter:title"
+      content="Cevdet Baran Oral — Full-Stack Developer"
+    />
+
+    <!-- twitter:description — X truncates around 125 chars on mobile,
+         so the most impactful info comes first. -->
+    <meta
+      name="twitter:description"
+      content="SaaS platforms, AI products & cloud systems. React · Node.js · Python · AWS. Teknofest finalist, 26+ projects shipped."
+    />
+
+    <!-- twitter:image — Points to the optimized 1200×630 version.
+         X requires HTTPS and will reject HTTP or relative URLs. -->
+    <meta
+      name="twitter:image"
+      content="https://cevdetbaran.com/assets/banner_1200x630.jpg"
+    />
+
+    <!-- twitter:image:alt — Alt text for the card image on X -->
+    <meta
+      name="twitter:image:alt"
+      content="Cevdet Baran Oral portfolio banner — full-stack developer specializing in AI and cloud systems"
+    />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FAVICON & THEME
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Standard favicon — WebP is widely supported in 2026 -->
+    <link rel="icon" type="image/webp" href="/favicon.webp" />
+
+    <!-- Apple Touch Icon — shown when users add the site to their
+         iOS home screen. Falls back to favicon if missing, but looks
+         blurry. Re-using favicon.webp; ideally provide a 180×180 PNG. -->
+    <link rel="apple-touch-icon" href="/favicon.webp" />
+
+    <!-- theme-color — Colors the browser chrome on mobile (Android Chrome,
+         Safari) to match the dark portfolio theme. -->
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         EXTERNAL RESOURCES
+         ═══════════════════════════════════════════════════════════════ -->
+
     <!-- Font Awesome -->
     <link
       rel="stylesheet"
@@ -17,15 +153,81 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- Google Fonts: Fantasy + Pixel -->
+
+    <!-- Google Fonts: Inter + Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Preload hero assets -->
+
+    <!-- Preload hero assets for LCP performance -->
     <link rel="preload" href="/assets/me-4125x4125.jpg" as="image" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         STRUCTURED DATA (JSON-LD)
+         Helps search engines, AI assistants, and knowledge panels
+         understand who this site belongs to and what it represents.
+         ═══════════════════════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "Cevdet Baran Oral — Portfolio",
+            "url": "https://cevdetbaran.com/",
+            "description": "Full-stack developer portfolio showcasing SaaS platforms, AI products, and cloud systems.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "Person",
+            "name": "Cevdet Baran Oral",
+            "url": "https://cevdetbaran.com/",
+            "image": "https://cevdetbaran.com/assets/me-4125x4125.jpg",
+            "jobTitle": "Full-Stack Developer",
+            "description": "Full-stack developer experienced in building SaaS platforms, mobile applications, and AI-powered products with React, React Native, Node.js, Python, and AWS.",
+            "knowsAbout": [
+              "React",
+              "React Native",
+              "Node.js",
+              "Python",
+              "FastAPI",
+              "AWS",
+              "Docker",
+              "TypeScript",
+              "Machine Learning",
+              "LangChain",
+              "PostgreSQL",
+              "MongoDB"
+            ],
+            "sameAs": [
+              "https://github.com/BaranDev",
+              "https://www.linkedin.com/in/cevdetbaranoral"
+            ],
+            "alumniOf": [
+              {
+                "@type": "CollegeOrUniversity",
+                "name": "Eastern Mediterranean University",
+                "url": "https://www.emu.edu.tr"
+              },
+              {
+                "@type": "CollegeOrUniversity",
+                "name": "Ufuk University",
+                "url": "https://www.ufuk.edu.tr"
+              }
+            ],
+            "award": [
+              "Best Graduation Project Award — TaksiKıbrıs",
+              "Teknofest 2024 Finalist — Top 2%",
+              "EMUCON Festival — High Success Award",
+              "FutureMinds'25 Hackathon — 3rd Place"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
