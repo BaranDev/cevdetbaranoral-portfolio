@@ -4,55 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         BASIC SEO
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- just basic seo stuff -->
 
-    <!-- Primary page title — appears in browser tabs, search results, and
-         as the fallback for social platforms that don't read og:title -->
+    <!-- title tag for browser tabs -->
     <title>Cevdet Baran Oral | Full-Stack Developer Portfolio</title>
 
-    <!-- Meta description — 110-160 chars, optimized for SERP click-through.
-         Also used as fallback by platforms that skip og:description -->
+    <!-- this is what shows up on google search results -->
     <meta
       name="description"
-      content="Full-stack developer portfolio — SaaS, AI products, and cloud systems. React, Node.js, Python, AWS. Teknofest finalist, 26+ projects shipped."
+      content="Full-stack developer portfolio - SaaS, AI products, and cloud systems. React, Node.js, Python, AWS. Teknofest finalist, 26+ projects shipped."
     />
 
-    <!-- Tell search engines this page is indexable and links are followable.
-         Explicit is better than relying on default behavior. -->
+    <!-- tell the bots it's okay to index this site -->
     <meta name="robots" content="index, follow" />
 
-    <!-- Canonical URL — prevents duplicate-content penalties when scrapers
-         or CDN edge URLs differ from the primary domain. -->
+    <!-- the main link so google doesnt get confused -->
     <link rel="canonical" href="https://cevdetbaran.com/" />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Discord, Telegram)
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- social media preview tags (og) -->
 
-    <!-- og:type — "website" for homepages; use "article" on blog posts -->
+    <!-- it's a website -->
     <meta property="og:type" content="website" />
 
-    <!-- og:title — The headline platforms show in the link preview card.
-         Kept ≤60 chars to avoid truncation on mobile feeds. -->
+    <!-- the big headline on social share cards -->
     <meta
       property="og:title"
-      content="Cevdet Baran Oral — Full-Stack Developer"
+      content="Cevdet Baran Oral - Full-Stack Developer & Solution Architect"
     />
 
-    <!-- og:description — 110-160 chars. This is the subtitle shown below
-         the title in link previews. Optimized for recruiter click-through. -->
+    <!-- text that goes under the title when sharing -->
     <meta
       property="og:description"
       content="SaaS platforms, AI products & cloud systems. React · Node.js · Python · AWS. Teknofest finalist, two degrees by 22, 26+ projects shipped."
     />
 
-    <!-- Primary OG image — pixel-perfect 1200×630 (1.91:1 exact).
-         This is the exact size recommended by Facebook, LinkedIn, X, Discord,
-         and WhatsApp. At 142 KB it loads fast even on LinkedIn's strict
-         scraper timeout. Declared FIRST so scrapers that only read the
-         first og:image get the optimized version. -->
+    <!-- the main preview image for shares -->
     <meta
       property="og:image"
       content="https://cevdetbaran.com/assets/banner_1200x630.jpg"
@@ -61,91 +47,64 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/jpeg" />
 
-    <!-- Hi-res fallback for platforms that support Retina/HiDPI cards
-         (newer Discord embeds, Telegram). Declared second so it only
-         gets picked by platforms that want a higher-resolution option. -->
-    <meta
-      property="og:image"
-      content="https://cevdetbaran.com/assets/banner.jpg"
-    />
-    <meta property="og:image:width" content="2752" />
-    <meta property="og:image:height" content="1536" />
-    <meta property="og:image:type" content="image/jpeg" />
-
-    <!-- og:image:alt — Accessibility for screen readers and platforms
-         that display alt text on image load failure. -->
+    <!-- describe the pic for accessibility -->
     <meta
       property="og:image:alt"
-      content="Cevdet Baran Oral portfolio banner — full-stack developer specializing in AI and cloud systems"
+      content="Cevdet Baran Oral portfolio banner - full-stack developer specializing in AI and cloud systems"
     />
 
-    <!-- og:url — The canonical URL that the shared link resolves to.
-         Prevents share-count fragmentation across URL variants. -->
+    <!-- where to go when they click the share card -->
     <meta property="og:url" content="https://cevdetbaran.com/" />
 
-    <!-- og:site_name — Shown as a subtle label above the title on
-         Facebook and LinkedIn previews. -->
+    <!-- how the site name looks in previews -->
     <meta property="og:site_name" content="Cevdet Baran Oral" />
 
-    <!-- og:locale — Primary language/region. Helps platforms serve
-         the correct preview to users. -->
+    <!-- telling them the site is in english -->
     <meta property="og:locale" content="en_US" />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         TWITTER / X CARDS
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- twitter card specific stuff -->
 
-    <!-- twitter:card — "summary_large_image" gives the biggest preview on
-         X (formerly Twitter). Falls back to og:* values for missing fields. -->
+    <!-- use the big image card layout for twitter -->
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- twitter:title — Override for X feeds; kept concise for mobile. -->
+    <!-- title for twitter cards -->
     <meta
       name="twitter:title"
-      content="Cevdet Baran Oral — Full-Stack Developer"
+      content="Cevdet Baran Oral - Full-Stack Developer & Solution Architect"
     />
 
-    <!-- twitter:description — X truncates around 125 chars on mobile,
-         so the most impactful info comes first. -->
+    <!-- short snippet for twitter -->
     <meta
       name="twitter:description"
       content="SaaS platforms, AI products & cloud systems. React · Node.js · Python · AWS. Teknofest finalist, 26+ projects shipped."
     />
 
-    <!-- twitter:image — Points to the optimized 1200×630 version.
-         X requires HTTPS and will reject HTTP or relative URLs. -->
+    <!-- optimized image for twitter -->
     <meta
       name="twitter:image"
       content="https://cevdetbaran.com/assets/banner_1200x630.jpg"
     />
 
-    <!-- twitter:image:alt — Alt text for the card image on X -->
+    <!-- alt text for twitter image -->
     <meta
       name="twitter:image:alt"
-      content="Cevdet Baran Oral portfolio banner — full-stack developer specializing in AI and cloud systems"
+      content="Cevdet Baran Oral portfolio banner - full-stack developer specializing in AI and cloud systems"
     />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         FAVICON & THEME
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- favicon and mobile status bar -->
 
-    <!-- Standard favicon — WebP is widely supported in 2026 -->
+    <!-- tiny icon in the tab -->
     <link rel="icon" type="image/webp" href="/favicon.webp" />
 
-    <!-- Apple Touch Icon — shown when users add the site to their
-         iOS home screen. Falls back to favicon if missing, but looks
-         blurry. Re-using favicon.webp; ideally provide a 180×180 PNG. -->
+    <!-- icon for when people save it to home screen -->
     <link rel="apple-touch-icon" href="/favicon.webp" />
 
-    <!-- theme-color — Colors the browser chrome on mobile (Android Chrome,
-         Safari) to match the dark portfolio theme. -->
+    <!-- matches the browser status bar to my theme color -->
     <meta name="theme-color" content="#0f172a" />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         EXTERNAL RESOURCES
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- just loading some external stuff -->
 
-    <!-- Font Awesome -->
+    <!-- font awesome icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -154,7 +113,7 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- Google Fonts: Inter + Poppins -->
+    <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -162,21 +121,17 @@
       rel="stylesheet"
     />
 
-    <!-- Preload hero assets for LCP performance -->
+    <!-- preload my photo so it's ready ASAP -->
     <link rel="preload" href="/assets/me-4125x4125.jpg" as="image" />
 
-    <!-- ═══════════════════════════════════════════════════════════════
-         STRUCTURED DATA (JSON-LD)
-         Helps search engines, AI assistants, and knowledge panels
-         understand who this site belongs to and what it represents.
-         ═══════════════════════════════════════════════════════════════ -->
+    <!-- help robots and search engines understand who i am -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "WebSite",
-            "name": "Cevdet Baran Oral — Portfolio",
+            "name": "Cevdet Baran Oral - Portfolio",
             "url": "https://cevdetbaran.com/",
             "description": "Full-stack developer portfolio showcasing SaaS platforms, AI products, and cloud systems.",
             "inLanguage": "en"
@@ -219,10 +174,10 @@
               }
             ],
             "award": [
-              "Best Graduation Project Award — TaksiKıbrıs",
-              "Teknofest 2024 Finalist — Top 2%",
-              "EMUCON Festival — High Success Award",
-              "FutureMinds'25 Hackathon — 3rd Place"
+              "Best Graduation Project Award - TaksiKıbrıs",
+              "Teknofest 2024 Finalist - Top 2%",
+              "EMUCON Festival - High Success Award",
+              "FutureMinds'25 Hackathon - 3rd Place"
             ]
           }
         ]
