@@ -171,7 +171,7 @@ const Btn = ({
 };
 
 const BtnGrid = ({ children }) => (
-  <div className="grid grid-cols-2 gap-2 w-full max-w-[400px] mx-auto md:mx-0 md:max-w-full">
+  <div className="flex flex-wrap gap-3 w-full justify-center md:justify-start mt-4">
     {children}
   </div>
 );
@@ -450,11 +450,10 @@ const Home = () => {
   const d = portfolioData;
   const featured = d.projects.filter((p) => p.priority === "featured");
   const other = d.projects.filter((p) => p.priority !== "featured");
-
-  const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const scrollTo = (id) =>
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    });
 
   const renderProjectCard = (p) => (
     <I key={p.id}>
@@ -538,9 +537,7 @@ const Home = () => {
                 <Btn onClick={() => scrollTo("contact")}>
                   <Mail size={15} /> Contact
                 </Btn>
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <CVDownloadButton style={{ width: "100%" }} />
-                </div>
+                <CVDownloadButton />
               </BtnGrid>
             </HeroText>
             <AvatarWrap>
@@ -575,7 +572,7 @@ const Home = () => {
       </A>
 
       {/* Experience */}
-      <A id="experience" className="py-8 content-visibility-auto">
+      <A id="experience" className="py-8">
         <I>
           <SH>
             <Briefcase size={22} /> Experience
@@ -610,7 +607,7 @@ const Home = () => {
       </A>
 
       {/* Featured Projects */}
-      <A id="projects" className="py-8 content-visibility-auto">
+      <A id="projects" className="py-8">
         <I>
           <SH>
             <FolderGit2 size={22} /> Featured Projects
@@ -631,7 +628,7 @@ const Home = () => {
       </A>
 
       {/* Skills */}
-      <A id="skills" className="py-8 content-visibility-auto">
+      <A id="skills" className="py-8">
         <I>
           <SH>
             <Zap size={22} /> Technical Skills
@@ -660,7 +657,7 @@ const Home = () => {
       </A>
 
       {/* Education */}
-      <A id="education" className="py-8 content-visibility-auto">
+      <A id="education" className="py-8">
         <I>
           <SH>
             <GraduationCap size={22} /> Education
@@ -686,7 +683,7 @@ const Home = () => {
       </A>
 
       {/* Awards & Certs */}
-      <A className="py-8 content-visibility-auto">
+      <A className="py-8">
         <I>
           <SH>
             <Award size={22} /> Awards & Certifications
@@ -713,7 +710,7 @@ const Home = () => {
       </A>
 
       {/* Contact */}
-      <A id="contact" className="py-12 content-visibility-auto">
+      <A id="contact" className="py-12">
         <I>
           <SH>
             <Mail size={22} /> Let's Connect
@@ -781,17 +778,21 @@ const Home = () => {
             </CInfo>
           </I>
           <I>
-            <CInfo className="text-center flex flex-col items-center justify-center gap-4">
+            <CInfo className="text-center flex flex-col items-center justify-center gap-6">
               <h3 className="font-heading text-primary m-0 text-lg font-bold">
                 Ready to Build Together?
               </h3>
-              <Btn $primary as="a" href={`mailto:${d.personal.email}`}>
-                <Mail size={15} /> Send Email
-              </Btn>
-              <Btn as={Link} to="/ai-demos">
-                <Brain size={15} /> AI Demos
-              </Btn>
-              <CVDownloadButton />
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+                <Btn
+                  $primary
+                  as="a"
+                  href={`mailto:${d.personal.email}`}
+                  className="w-full sm:w-auto"
+                >
+                  <Mail size={15} /> Send Email
+                </Btn>
+                <CVDownloadButton className="w-full sm:w-auto" />
+              </div>
             </CInfo>
           </I>
         </ContactRow>

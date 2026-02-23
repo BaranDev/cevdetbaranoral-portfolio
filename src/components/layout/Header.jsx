@@ -67,12 +67,14 @@ const Header = () => {
       if (!isHome) {
         navigate("/");
         setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
+          requestAnimationFrame(() => {
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          });
+        }, 50);
       } else {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        requestAnimationFrame(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+        });
       }
       setMoreOpen(false);
     },
@@ -155,6 +157,7 @@ const Header = () => {
               <Link
                 key={r.to}
                 to={r.to}
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 className={navItemClasses(isActive)}
                 title={collapsed ? r.label : ""}
               >
@@ -240,7 +243,10 @@ const Header = () => {
             <Link
               key={r.to}
               to={r.to}
-              onClick={() => setMoreOpen(false)}
+              onClick={() => {
+                setMoreOpen(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 no-underline"
             >
               <r.icon size={16} />

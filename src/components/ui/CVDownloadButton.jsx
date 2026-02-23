@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { Download } from "lucide-react";
 import CVDownloadModal from "./CVDownloadModal";
 
-const CVDownloadButton = (props) => {
+const CVDownloadButton = ({ className = "", ...props }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -12,14 +13,14 @@ const CVDownloadButton = (props) => {
       <button
         onClick={openModal}
         className={`
-          flex items-center justify-center px-6 py-2 font-medium bg-card text-text 
-          border border-primary/30 rounded-xl shadow-md transition-all duration-300
-          hover:shadow-lg hover:-translate-y-1 hover:border-primary/50
-          active:translate-y-0 active:shadow-inner cursor-pointer
+          inline-flex items-center justify-center gap-1.5 px-[18px] py-2 
+          text-[0.82rem] font-semibold rounded-xl transition-all duration-300
+          bg-background text-text shadow-neumorphic hover:-translate-y-[2px] hover:animate-glow
+          ${className}
         `}
         {...props}
       >
-        <i className="fas fa-download mr-2"></i>
+        <Download size={15} />
         Download CV
       </button>
 

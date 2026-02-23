@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import * as tf from "@tensorflow/tfjs";
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import * as knnClassifier from "@tensorflow-models/knn-classifier";
 import * as faceapi from "@vladmandic/face-api";
@@ -798,7 +797,7 @@ const AIDemo = () => {
     if (activeTab === "whiteboard" && !mobilenetModel) {
       const loadModels = async () => {
         try {
-          await tf.ready();
+          await faceapi.tf.ready();
           const model = await mobilenet.load();
           setMobilenetModel(model);
           const newClassifier = knnClassifier.create();
@@ -1597,7 +1596,7 @@ const AIDemo = () => {
                           const newClassifier = knnClassifier.create();
                           Object.keys(datasetObj).forEach((key) => {
                             newClassifier.addExample(
-                              tf.tensor(datasetObj[key]),
+                              faceapi.tf.tensor(datasetObj[key]),
                               key,
                             );
                           });
