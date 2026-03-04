@@ -300,6 +300,104 @@
       "repo": "https://github.com/BaranDev/spicetify-updater",
       "status": "active",
       "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "firebase-auth-template",
+      "title": "Firebase Auth Template",
+      "priority": "normal",
+      "description": "A template repository for implementing Firebase Authentication with Flask and JavaScript. Includes functionalities for user signup, signin, signout, and session management.",
+      "impact": {
+        "metrics": [
+          { "value": "6", "label": "GitHub Stars" },
+          { "value": "Auth", "label": "Template" },
+          { "value": "Flask", "label": "Backend" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["JavaScript", "HTML", "CSS"],
+        "Backend": ["Python", "Flask", "Firebase Auth"]
+      },
+      "repo": "https://github.com/BaranDev/Firebase-Authentication-Template",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "winhub",
+      "title": "WinHub",
+      "priority": "normal",
+      "description": "The Windows App Store That Actually Works - Find and install any Windows program instantly with WinGet integration.",
+      "impact": {
+        "metrics": [
+          { "value": "WinGet", "label": "Integration" },
+          { "value": "TypeScript", "label": "Built With" },
+          { "value": "Desktop", "label": "App" }
+        ]
+      },
+      "technologies": {
+        "Frontend": ["React", "TypeScript"],
+        "Platform": ["Electron", "Windows"]
+      },
+      "repo": "https://github.com/BaranDev/winhub",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "virtual-whiteboard",
+      "title": "Virtual Whiteboard",
+      "priority": "normal",
+      "description": "Computer vision-powered virtual whiteboard using hand gestures and object tracking for natural drawing experience.",
+      "impact": {
+        "metrics": [
+          { "value": "CV", "label": "Powered" },
+          { "value": "Gesture", "label": "Control" },
+          { "value": "MediaPipe", "label": "Tracking" }
+        ]
+      },
+      "technologies": {
+        "AI/CV": ["Python", "OpenCV", "MediaPipe"]
+      },
+      "repo": "https://github.com/BaranDev/virtual-whiteboard",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "mcp-server-template",
+      "title": "MCP Server Template",
+      "priority": "normal",
+      "description": "A production-ready template for building Model Context Protocol (MCP) servers with Python. Includes HTTP client patterns, error handling, and separation of concerns.",
+      "impact": {
+        "metrics": [
+          { "value": "MCP", "label": "Protocol" },
+          { "value": "Template", "label": "Ready" },
+          { "value": "Async", "label": "Python" }
+        ]
+      },
+      "technologies": {
+        "Backend": ["Python", "AsyncIO", "HTTPX"]
+      },
+      "repo": "https://github.com/BaranDev/mcp-server-template",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
+    },
+    {
+      "id": "katalog",
+      "title": "Katalog",
+      "priority": "normal",
+      "description": "A React Native starter template for building offline product catalogs. Features SQLite storage, image processing, grid layouts, and fullscreen viewer components.",
+      "impact": {
+        "metrics": [
+          { "value": "Offline", "label": "First" },
+          { "value": "SQLite", "label": "Storage" },
+          { "value": "Mobile", "label": "Template" }
+        ]
+      },
+      "technologies": {
+        "Mobile": ["React Native", "TypeScript"],
+        "Data": ["SQLite", "Async Storage"]
+      },
+      "repo": "https://github.com/BaranDev/katalog",
+      "status": "active",
+      "media": { "image": "", "demo": "" }
     }
   ],
   "skills": {
