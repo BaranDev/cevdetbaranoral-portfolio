@@ -767,13 +767,6 @@ const Home = () => {
                 >
                   <i className="fab fa-linkedin-in"></i>
                 </SocBtn>
-                <SocBtn
-                  as="a"
-                  href={`mailto:${d.personal.email}`}
-                  aria-label="Email"
-                >
-                  <i className="fas fa-envelope"></i>
-                </SocBtn>
               </div>
             </CInfo>
           </I>

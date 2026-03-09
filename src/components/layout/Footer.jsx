@@ -1,7 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const scrollToSection = (sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleQuickLink = (e, to) => {
+    const [path, hash] = to.split("#");
+    if (!hash) return;
+
+    e.preventDefault();
+
+    if (location.pathname === "/") {
+      scrollToSection(hash);
+      return;
+    }
+
+    navigate(path || "/");
+    setTimeout(() => scrollToSection(hash), 0);
+  };
 
   return (
     <footer className="mt-12 rounded-t-2xl bg-card p-8 border-t border-primary/10 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)] relative overflow-hidden">
@@ -34,11 +58,6 @@ const Footer = () => {
                 icon: "fas fa-globe",
                 label: "Website",
               },
-              {
-                href: "mailto:cevdetbaranoral@gmail.com",
-                icon: "fas fa-envelope",
-                label: "Email",
-              },
             ].map((link) => (
               <a
                 key={link.label}
@@ -70,6 +89,7 @@ const Footer = () => {
               <Link
                 key={link.label}
                 to={link.to}
+                onClick={(e) => handleQuickLink(e, link.to)}
                 className="text-text hover:text-primary hover:translate-x-1 transition-all duration-200 block py-1"
               >
                 {link.label}
@@ -87,7 +107,7 @@ const Footer = () => {
 
           <p className="flex items-center gap-3 mb-3 text-text">
             <i className="fas fa-envelope text-primary/80"></i>
-            cevdetbaranoral@gmail.com
+            contact@cevdetbaran.com
           </p>
         </div>
       </div>

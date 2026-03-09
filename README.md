@@ -17,4 +17,4 @@ Passionate developer with experience in building SaaS platforms, mobile applicat
 
 -   [LinkedIn](https://linkedin.com/in/cevdetbaranoral)
 -   [GitHub](https://github.com/BaranDev)
--   [Email](mailto:cevdetbaranoral@gmail.com)
+-   [Email](mailto:contact@cevdetbaran.com)
