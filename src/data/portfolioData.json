@@ -23,6 +23,27 @@
   },
   "experience": [
     {
+      "id": "ozbul-bilisim",
+      "title": "Full-Stack Developer",
+      "company": "Ozbul Bilişim",
+      "location": "Famagusta, Cyprus",
+      "duration": "Feb 2026 – Present",
+      "start": "2026-02",
+      "end": null,
+      "description": "Building web and mobile applications for enterprise clients including Volvo and Superdrug. Delivering custom software solutions, data migrations, and cross-platform mobile apps in an agile team.",
+      "achievements": [
+        {
+          "metric": "Enterprise",
+          "description": "Clients including Volvo and Superdrug"
+        },
+        {
+          "metric": "Full-Stack",
+          "description": "Web apps, mobile apps, and data migrations"
+        }
+      ],
+      "technologies": [{ "items": ["Next.js", "React Native", "MongoDB", "Node.js"] }]
+    },
+    {
       "id": "emu-it-fullstack",
       "title": "Full-Stack Web Developer",
       "company": "Eastern Mediterranean University IT Directorate",
