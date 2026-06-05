@@ -25,23 +25,27 @@
     {
       "id": "ozbul-bilisim",
       "title": "Full-Stack Developer",
-      "company": "Ozbul Bilişim",
+      "company": "Özbul Bilişim",
       "location": "Famagusta, Cyprus",
       "duration": "Feb 2026 – Present",
       "start": "2026-02",
       "end": null,
-      "description": "Building web and mobile applications for enterprise clients including Volvo and Superdrug. Delivering custom software solutions, data migrations, and cross-platform mobile apps in an agile team.",
+      "description": "Building features end-to-end across React Native mobile, Next.js web, and a .NET / SQL Server backend for enterprise clients including Volvo and Superdrug.",
       "achievements": [
         {
           "metric": "Enterprise",
           "description": "Clients including Volvo and Superdrug"
         },
         {
-          "metric": "Full-Stack",
-          "description": "Web apps, mobile apps, and data migrations"
+          "metric": "End-to-End",
+          "description": "React Native mobile, Next.js web, .NET / SQL Server backend"
+        },
+        {
+          "metric": "Standards",
+          "description": "Reusable mobile components, data models, and team-wide coding conventions"
         }
       ],
-      "technologies": [{ "items": ["Next.js", "React Native", "MongoDB", "Node.js"] }]
+      "technologies": [{ "items": ["React Native", "Next.js", ".NET", "SQL Server"] }]
     },
     {
       "id": "emu-it-fullstack",
@@ -145,6 +149,10 @@
         {
           "metric": "99%",
           "description": "Test coverage across 15+ microservices"
+        },
+        {
+          "metric": "8-person",
+          "description": "Agile team owning the full SDLC from design to deployment"
         }
       ],
       "technologies": [
@@ -198,12 +206,12 @@
       "title": "EMUCON Festival Platform",
       "priority": "featured",
       "award": "High Success Award",
-      "description": "Full-stack event management platform for university festival: real-time WebSocket event board, multi-role admin dashboard, 42+ clubs coordinated, 600+ visitors, 500K+ social media impressions.",
+      "description": "Full-stack event management platform for university festival: real-time WebSocket event board, multi-role admin dashboard, digital ad campaign management, 42+ clubs coordinated, 1000+ visitors, 1M+ social media reach.",
       "impact": {
         "metrics": [
-          { "value": "600+", "label": "Visitors" },
+          { "value": "1000+", "label": "Visitors" },
           { "value": "42+", "label": "Clubs" },
-          { "value": "500K+", "label": "Impressions" }
+          { "value": "1M+", "label": "Reach" }
         ]
       },
       "technologies": {
@@ -242,7 +250,7 @@
     },
     {
       "id": "ai-marketing-agent",
-      "title": "Calimaia",
+      "title": "Calimaia - AI Marketing Agent",
       "priority": "normal",
       "award": "FutureMinds'25 Hackathon – 3rd Place",
       "description": "AI-powered marketing agent (Calimaia) using LLM integration with React frontend and MongoDB backend, built during a competitive hackathon.",
@@ -443,45 +451,66 @@
         "React Native",
         "Expo",
         "Electron",
+        "MUI",
         "Tailwind CSS",
         "Framer Motion"
       ]
     },
     "Backend": {
       "icon": "⚙️",
-      "skills": ["Node.js", "Express", "NestJS", "FastAPI", "Flask", "Django"]
+      "skills": [
+        "Node.js",
+        "Express",
+        "NestJS",
+        ".NET / ASP.NET Core",
+        "FastAPI",
+        "Flask",
+        "Django"
+      ]
     },
     "Databases": {
       "icon": "🗄️",
       "skills": [
         "MongoDB",
         "PostgreSQL",
+        "SQL Server",
+        "MySQL",
         "Redis",
         "SQLite",
         "Qdrant",
         "Prisma ORM",
+        "EF Core",
         "Supabase"
       ]
     },
     "Cloud & DevOps": {
       "icon": "☁️",
       "skills": [
+        "VPS",
+        "AWS (EC2, S3)",
+        "Azure",
         "Docker",
         "Kubernetes",
-        "AWS (EC2, S3)",
         "CI/CD",
         "GitHub Actions",
         "Nginx",
-        "Terraform"
+        "Caddy",
+        "VPN/SSH Tunneling",
+        "Ansible",
+        "Terraform",
+        "Prometheus",
+        "Grafana"
       ]
     },
     "AI & ML": {
       "icon": "🧠",
       "skills": [
         "PyTorch",
+        "TensorFlow",
         "HuggingFace",
         "LangChain",
         "LangGraph",
+        "Agent Orchestration",
         "OpenAI SDK",
         "TensorFlow.js",
         "OpenCV"
@@ -493,13 +522,22 @@
         "Git",
         "JIRA",
         "Vite",
+        "Webpack",
         "Playwright",
         "Jest",
         "Stripe",
         "Socket.io",
-        "Sentry",
-        "Three.js"
+        "Swagger/OpenAPI",
+        "Sentry"
       ]
+    },
+    "Also Familiar": {
+      "icon": "🧭",
+      "skills": ["Golang", "Three.js", "Unreal Engine 5", "Vuforia", "Node-RED"]
+    },
+    "Design": {
+      "icon": "🖌️",
+      "skills": ["Adobe Photoshop", "Adobe Illustrator", "DaVinci Resolve"]
     }
   },
   "certifications": [
