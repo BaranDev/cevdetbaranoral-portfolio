@@ -17,7 +17,13 @@ Mobile and no-WebGL visitors see only the 2D site; the Enter World button is dis
 
 **react-three-fiber + drei + gsap** — all already installed (`three`, `@react-three/fiber`, `@react-three/drei`, `gsap`). The world is a lazy-loaded route in the existing React 19 + TypeScript + Vite app, following the same code-splitting pattern already used for `/ai-demos`.
 
-Rejected alternatives: vanilla Three.js (manual React bridge, no reuse win) and voxel engines like noa-engine/Babylon (heavy new dependency, overkill for a guided island).
+**Movement/physics: `ecctrl` + `@react-three/rapier`** (new runtime dependencies, both MIT). ecctrl is the maintained pmndrs character controller (floating capsule, spring/damping, ground friction); rapier provides the physics world and static colliders. Chosen over hand-rolling collision after research: battle-tested code beats reinventing, and it head-starts terrain height, stairs, and moving platforms if the island grows. Cost accepted: rapier's wasm bundle (~1 MB+) — mitigated by the already-lazy `/world` route.
+
+Input uses drei's `KeyboardControls` (transient `getKeys()` polling in `useFrame` — no per-frame re-renders) with WASD and arrows in one keymap; drei `PointerLockControls` `onLock`/`onUnlock` drives the "click to play" overlay. FPS camera requires `camera.rotation.order = "YXZ"`.
+
+Rejected alternatives: vanilla Three.js (manual React bridge, no reuse win), voxel engines like noa-engine/Babylon (heavy new dependency, overkill for a guided island), and fully hand-rolled collision math (works for a flat disc but reinvents a maintained wheel).
+
+**Reference projects** (adapt ideas; copy code only from MIT-verified sources): `pmndrs/ecctrl` (MIT — controller itself), `brunosimon/folio-2019` (MIT — camera fly-to-section and loading-screen architecture), `briossant/vibe-coded-web-voxel-engine` (license unverified — hotbar/HUD patterns only, no code copying).
 
 ## Architecture
 
@@ -84,10 +90,10 @@ Controls imitate Minecraft wherever a mapping exists. A Minecraft player should 
 
 ### Movement and flights
 
-- First-person view with a held item visible in hand; the item swaps to the section's item when a hotbar slot is selected.
-- Hand-rolled collision: capsule vs. AABB landmark bounds + ground height. No physics engine. Island edge is an invisible wall.
-- Hotbar press: input locks, a gsap tween carries **player and camera together** along a bezier curve (~2–3 s) to the landmark's landing pose, then walking resumes. No detached-camera desync.
-- Player also flies (camera = player) — one position source of truth.
+- First-person view with a held item visible in hand; the item swaps to the section's item when a hotbar slot is selected. ecctrl runs in first-person camera mode (avatar hidden or camera at head).
+- Collision/physics: rapier `<Physics>` world — ground and landmark shells are fixed rigid bodies with auto colliders; ecctrl's floating capsule handles walking, jumping, and gravity. Island edge is a fixed invisible collider ring.
+- Hotbar press: user input disabled, a gsap tween carries the **character rigidbody (and thus camera)** along a bezier curve (~2–3 s) to the landmark's landing pose — kinematic/teleport-per-frame control of the body during the flight — then input re-enables and walking resumes. No detached-camera desync.
+- One position source of truth: the character body; the camera follows it (ecctrl-managed).
 
 ### Content overlays
 
@@ -133,7 +139,7 @@ Clicking Enter World: the button becomes a swirling portal → fade to a themed 
 
 ## Testing
 
-- Add **Vitest** for pure logic only: `worldConfig` validation (all 9 slots present, unique, poses well-formed), collision math, slot-mapping helpers.
+- Add **Vitest** for pure logic only: `worldConfig` validation (all 9 slots present, unique, poses well-formed), flight-path math, slot-mapping helpers. (Collision is engine-owned now — no physics unit tests.) Config lives as a `test` block in the existing Vite config (`defineConfig` from `vitest/config`), default node environment, no jsdom.
 - Gameplay/visuals: manual checklist (controls, flights, overlays, mimic, entry sequence, reduced-motion, mobile gating).
 - No E2E for v1.
 
