@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Briefcase,
@@ -7,7 +7,6 @@ import {
   Zap,
   GraduationCap,
   Mail,
-  Brain,
   Download,
   Menu,
   X,
@@ -25,12 +24,6 @@ interface NavSection {
   icon: LucideIcon;
 }
 
-interface NavRoute {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-}
-
 const NAV_SECTIONS: NavSection[] = [
   { id: "home", label: "Home", icon: Home },
   { id: "experience", label: "Experience", icon: Briefcase },
@@ -38,10 +31,6 @@ const NAV_SECTIONS: NavSection[] = [
   { id: "skills", label: "Skills", icon: Zap },
   { id: "education", label: "Education", icon: GraduationCap },
   { id: "contact", label: "Contact", icon: Mail },
-];
-
-const NAV_ROUTES: NavRoute[] = [
-  { to: "/ai-demos", label: "AI Demos", icon: Brain },
 ];
 
 /* ── Component ───────────────────────────────── */
@@ -161,31 +150,6 @@ const Header = () => {
               </button>
             );
           })}
-
-          <div
-            className={`my-1.5 border-t border-primary/10 ${collapsed ? "mx-2" : "mx-3"}`}
-          />
-
-          {NAV_ROUTES.map((r) => {
-            const isActive = location.pathname === r.to;
-            return (
-              <Link
-                key={r.to}
-                to={r.to}
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className={navItemClasses(isActive)}
-                title={collapsed ? r.label : ""}
-              >
-                {isActive && <ActiveIndicator />}
-                <r.icon size={18} className="shrink-0" />
-                <span
-                  className={`transition-opacity duration-200 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"}`}
-                >
-                  {r.label}
-                </span>
-              </Link>
-            );
-          })}
         </div>
 
         {/* Bottom: Theme Toggle */}
@@ -254,20 +218,6 @@ const Header = () => {
               </button>
             );
           })}
-          {NAV_ROUTES.map((r) => (
-            <Link
-              key={r.to}
-              to={r.to}
-              onClick={() => {
-                setMoreOpen(false);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 no-underline"
-            >
-              <r.icon size={16} />
-              {r.label}
-            </Link>
-          ))}
           <button
             onClick={() => {
               setMoreOpen(false);

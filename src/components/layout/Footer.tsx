@@ -18,7 +18,6 @@ const QUICK_LINKS = [
   { to: "/#skills", label: "Skills" },
   { to: "/#experience", label: "Experience" },
   { to: "/#contact", label: "Contact" },
-  { to: "/ai-demos", label: "AI Demos" },
 ];
 
 const Footer = () => {

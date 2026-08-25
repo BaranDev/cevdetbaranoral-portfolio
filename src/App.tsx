@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,12 +8,7 @@ import {
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Loader from "./components/ui/Loader";
 import { initAnalytics, trackPageView } from "./utils/analytics";
-
-// Lazy-loaded: pulls in TensorFlow.js + face-api.js, which would otherwise
-// bloat the main bundle for visitors who never open /ai-demos.
-const AIDemos = lazy(() => import("./pages/AIDemos"));
 
 function AnalyticsTracker() {
   const location = useLocation();
@@ -33,13 +28,10 @@ function App() {
     <Router>
       <AnalyticsTracker />
       <Layout>
-        <Suspense fallback={<Loader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/ai-demos" element={<AIDemos />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Layout>
     </Router>
   );
