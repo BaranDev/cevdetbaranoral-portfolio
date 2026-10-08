@@ -56,9 +56,8 @@ const Footer = () => {
         <div className="flex-1 min-w-[200px] mb-6 md:mb-0">
           <h3 className="font-heading text-title mb-4 text-primary">Portfolio</h3>
           <p className="text-text/90 leading-relaxed mb-6 max-w-sm">
-            A showcase of my skills, projects, and experience as a Software
-            Engineering undergraduate with expertise in AI technologies and
-            full-stack development.
+            A showcase of my skills, projects, and experience as a full-stack
+            developer building web, mobile, and AI-powered products.
           </p>
 
           <div className="flex gap-4 mt-4">
@@ -102,18 +101,21 @@ const Footer = () => {
             Famagusta, Cyprus
           </p>
 
-          <p className="flex items-center gap-3 mb-3 text-text">
+          <a
+            href="mailto:contact@cevdetbaran.com"
+            className="flex w-fit items-center gap-3 mb-3 text-text hover:text-primary transition-colors duration-200"
+          >
             <Mail size={16} className="text-primary/80" />
             contact@cevdetbaran.com
-          </p>
+          </a>
         </div>
       </div>
 
       <div className="my-8 w-full h-[1px] bg-gradient-to-r from-transparent via-text/10 to-transparent" />
 
       <p className="text-center text-secondary text-meta">
-        © {currentYear} Cevdet Baran Oral. All rights reserved. Designed with
-        React and Neumorphism.
+        © {currentYear} Cevdet Baran Oral. All rights reserved. Built with
+        React and pixel art.
       </p>
     </footer>
   );
