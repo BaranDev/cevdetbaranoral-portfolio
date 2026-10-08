@@ -8,37 +8,43 @@ const ExperienceSection = ({ experience }: { experience: Experience[] }) => (
     <SectionHeading>
       <Briefcase size={22} /> Experience
     </SectionHeading>
-    <div className="relative mt-4 before:absolute before:left-[18px] before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-primary before:to-magical">
-      {experience.map((job) => (
+    <div className="flex flex-col gap-3 mt-4">
+      {experience.map((job, jobIndex) => (
         <AnimatedItem key={job.id}>
-          <div className="relative ml-[44px] my-2 p-4 bg-card rounded-xl shadow-neumorphic">
-            <h3 className="font-heading text-primary m-0 mb-0.5 text-[0.95rem] font-semibold">
-              {job.title}
-            </h3>
-            <div className="text-[0.78rem] text-secondary mb-1">
-              {job.company} · {job.duration}
+          <div className="p-3.5 bg-card rounded-xl shadow-neumorphic flex gap-3.5">
+            {job.logo && (
+              <img
+                src={job.logo}
+                alt={`${job.company} logo`}
+                width={26}
+                height={26}
+                className="sprite-idle w-12 h-12 shrink-0 mt-1 select-none"
+                style={{ animationDelay: `${jobIndex * 0.15}s` }}
+                loading="lazy"
+              />
+            )}
+            <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+              <h3 className="font-heading text-primary m-0 text-title">
+                {job.company}
+                <span className="font-body text-secondary text-meta">
+                  {" "}
+                  · {job.title}
+                </span>
+              </h3>
+              <span className="text-meta text-secondary whitespace-nowrap">
+                {job.duration}
+              </span>
             </div>
-            <p className="text-[0.82rem] text-text mb-1.5 leading-relaxed">
+            <p className="text-body text-text mt-1 mb-1.5 leading-relaxed">
               {job.description}
             </p>
-            <div className="mb-1.5">
-              {job.achievements.map((a) => (
-                <div
-                  key={a.description}
-                  className="flex items-center gap-2 mb-[3px] text-[0.8rem]"
-                >
-                  <span className="bg-primary/20 text-primary px-2 py-[2px] rounded font-bold text-[0.75rem] min-w-[48px] text-center">
-                    {a.metric}
-                  </span>
-                  <span className="text-text">{a.description}</span>
-                </div>
-              ))}
-            </div>
             <Chips>
               {job.technologies[0]?.items.map((tech) => (
                 <Chip key={tech}>{tech}</Chip>
               ))}
             </Chips>
+            </div>
           </div>
         </AnimatedItem>
       ))}

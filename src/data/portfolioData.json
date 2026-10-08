@@ -5,9 +5,9 @@
     "tagline": "SaaS platforms, mobile apps, and AI-powered products. Two degrees by 22. Teknofest 2024 finalist (top 2%).",
     "bio": "Full-stack developer experienced in building SaaS platforms, mobile applications, and AI-powered products with React, React Native, Node.js, Python, and AWS. Owns the full development lifecycle from design to deployment in agile, cross-functional teams.",
     "profileImage": "/assets/me-4125x4125.jpg",
+    "portraitImage": "/assets/hero-portrait.webp",
     "location": "Famagusta, Cyprus",
     "email": "contact@cevdetbaran.com",
-
     "website": "https://cevdetbaran.com",
     "quickStats": {
       "yearsExperience": 3,
@@ -25,12 +25,13 @@
     {
       "id": "ozbul-bilisim",
       "title": "Full-Stack Developer",
-      "company": "Özbul Bilişim",
+      "company": "Ozbul Bilisim",
+      "logo": "/assets/logos/ozbul.png",
       "location": "Famagusta, Cyprus",
       "duration": "Feb 2026 – Present",
       "start": "2026-02",
       "end": null,
-      "description": "Building features end-to-end across React Native mobile, Next.js web, and a .NET / SQL Server backend for enterprise clients including Volvo and Superdrug.",
+      "description": "Building web, mobile, and backend features end-to-end for enterprise clients like Volvo and Superdrug.",
       "achievements": [
         {
           "metric": "Enterprise",
@@ -45,17 +46,27 @@
           "description": "Reusable mobile components, data models, and team-wide coding conventions"
         }
       ],
-      "technologies": [{ "items": ["React Native", "Next.js", ".NET", "SQL Server"] }]
+      "technologies": [
+        {
+          "items": [
+            "React Native",
+            "Next.js",
+            ".NET",
+            "SQL Server"
+          ]
+        }
+      ]
     },
     {
       "id": "emu-it-fullstack",
       "title": "Full-Stack Web Developer",
       "company": "Eastern Mediterranean University IT Directorate",
+      "logo": "/assets/logos/emu.png",
       "location": "Famagusta, Cyprus",
       "duration": "May 2025 – Jan 2026",
       "start": "2025-05",
       "end": "2026-01",
-      "description": "Developing and maintaining the student portal used by 15,000+ students daily. Modernized key UI sections improving usability and satisfaction.",
+      "description": "Keeping the student portal that 15,000+ students rely on every day fast and friendly.",
       "achievements": [
         {
           "metric": "15K+",
@@ -66,17 +77,26 @@
           "description": "Modernized key university website sections"
         }
       ],
-      "technologies": [{ "items": ["React", "Node.js", "JavaScript"] }]
+      "technologies": [
+        {
+          "items": [
+            "React",
+            "Node.js",
+            "JavaScript"
+          ]
+        }
+      ]
     },
     {
       "id": "emu-it-intern",
       "title": "Software Engineering Intern",
       "company": "Eastern Mediterranean University IT Directorate",
+      "logo": "/assets/logos/emu.png",
       "location": "Famagusta, Cyprus",
       "duration": "Aug 2025 – Sep 2025",
       "start": "2025-08",
       "end": "2025-09",
-      "description": "Built a RAG-based AI chatbot with dual LLM support (Ollama + OpenRouter), semantic document search over university files, and a Streamlit analytics dashboard.",
+      "description": "Built a RAG chatbot that answers questions about university documents in real time.",
       "achievements": [
         {
           "metric": "RAG",
@@ -108,11 +128,12 @@
       "id": "havelsan-intern",
       "title": "Test & Automation Engineering Intern",
       "company": "HAVELSAN",
+      "logo": "/assets/logos/havelsan.png",
       "location": "Ankara, Turkey",
       "duration": "Jul 2025 – Aug 2025",
       "start": "2025-07",
       "end": "2025-08",
-      "description": "Built complete HDLC protocol implementation from scratch for a defense communication platform, achieving 98% ISO/IEC 13239:2002 compliance.",
+      "description": "Implemented a defense-grade HDLC communication protocol from scratch, hitting 98% standards compliance.",
       "achievements": [
         {
           "metric": "98%",
@@ -122,21 +143,32 @@
           "metric": "340 fps",
           "description": "High-performance communication system"
         },
-        { "metric": "149", "description": "Test cases with 98% pass rate" }
+        {
+          "metric": "149",
+          "description": "Test cases with 98% pass rate"
+        }
       ],
       "technologies": [
-        { "items": ["Node.js", "JavaScript", "HDLC Protocol", "ISO Standards"] }
+        {
+          "items": [
+            "Node.js",
+            "JavaScript",
+            "HDLC Protocol",
+            "ISO Standards"
+          ]
+        }
       ]
     },
     {
-      "id": "datamilk-intern",
-      "title": "Software Engineering Intern",
+      "id": "datamilk-contract",
+      "title": "Software Engineer (Contract)",
       "company": "DataMilk",
+      "logo": "/assets/logos/datamilk.png",
       "location": "Remote",
       "duration": "Jan 2024 – May 2024",
       "start": "2024-01",
       "end": "2024-05",
-      "description": "Developed 3 AI-powered solutions reducing data processing time by 40%. Built 5 production-ready web apps. Improved API response times by 65%.",
+      "description": "Shipped AI tools that cut data processing time by 40% and built five production web apps along the way.",
       "achievements": [
         {
           "metric": "40%",
@@ -156,7 +188,16 @@
         }
       ],
       "technologies": [
-        { "items": ["Python", "FastAPI", "Flask", "Redis", "Docker", "ML"] }
+        {
+          "items": [
+            "Python",
+            "FastAPI",
+            "Flask",
+            "Redis",
+            "Docker",
+            "ML"
+          ]
+        }
       ]
     }
   ],
@@ -181,25 +222,49 @@
   "projects": [
     {
       "id": "taksikibris",
-      "title": "TaksiKıbrıs",
+      "title": "TaksiKibris",
       "priority": "featured",
       "award": "Best Graduation Project",
       "description": "Full-stack taxi booking SaaS: React Native (Expo) mobile apps for passengers/drivers, Node.js API, real-time GPS tracking via Mapbox, Supabase (PostgreSQL) with 12 core tables, JWT auth, and push notifications.",
       "impact": {
         "metrics": [
-          { "value": "Best", "label": "Project Award" },
-          { "value": "12", "label": "DB Tables" },
-          { "value": "Real-time", "label": "GPS Tracking" }
+          {
+            "value": "Best",
+            "label": "Project Award"
+          },
+          {
+            "value": "12",
+            "label": "DB Tables"
+          },
+          {
+            "value": "Real-time",
+            "label": "GPS Tracking"
+          }
         ]
       },
       "technologies": {
-        "Mobile": ["React Native", "Expo", "TypeScript"],
-        "Backend": ["Node.js", "Express", "Supabase", "PostgreSQL"],
-        "DevOps": ["Docker", "Mapbox"]
+        "Mobile": [
+          "React Native",
+          "Expo",
+          "TypeScript"
+        ],
+        "Backend": [
+          "Node.js",
+          "Express",
+          "Supabase",
+          "PostgreSQL"
+        ],
+        "DevOps": [
+          "Docker",
+          "Mapbox"
+        ]
       },
       "repo": "",
       "status": "awarded",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "emucon-festival",
@@ -209,15 +274,34 @@
       "description": "Full-stack event management platform for university festival: real-time WebSocket event board, multi-role admin dashboard, digital ad campaign management, 42+ clubs coordinated, 1000+ visitors, 1M+ social media reach.",
       "impact": {
         "metrics": [
-          { "value": "1000+", "label": "Visitors" },
-          { "value": "42+", "label": "Clubs" },
-          { "value": "1M+", "label": "Reach" }
+          {
+            "value": "1000+",
+            "label": "Visitors"
+          },
+          {
+            "value": "42+",
+            "label": "Clubs"
+          },
+          {
+            "value": "1M+",
+            "label": "Reach"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["React", "Tailwind CSS"],
-        "Backend": ["Python", "FastAPI", "MongoDB"],
-        "Features": ["WebSocket", "Multi-role Auth"]
+        "Frontend": [
+          "React",
+          "Tailwind CSS"
+        ],
+        "Backend": [
+          "Python",
+          "FastAPI",
+          "MongoDB"
+        ],
+        "Features": [
+          "WebSocket",
+          "Multi-role Auth"
+        ]
       },
       "repo": "",
       "status": "awarded",
@@ -235,18 +319,35 @@
       "description": "Fintech platform with real-time market analysis and transaction processing. Led backend development in a two-person team, architecting the API layer and data pipeline. Top 2% out of 100+ projects.",
       "impact": {
         "metrics": [
-          { "value": "Top 2%", "label": "Ranking" },
-          { "value": "2-person", "label": "Team" },
-          { "value": "Fintech", "label": "Category" }
+          {
+            "value": "Top 2%",
+            "label": "Ranking"
+          },
+          {
+            "value": "2-person",
+            "label": "Team"
+          },
+          {
+            "value": "Fintech",
+            "label": "Category"
+          }
         ]
       },
       "technologies": {
-        "Backend": ["Python", "FastAPI"],
-        "Data": ["Real-time Analytics"]
+        "Backend": [
+          "Python",
+          "FastAPI"
+        ],
+        "Data": [
+          "Real-time Analytics"
+        ]
       },
       "repo": "",
       "status": "finalist",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "ai-marketing-agent",
@@ -256,19 +357,37 @@
       "description": "AI-powered marketing agent (Calimaia) using LLM integration with React frontend and MongoDB backend, built during a competitive hackathon.",
       "impact": {
         "metrics": [
-          { "value": "3rd", "label": "Place" },
-          { "value": "LLM", "label": "Powered" },
-          { "value": "Hackathon", "label": "Built" }
+          {
+            "value": "3rd",
+            "label": "Place"
+          },
+          {
+            "value": "LLM",
+            "label": "Powered"
+          },
+          {
+            "value": "Hackathon",
+            "label": "Built"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["React"],
-        "Backend": ["MongoDB"],
-        "AI": ["LLM Integration"]
+        "Frontend": [
+          "React"
+        ],
+        "Backend": [
+          "MongoDB"
+        ],
+        "AI": [
+          "LLM Integration"
+        ]
       },
       "repo": "",
       "status": "awarded",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "emurpg-club",
@@ -277,38 +396,74 @@
       "description": "Club management platform serving 300+ active members with automated event registration (75% admin time reduction) and 99.9% uptime on custom domain.",
       "impact": {
         "metrics": [
-          { "value": "300+", "label": "Members" },
-          { "value": "75%", "label": "Time Saved" },
-          { "value": "99.9%", "label": "Uptime" }
+          {
+            "value": "300+",
+            "label": "Members"
+          },
+          {
+            "value": "75%",
+            "label": "Time Saved"
+          },
+          {
+            "value": "99.9%",
+            "label": "Uptime"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["React"],
-        "Backend": ["Python", "FastAPI", "MongoDB"]
+        "Frontend": [
+          "React"
+        ],
+        "Backend": [
+          "Python",
+          "FastAPI",
+          "MongoDB"
+        ]
       },
       "repo": "",
       "status": "active",
-      "media": { "image": "", "demo": "https://emurpg.com" }
+      "media": {
+        "image": "",
+        "demo": "https://emurpg.com"
+      }
     },
     {
       "id": "avlu-alacati",
-      "title": "Avlu Alaçatı Hotel Website",
+      "title": "Avlu Alacati Hotel Website",
       "priority": "normal",
       "description": "Responsive boutique hotel website with Framer Motion animations and SEO-optimized mobile-first design. Increased organic traffic by 120% within 3 months.",
       "impact": {
         "metrics": [
-          { "value": "120%", "label": "Traffic Growth" },
-          { "value": "SEO", "label": "Optimized" },
-          { "value": "Mobile", "label": "First Design" }
+          {
+            "value": "120%",
+            "label": "Traffic Growth"
+          },
+          {
+            "value": "SEO",
+            "label": "Optimized"
+          },
+          {
+            "value": "Mobile",
+            "label": "First Design"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["React", "Framer Motion", "CSS3"],
-        "Strategy": ["SEO Optimization"]
+        "Frontend": [
+          "React",
+          "Framer Motion",
+          "CSS3"
+        ],
+        "Strategy": [
+          "SEO Optimization"
+        ]
       },
       "repo": "",
       "status": "delivered",
-      "media": { "image": "", "demo": "https://avlualacati.com" }
+      "media": {
+        "image": "",
+        "demo": "https://avlualacati.com"
+      }
     },
     {
       "id": "spicetify-updater",
@@ -317,18 +472,36 @@
       "description": "Cross-platform CLI tool to update Spicetify. Supports Linux, macOS, and Windows. 9 GitHub stars.",
       "impact": {
         "metrics": [
-          { "value": "9", "label": "GitHub Stars" },
-          { "value": "3", "label": "OS Support" },
-          { "value": "CLI", "label": "Interface" }
+          {
+            "value": "9",
+            "label": "GitHub Stars"
+          },
+          {
+            "value": "3",
+            "label": "OS Support"
+          },
+          {
+            "value": "CLI",
+            "label": "Interface"
+          }
         ]
       },
       "technologies": {
-        "Languages": ["Python"],
-        "Platforms": ["Linux", "macOS", "Windows"]
+        "Languages": [
+          "Python"
+        ],
+        "Platforms": [
+          "Linux",
+          "macOS",
+          "Windows"
+        ]
       },
       "repo": "https://github.com/BaranDev/spicetify-updater",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "firebase-auth-template",
@@ -337,18 +510,38 @@
       "description": "A template repository for implementing Firebase Authentication with Flask and JavaScript. Includes functionalities for user signup, signin, signout, and session management.",
       "impact": {
         "metrics": [
-          { "value": "6", "label": "GitHub Stars" },
-          { "value": "Auth", "label": "Template" },
-          { "value": "Flask", "label": "Backend" }
+          {
+            "value": "6",
+            "label": "GitHub Stars"
+          },
+          {
+            "value": "Auth",
+            "label": "Template"
+          },
+          {
+            "value": "Flask",
+            "label": "Backend"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["JavaScript", "HTML", "CSS"],
-        "Backend": ["Python", "Flask", "Firebase Auth"]
+        "Frontend": [
+          "JavaScript",
+          "HTML",
+          "CSS"
+        ],
+        "Backend": [
+          "Python",
+          "Flask",
+          "Firebase Auth"
+        ]
       },
       "repo": "https://github.com/BaranDev/Firebase-Authentication-Template",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "winhub",
@@ -357,18 +550,36 @@
       "description": "The Windows App Store That Actually Works - Find and install any Windows program instantly with WinGet integration.",
       "impact": {
         "metrics": [
-          { "value": "WinGet", "label": "Integration" },
-          { "value": "TypeScript", "label": "Built With" },
-          { "value": "Desktop", "label": "App" }
+          {
+            "value": "WinGet",
+            "label": "Integration"
+          },
+          {
+            "value": "TypeScript",
+            "label": "Built With"
+          },
+          {
+            "value": "Desktop",
+            "label": "App"
+          }
         ]
       },
       "technologies": {
-        "Frontend": ["React", "TypeScript"],
-        "Platform": ["Electron", "Windows"]
+        "Frontend": [
+          "React",
+          "TypeScript"
+        ],
+        "Platform": [
+          "Electron",
+          "Windows"
+        ]
       },
       "repo": "https://github.com/BaranDev/winhub",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "virtual-whiteboard",
@@ -377,17 +588,33 @@
       "description": "Computer vision-powered virtual whiteboard using hand gestures and object tracking for natural drawing experience.",
       "impact": {
         "metrics": [
-          { "value": "CV", "label": "Powered" },
-          { "value": "Gesture", "label": "Control" },
-          { "value": "MediaPipe", "label": "Tracking" }
+          {
+            "value": "CV",
+            "label": "Powered"
+          },
+          {
+            "value": "Gesture",
+            "label": "Control"
+          },
+          {
+            "value": "MediaPipe",
+            "label": "Tracking"
+          }
         ]
       },
       "technologies": {
-        "AI/CV": ["Python", "OpenCV", "MediaPipe"]
+        "AI/CV": [
+          "Python",
+          "OpenCV",
+          "MediaPipe"
+        ]
       },
       "repo": "https://github.com/BaranDev/virtual-whiteboard",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "mcp-server-template",
@@ -396,17 +623,33 @@
       "description": "A production-ready template for building Model Context Protocol (MCP) servers with Python. Includes HTTP client patterns, error handling, and separation of concerns.",
       "impact": {
         "metrics": [
-          { "value": "MCP", "label": "Protocol" },
-          { "value": "Template", "label": "Ready" },
-          { "value": "Async", "label": "Python" }
+          {
+            "value": "MCP",
+            "label": "Protocol"
+          },
+          {
+            "value": "Template",
+            "label": "Ready"
+          },
+          {
+            "value": "Async",
+            "label": "Python"
+          }
         ]
       },
       "technologies": {
-        "Backend": ["Python", "AsyncIO", "HTTPX"]
+        "Backend": [
+          "Python",
+          "AsyncIO",
+          "HTTPX"
+        ]
       },
       "repo": "https://github.com/BaranDev/mcp-server-template",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     },
     {
       "id": "katalog",
@@ -415,18 +658,36 @@
       "description": "A React Native starter template for building offline product catalogs. Features SQLite storage, image processing, grid layouts, and fullscreen viewer components.",
       "impact": {
         "metrics": [
-          { "value": "Offline", "label": "First" },
-          { "value": "SQLite", "label": "Storage" },
-          { "value": "Mobile", "label": "Template" }
+          {
+            "value": "Offline",
+            "label": "First"
+          },
+          {
+            "value": "SQLite",
+            "label": "Storage"
+          },
+          {
+            "value": "Mobile",
+            "label": "Template"
+          }
         ]
       },
       "technologies": {
-        "Mobile": ["React Native", "TypeScript"],
-        "Data": ["SQLite", "Async Storage"]
+        "Mobile": [
+          "React Native",
+          "TypeScript"
+        ],
+        "Data": [
+          "SQLite",
+          "Async Storage"
+        ]
       },
       "repo": "https://github.com/BaranDev/katalog",
       "status": "active",
-      "media": { "image": "", "demo": "" }
+      "media": {
+        "image": "",
+        "demo": ""
+      }
     }
   ],
   "skills": {
@@ -533,11 +794,21 @@
     },
     "Also Familiar": {
       "icon": "🧭",
-      "skills": ["Golang", "Three.js", "Unreal Engine 5", "Vuforia", "Node-RED"]
+      "skills": [
+        "Golang",
+        "Three.js",
+        "Unreal Engine 5",
+        "Vuforia",
+        "Node-RED"
+      ]
     },
     "Design": {
       "icon": "🖌️",
-      "skills": ["Adobe Photoshop", "Adobe Illustrator", "DaVinci Resolve"]
+      "skills": [
+        "Adobe Photoshop",
+        "Adobe Illustrator",
+        "DaVinci Resolve"
+      ]
     }
   },
   "certifications": [
@@ -547,15 +818,21 @@
     "EF SET English C2 Proficient (2025)"
   ],
   "awards": [
-    "TaksiKıbrıs – Best Graduation Project Award",
+    "TaksiKibris – Best Graduation Project Award",
     "EMUCON Festival Main Organizer – High Success Award",
     "FutureMinds'25 Hackathon – 3rd Place",
     "Teknofest 2024 Finalist – Top 2%",
     "Top Student of Faculty & Program – Ufuk University"
   ],
   "languages": [
-    { "name": "Turkish", "level": "Native" },
-    { "name": "English", "level": "C2 Proficient" }
+    {
+      "name": "Turkish",
+      "level": "Native"
+    },
+    {
+      "name": "English",
+      "level": "C2 Proficient"
+    }
   ],
   "meta": {
     "version": 3,

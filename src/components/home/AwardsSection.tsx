@@ -16,7 +16,7 @@ const AwardsSection = ({
     <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-2 mt-4">
       {awards.map((award) => (
         <AnimatedItem key={award}>
-          <div className="px-4 py-2 text-[0.82rem] flex items-center gap-2 bg-card rounded-xl shadow-neumorphic">
+          <div className="px-4 py-2 text-meta flex items-center gap-2 bg-card rounded-xl shadow-neumorphic">
             <Trophy size={14} className="text-primary" />
             <span className="text-text">{award}</span>
           </div>
@@ -24,7 +24,7 @@ const AwardsSection = ({
       ))}
       {certifications.map((cert) => (
         <AnimatedItem key={cert}>
-          <div className="px-4 py-2 text-[0.82rem] flex items-center gap-2 bg-card rounded-xl shadow-neumorphic">
+          <div className="px-4 py-2 text-meta flex items-center gap-2 bg-card rounded-xl shadow-neumorphic">
             <FileText size={14} className="text-primary" />
             <span className="text-text">{cert}</span>
           </div>

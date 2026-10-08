@@ -17,8 +17,8 @@ const CVDownloadButton = ({
         onClick={openModal}
         className={`
           inline-flex items-center justify-center gap-1.5 px-[18px] py-2 cursor-pointer
-          text-[0.82rem] font-semibold rounded-xl transition-all duration-300
-          bg-background text-text shadow-neumorphic hover:-translate-y-[2px] hover:animate-glow
+          text-meta font-semibold rounded-xl transition-all duration-100
+          bg-background text-text shadow-pixel-ring hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pixel-pressed
           ${className}
         `}
         {...props}

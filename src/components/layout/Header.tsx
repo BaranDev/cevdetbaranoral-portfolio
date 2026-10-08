@@ -10,8 +10,6 @@ import {
   Download,
   Menu,
   X,
-  ChevronLeft,
-  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import ThemeToggle from "../ui/ThemeToggle";
@@ -36,6 +34,14 @@ const NAV_SECTIONS: NavSection[] = [
 /* ── Component ───────────────────────────────── */
 const Header = () => {
   const [collapsed, setCollapsed] = useState(false);
+
+  // Publish sidebar width so Layout's padding tracks expand/collapse
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--sidebar-w",
+      collapsed ? "64px" : "220px",
+    );
+  }, [collapsed]);
   const [activeSection, setActiveSection] = useState("home");
   const [moreOpen, setMoreOpen] = useState(false);
   const [showCVModal, setShowCVModal] = useState(false);
@@ -92,7 +98,7 @@ const Header = () => {
   // Common classes
   const navItemClasses = (active: boolean) => `
     flex items-center rounded-xl transition-all duration-200 cursor-pointer border-none bg-transparent w-full
-    text-[0.82rem] font-medium whitespace-nowrap relative
+    text-meta font-medium whitespace-nowrap relative
     ${
       active
         ? "bg-primary/10 text-primary font-semibold"
@@ -103,7 +109,12 @@ const Header = () => {
 
   // Active indicator line for desktop sidebar
   const ActiveIndicator = () => (
-    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-md" />
+    <span
+      aria-hidden
+      className="absolute left-1 top-1/2 -translate-y-1/2 text-primary text-label leading-none"
+    >
+      ▸
+    </span>
   );
 
   return (
@@ -111,8 +122,7 @@ const Header = () => {
       {/* Desktop sidebar */}
       <nav
         className={`
-          hidden md:flex fixed top-3 left-3 bottom-3 flex-col bg-card/95 backdrop-blur-md
-          border border-primary/20 rounded-2xl z-[100] transition-[width] duration-300 overflow-hidden
+          hidden md:flex fixed top-3 left-3 bottom-3 flex-col bg-card pixel-frame z-[100] transition-[width] duration-300 overflow-hidden
           ${collapsed ? "w-[64px]" : "w-[220px]"}
         `}
       >
@@ -120,12 +130,30 @@ const Header = () => {
         <div
           className={`p-4 pb-2 flex items-center gap-2 ${collapsed ? "justify-center" : "justify-end"}`}
         >
+          {/* ghost pixel arrow: points where the rail will go, nudges on hover */}
           <button
             onClick={() => setCollapsed((c) => !c)}
-            aria-label="Toggle sidebar"
-            className="w-7 h-7 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-secondary hover:text-primary border border-primary/20 rounded-lg transition-all"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            className="group w-7 h-7 shrink-0 flex items-center justify-center cursor-pointer text-secondary hover:text-accent transition-colors duration-100"
           >
-            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            <svg
+              viewBox="0 0 4 7"
+              width="8"
+              height="14"
+              aria-hidden
+              shapeRendering="crispEdges"
+              className={`fill-current transition-[translate] duration-150 ease-[steps(2,end)] ${
+                collapsed
+                  ? "group-hover:translate-x-0.5"
+                  : "-scale-x-100 group-hover:-translate-x-0.5"
+              }`}
+            >
+              <rect x="0" y="0" width="1" height="7" />
+              <rect x="1" y="1" width="1" height="5" />
+              <rect x="2" y="2" width="1" height="3" />
+              <rect x="3" y="3" width="1" height="1" />
+            </svg>
           </button>
         </div>
 
@@ -173,38 +201,38 @@ const Header = () => {
             <button
               key={s.id}
               className={`
-                flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+                flex flex-col items-center gap-0.5 py-1 px-0 bg-transparent border-none flex-1 min-w-0 cursor-pointer transition-colors duration-200
                 ${isActive ? "text-primary" : "text-secondary hover:text-primary"}
               `}
               onClick={() => handleNav(s.id)}
             >
               <s.icon size={18} />
-              <span className="text-[0.6rem]">{s.label}</span>
+              <span className="text-label">{s.label}</span>
             </button>
           );
         })}
         <button
           className={`
-            flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+            flex flex-col items-center gap-0.5 py-1 px-0 bg-transparent border-none flex-1 min-w-0 cursor-pointer transition-colors duration-200
             ${moreOpen ? "text-primary" : "text-secondary hover:text-primary"}
           `}
           onClick={() => setMoreOpen((o) => !o)}
         >
           {moreOpen ? <X size={18} /> : <Menu size={18} />}
-          <span className="text-[0.6rem]">More</span>
+          <span className="text-label">More</span>
         </button>
       </nav>
 
       {/* Mobile "more" drawer */}
       {moreOpen && (
-        <div className="fixed bottom-[64px] left-2 right-2 bg-card/95 backdrop-blur-md border border-primary/20 rounded-2xl p-3 z-[101] flex flex-wrap gap-2 justify-center pb-[calc(12px+env(safe-area-inset-bottom))]">
+        <div className="fixed bottom-[64px] left-2 right-2 bg-card pixel-frame p-3 z-[101] flex flex-wrap gap-2 justify-center pb-[calc(12px+env(safe-area-inset-bottom))]">
           {mobileSecondary.map((s) => {
             const isActive = isHome && activeSection === s.id;
             return (
               <button
                 key={s.id}
                 className={`
-                  flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] cursor-pointer transition-all duration-200
+                  flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-meta cursor-pointer transition-all duration-200
                   ${
                     isActive
                       ? "bg-primary/15 text-primary border-primary/20"
@@ -223,16 +251,18 @@ const Header = () => {
               setMoreOpen(false);
               setShowCVModal(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.82rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-meta bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 cursor-pointer"
           >
             <Download size={16} /> CV
           </button>
-          <CVDownloadModal
-            isOpen={showCVModal}
-            onClose={() => setShowCVModal(false)}
-          />
         </div>
       )}
+
+      {/* outside the drawer: opening it closes the drawer */}
+      <CVDownloadModal
+        isOpen={showCVModal}
+        onClose={() => setShowCVModal(false)}
+      />
 
       {/* Mobile Fixed Theme Toggle */}
       <div className="md:hidden fixed top-2.5 right-2.5 z-[1000]">

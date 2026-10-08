@@ -1,5 +1,3 @@
-import { useTheme } from "../../context/ThemeContext";
-
 /* ────────────────────────────────────────────────────────────
  *  ParallaxBackground - TEMPORARY plain color fallback
  *  The full HD parallax implementation lives in git history
@@ -7,17 +5,11 @@ import { useTheme } from "../../context/ThemeContext";
  *  and will be restored in the next update.
  * ──────────────────────────────────────────────────────────── */
 
-const ParallaxBackground = () => {
-  const { isDarkMode } = useTheme();
-
-  return (
-    <div
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{
-        backgroundColor: isDarkMode ? "#0a0f0d" : "#f4f7f6",
-      }}
-    />
-  );
-};
+const ParallaxBackground = () => (
+  <div
+    className="fixed inset-0 pointer-events-none z-0"
+    style={{ backgroundColor: "var(--color-background)" }}
+  />
+);
 
 export default ParallaxBackground;

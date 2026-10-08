@@ -12,6 +12,7 @@ export interface Experience {
   id: string;
   title: string;
   company: string;
+  logo?: string;
   location: string;
   duration: string;
   start: string;
@@ -73,6 +74,7 @@ export interface Personal {
   tagline: string;
   bio: string;
   profileImage: string;
+  portraitImage: string;
   location: string;
   email: string;
   website: string;
