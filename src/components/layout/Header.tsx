@@ -98,7 +98,7 @@ const Header = () => {
   // Common classes
   const navItemClasses = (active: boolean) => `
     flex items-center rounded-xl transition-all duration-200 cursor-pointer border-none bg-transparent w-full
-    text-[0.92rem] font-medium whitespace-nowrap relative
+    text-meta font-medium whitespace-nowrap relative
     ${
       active
         ? "bg-primary/10 text-primary font-semibold"
@@ -111,7 +111,7 @@ const Header = () => {
   const ActiveIndicator = () => (
     <span
       aria-hidden
-      className="absolute left-1 top-1/2 -translate-y-1/2 text-primary text-[0.8rem] leading-none"
+      className="absolute left-1 top-1/2 -translate-y-1/2 text-primary text-label leading-none"
     >
       ▸
     </span>
@@ -201,25 +201,25 @@ const Header = () => {
             <button
               key={s.id}
               className={`
-                flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+                flex flex-col items-center gap-0.5 py-1 px-0 bg-transparent border-none flex-1 min-w-0 cursor-pointer transition-colors duration-200
                 ${isActive ? "text-primary" : "text-secondary hover:text-primary"}
               `}
               onClick={() => handleNav(s.id)}
             >
               <s.icon size={18} />
-              <span className="text-[0.6rem]">{s.label}</span>
+              <span className="text-label">{s.label}</span>
             </button>
           );
         })}
         <button
           className={`
-            flex flex-col items-center gap-0.5 p-1 bg-transparent border-none flex-1 max-w-[64px] cursor-pointer transition-colors duration-200
+            flex flex-col items-center gap-0.5 py-1 px-0 bg-transparent border-none flex-1 min-w-0 cursor-pointer transition-colors duration-200
             ${moreOpen ? "text-primary" : "text-secondary hover:text-primary"}
           `}
           onClick={() => setMoreOpen((o) => !o)}
         >
           {moreOpen ? <X size={18} /> : <Menu size={18} />}
-          <span className="text-[0.6rem]">More</span>
+          <span className="text-label">More</span>
         </button>
       </nav>
 
@@ -232,7 +232,7 @@ const Header = () => {
               <button
                 key={s.id}
                 className={`
-                  flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.92rem] cursor-pointer transition-all duration-200
+                  flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-meta cursor-pointer transition-all duration-200
                   ${
                     isActive
                       ? "bg-primary/15 text-primary border-primary/20"
@@ -251,7 +251,7 @@ const Header = () => {
               setMoreOpen(false);
               setShowCVModal(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-[0.92rem] bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary/10 text-meta bg-primary/5 text-text hover:bg-primary/15 transition-all duration-200 cursor-pointer"
           >
             <Download size={16} /> CV
           </button>

@@ -6,6 +6,17 @@ import { WALL, OPEN, FLAG, TOWER_W } from "../../../constants/castle";
    runs height="100%" down to the base and crown + shaft share one
    raster — they can't round to different device pixels. */
 
+/* Pennant columns (2px wide) taper from the pole to a point. Each frame
+   drops some columns one pixel so a wave travels away from the pole;
+   the two columns at the pole never move. */
+const FLAG_H = [8, 8, 6, 6, 4, 4, 2];
+const FLAG_WAVE = [
+  [0, 0, 2, 2, 0, 0, 2],
+  [0, 0, 0, 2, 2, 0, 0],
+  [0, 0, 0, 0, 2, 2, 0],
+  [0, 0, 2, 0, 0, 2, 2],
+];
+
 /** Watchtower: flag, crenellation, corbels, body with arrow-slit.
     The body fills whatever height the svg is given. */
 const Tower = ({ style }: { style?: CSSProperties }) => (
@@ -18,10 +29,21 @@ const Tower = ({ style }: { style?: CSSProperties }) => (
   >
     {/* flag pole */}
     <rect x="20" y="0" width="4" height="18" fill={WALL} />
-    {/* pennant, 2-frame wave */}
-    <g className="castle-flag">
-      <rect x="24" y="2" width="14" height="6" fill={FLAG} />
-      <rect x="24" y="8" width="8" height="3" fill={FLAG} />
+    {/* pennant: 4 pixel frames, cycled by .flag-frame in index.css */}
+    <g>
+      {FLAG_WAVE.map((offsets, f) => (
+        <g key={f} className="flag-frame">
+          {FLAG_H.map((h, c) => (
+            <g key={c}>
+              <rect x={24 + c * 2} y={2 + offsets[c]} width="2" height={h} fill={FLAG} />
+              {/* shaded underside pixel (the tail point stays flat) */}
+              {h > 2 && (
+                <rect x={24 + c * 2} y={h + offsets[c]} width="2" height="2" fill="black" opacity="0.2" />
+              )}
+            </g>
+          ))}
+        </g>
+      ))}
     </g>
     {/* crenellation */}
     <rect x="2" y="16" width="8" height="10" fill={WALL} />

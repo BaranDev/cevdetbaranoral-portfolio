@@ -27,7 +27,7 @@ export const Btn = ({
 }: BtnProps) => {
   const classes = `
     inline-flex items-center justify-center gap-1.5 px-[18px] py-2 cursor-pointer
-    text-[0.92rem] font-semibold rounded-xl transition-all duration-100
+    text-meta font-semibold rounded-xl transition-all duration-100
     ${
       primary
         ? "bg-primary text-white shadow-pixel-ring hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pixel-pressed"
@@ -62,13 +62,13 @@ export const Chips = ({ children }: { children: ReactNode }) => (
 );
 
 export const Chip = ({ children }: { children: ReactNode }) => (
-  <span className="bg-primary/10 text-primary px-2 py-[2px] rounded-xl text-[0.8rem] font-medium border border-primary/20">
+  <span className="bg-primary/10 text-primary px-2 py-[2px] rounded-xl text-label font-medium border border-primary/20">
     {children}
   </span>
 );
 
 export const Badge = ({ children }: { children: ReactNode }) => (
-  <span className="bg-primary/20 text-primary px-2 py-[1px] rounded-xl font-ornament text-[0.92rem] tracking-wide whitespace-nowrap">
+  <span className="bg-primary/20 text-primary px-2 py-[1px] rounded-xl text-label font-semibold uppercase tracking-wider whitespace-nowrap">
     {children}
   </span>
 );
@@ -85,7 +85,7 @@ export const SectionHeading = ({
       className="bg-card pixel-frame text-center py-2.5 px-4"
       style={style}
     >
-      <h2 className="flex items-center justify-center gap-2.5 font-heading text-text text-[clamp(1.2rem,3vw,1.6rem)] font-semibold tracking-tight">
+      <h2 className="flex items-center justify-center gap-2.5 font-heading text-text text-section">
         {children}
       </h2>
     </div>

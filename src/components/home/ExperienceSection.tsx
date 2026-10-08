@@ -25,18 +25,18 @@ const ExperienceSection = ({ experience }: { experience: Experience[] }) => (
             )}
             <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-              <h3 className="font-heading text-primary m-0 text-[1.05rem] font-semibold">
-                {job.title}
-                <span className="font-body text-secondary font-normal text-[0.88rem]">
+              <h3 className="font-heading text-primary m-0 text-title">
+                {job.company}
+                <span className="font-body text-secondary text-meta">
                   {" "}
-                  · {job.company}
+                  · {job.title}
                 </span>
               </h3>
-              <span className="text-[0.82rem] text-secondary whitespace-nowrap">
+              <span className="text-meta text-secondary whitespace-nowrap">
                 {job.duration}
               </span>
             </div>
-            <p className="text-[0.92rem] text-text mt-1 mb-1.5 leading-relaxed">
+            <p className="text-body text-text mt-1 mb-1.5 leading-relaxed">
               {job.description}
             </p>
             <Chips>

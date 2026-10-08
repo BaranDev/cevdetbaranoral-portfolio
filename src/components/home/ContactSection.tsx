@@ -26,8 +26,8 @@ const ContactItem = ({
       <Icon size={16} />
     </div>
     <div>
-      <div className="text-[0.72rem] text-secondary">{label}</div>
-      <div className="font-medium text-[0.95rem]">{children}</div>
+      <div className="text-label text-secondary">{label}</div>
+      <div className="font-medium text-body">{children}</div>
     </div>
   </div>
 );
@@ -87,7 +87,7 @@ const ContactSection = ({ personal }: { personal: Personal }) => (
       </AnimatedItem>
       <AnimatedItem>
         <div className="p-8 bg-card rounded-xl shadow-neumorphic text-center flex flex-col items-center justify-center gap-6">
-          <h3 className="font-heading text-primary m-0 text-lg font-bold">
+          <h3 className="font-heading text-primary m-0 text-title">
             Ready to Build Together?
           </h3>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">

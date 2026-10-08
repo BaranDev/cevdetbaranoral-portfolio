@@ -25,7 +25,7 @@
     {
       "id": "ozbul-bilisim",
       "title": "Full-Stack Developer",
-      "company": "Özbul Bilişim",
+      "company": "Ozbul Bilisim",
       "logo": "/assets/logos/ozbul.png",
       "location": "Famagusta, Cyprus",
       "duration": "Feb 2026 – Present",
@@ -160,8 +160,8 @@
       ]
     },
     {
-      "id": "datamilk-intern",
-      "title": "Software Engineering Intern",
+      "id": "datamilk-contract",
+      "title": "Software Engineer (Contract)",
       "company": "DataMilk",
       "logo": "/assets/logos/datamilk.png",
       "location": "Remote",
@@ -222,7 +222,7 @@
   "projects": [
     {
       "id": "taksikibris",
-      "title": "TaksiKıbrıs",
+      "title": "TaksiKibris",
       "priority": "featured",
       "award": "Best Graduation Project",
       "description": "Full-stack taxi booking SaaS: React Native (Expo) mobile apps for passengers/drivers, Node.js API, real-time GPS tracking via Mapbox, Supabase (PostgreSQL) with 12 core tables, JWT auth, and push notifications.",
@@ -429,7 +429,7 @@
     },
     {
       "id": "avlu-alacati",
-      "title": "Avlu Alaçatı Hotel Website",
+      "title": "Avlu Alacati Hotel Website",
       "priority": "normal",
       "description": "Responsive boutique hotel website with Framer Motion animations and SEO-optimized mobile-first design. Increased organic traffic by 120% within 3 months.",
       "impact": {
@@ -818,7 +818,7 @@
     "EF SET English C2 Proficient (2025)"
   ],
   "awards": [
-    "TaksiKıbrıs – Best Graduation Project Award",
+    "TaksiKibris – Best Graduation Project Award",
     "EMUCON Festival Main Organizer – High Success Award",
     "FutureMinds'25 Hackathon – 3rd Place",
     "Teknofest 2024 Finalist – Top 2%",

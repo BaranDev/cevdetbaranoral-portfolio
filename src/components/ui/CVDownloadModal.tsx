@@ -68,7 +68,7 @@ const CVDownloadModal = ({ isOpen, onClose }: CVDownloadModalProps) => {
     >
       <div className="bg-card pixel-frame w-[min(340px,calc(100vw-32px))]">
         <div className="flex items-center justify-between gap-4 pl-4 pr-2 pt-2.5 pb-2">
-          <h2 id={titleId} className="font-heading text-lg text-text">
+          <h2 id={titleId} className="font-heading text-title text-text">
             Download CV
           </h2>
           <button
@@ -104,7 +104,7 @@ const CVDownloadModal = ({ isOpen, onClose }: CVDownloadModalProps) => {
                   ▸
                 </span>
                 <span className="flex-1">{f.label}</span>
-                <span className="text-[0.75rem] tracking-wider text-secondary">
+                <span className="text-label tracking-wider text-secondary">
                   PDF
                 </span>
                 <Download size={15} aria-hidden />

@@ -54,7 +54,7 @@ const Footer = () => {
 
       <div className="flex flex-wrap gap-8 justify-between max-w-[1200px] mx-auto">
         <div className="flex-1 min-w-[200px] mb-6 md:mb-0">
-          <h3 className="text-lg font-semibold mb-4 text-primary">Portfolio</h3>
+          <h3 className="font-heading text-title mb-4 text-primary">Portfolio</h3>
           <p className="text-text/90 leading-relaxed mb-6 max-w-sm">
             A showcase of my skills, projects, and experience as a Software
             Engineering undergraduate with expertise in AI technologies and
@@ -78,7 +78,7 @@ const Footer = () => {
         </div>
 
         <div className="flex-1 min-w-[200px] mb-6 md:mb-0">
-          <h3 className="text-lg font-semibold mb-4 text-primary">
+          <h3 className="font-heading text-title mb-4 text-primary">
             Quick Links
           </h3>
           <div className="flex flex-col gap-2">
@@ -96,7 +96,7 @@ const Footer = () => {
         </div>
 
         <div className="flex-1 min-w-[200px]">
-          <h3 className="text-lg font-semibold mb-4 text-primary">Contact</h3>
+          <h3 className="font-heading text-title mb-4 text-primary">Contact</h3>
           <p className="flex items-center gap-3 mb-3 text-text">
             <MapPin size={16} className="text-primary/80" />
             Famagusta, Cyprus
@@ -111,7 +111,7 @@ const Footer = () => {
 
       <div className="my-8 w-full h-[1px] bg-gradient-to-r from-transparent via-text/10 to-transparent" />
 
-      <p className="text-center text-secondary text-[0.95rem]">
+      <p className="text-center text-secondary text-meta">
         © {currentYear} Cevdet Baran Oral. All rights reserved. Designed with
         React and Neumorphism.
       </p>

@@ -15,10 +15,10 @@ const StatsSection = ({ quickStats }: { quickStats: QuickStats }) => {
         {stats.map((s) => (
           <AnimatedItem key={s.label}>
             <div className="text-center p-4 bg-card rounded-xl shadow-neumorphic transition-transform duration-300 hover:-translate-y-[3px]">
-              <div className="text-xl md:text-2xl font-bold text-primary font-heading">
+              <div className="text-stat font-bold text-primary">
                 {s.value}
               </div>
-              <div className="text-[0.8rem] text-secondary uppercase tracking-wide mt-0.5">
+              <div className="text-label text-secondary uppercase tracking-wide mt-0.5">
                 {s.label}
               </div>
             </div>

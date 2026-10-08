@@ -22,7 +22,7 @@ const ProjectLink = ({
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-flex items-center gap-1 text-[0.82rem] font-semibold text-primary px-2.5 py-1 rounded border border-primary/30 transition-all duration-200 hover:bg-primary/15 hover:-translate-y-[1px]"
+    className="inline-flex items-center gap-1 text-meta font-semibold text-primary px-2.5 py-1 rounded border border-primary/30 transition-all duration-200 hover:bg-primary/15 hover:-translate-y-[1px]"
   >
     {children}
   </a>
@@ -35,27 +35,27 @@ const ProjectCard = ({ project }: { project: Project }) => (
       aria-label={project.title}
     >
       <div className="flex items-center justify-between mb-1">
-        <h3 className="font-heading text-text m-0 text-[1.05rem] font-semibold">
+        <h3 className="font-heading text-text m-0 text-title">
           {project.title}
         </h3>
         <Badge>{project.status}</Badge>
       </div>
       {project.award && (
-        <div className="text-[0.82rem] text-accent font-semibold mb-1.5 flex items-center gap-1">
+        <div className="text-meta text-accent font-semibold mb-1.5 flex items-center gap-1">
           <Trophy size={13} />
           {project.award}
         </div>
       )}
-      <p className="text-[0.88rem] text-text leading-relaxed my-1 mb-2">
+      <p className="text-body text-text leading-relaxed my-1 mb-2">
         {project.description}
       </p>
       <div className="flex gap-2 my-2 flex-wrap">
         {project.impact.metrics.map((m) => (
           <div key={m.label} className="text-center min-w-[70px]">
-            <div className="text-[0.92rem] font-bold text-primary font-heading">
+            <div className="text-body font-semibold text-primary">
               {m.value}
             </div>
-            <div className="text-[0.6rem] text-secondary uppercase">
+            <div className="text-label text-secondary uppercase">
               {m.label}
             </div>
           </div>
@@ -113,7 +113,7 @@ const ProjectsSection = ({ projects }: { projects: Project[] }) => {
 
       {other.length > 0 && (
         <>
-          <h3 className="flex items-center justify-center gap-2 font-heading text-secondary text-[1.05rem] font-semibold tracking-tight mt-8 mb-2 text-center">
+          <h3 className="flex items-center justify-center gap-2 font-heading text-secondary text-title mt-8 mb-2 text-center">
             <LayoutGrid size={16} /> More Projects
           </h3>
           <ProjectGrid>

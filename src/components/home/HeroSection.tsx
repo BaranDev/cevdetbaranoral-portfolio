@@ -43,21 +43,21 @@ const HeroSection = ({ personal }: { personal: Personal }) => {
             fetchPriority="high"
           />
 
-          <p className="flex items-center justify-center lg:justify-start gap-1.5 font-ornament text-[1.05rem] tracking-[0.08em] text-secondary mb-3">
+          <p className="flex items-center justify-center lg:justify-start gap-1.5 text-meta text-secondary mb-3">
             <MapPin size={12} className="shrink-0" />
             {personal.location}
           </p>
 
-          <h1 className="font-heading text-[clamp(1.6rem,4.5vw,2.6rem)] font-bold tracking-tight mb-1 bg-gradient-to-br from-primary via-accent to-magical text-transparent bg-clip-text">
+          <h1 className="font-heading text-display mb-1 bg-gradient-to-br from-primary via-accent to-magical text-transparent bg-clip-text">
             {personal.name}
           </h1>
-          <p className="text-secondary text-[clamp(1.05rem,2vw,1.25rem)] mb-1.5 font-medium">
+          <p className="text-secondary text-lead mb-1.5 font-medium">
             {personal.title}
           </p>
-          <p className="text-accent italic text-[0.95rem] mb-4 leading-relaxed">
+          <p className="text-accent italic text-body mb-4 leading-relaxed">
             {personal.tagline}
           </p>
-          <p className="text-text text-[0.95rem] leading-relaxed mb-4 max-w-[520px] mx-auto lg:mx-0">
+          <p className="text-text text-body leading-relaxed mb-4 max-w-[520px] mx-auto lg:mx-0">
             {personal.bio}
           </p>
           <div className="flex flex-wrap gap-3 w-full justify-center lg:justify-start mt-4">
