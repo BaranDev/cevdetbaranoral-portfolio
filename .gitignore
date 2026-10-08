@@ -28,3 +28,6 @@ CHECKLIST FOR REVISION.md
 public/parallax/
 .github/copilot-instructions.md
 prompts_for_background.md
+
+# Local Playwright screenshot tooling (not part of the site)
+.shots/

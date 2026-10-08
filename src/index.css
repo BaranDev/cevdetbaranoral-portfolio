@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+/* ── Self-hosted pixel fonts ── */
+@font-face {
+  font-family: "Alagard";
+  src: url("/fonts/alagard.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/pixel-operator.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pixel Operator";
+  src: url("/fonts/pixel-operator-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 @theme {
   /* Colors - using CSS variables */
   --color-background: var(--color-background);
@@ -23,63 +43,118 @@
   --color-disabled: var(--color-disabled);
   --color-disabled-text: var(--color-disabled-text);
 
+  /* Pixel UI: kill all rounding site-wide */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
   /* Fonts */
-  --font-body: "Inter", "Poppins", "Roboto", sans-serif;
-  --font-heading: "Inter", "Poppins", "Roboto", sans-serif;
+  --font-body: "Pixel Operator", "Inter", sans-serif;
+  --font-heading: "Alagard", "Inter", serif;
+  --font-ornament: "Jacquard 12", "Alagard", serif;
 }
 
 /* Base Theme Variables */
 :root {
+  --sidebar-w: 220px;
+
   /* Light Theme */
-  --color-background: #f1f4f2;
-  --color-surface: #ffffff;
-  --color-text: #2d2d2d;
-  --color-primary: #2f5d3a;
-  --color-secondary: #5a7d4d;
-  --color-accent: #c08d2b;
-  --color-magical: #6d4bb8;
+  --color-background: #e6d8b8;
+  --color-surface: #f4ead2;
+  --color-text: #33291a;
+  --color-primary: #7d3f2a;
+  --color-secondary: #6a5a38;
+  --color-accent: #a8781f;
+  --color-magical: #5a4a8a;
   --color-firefly: #ffe87a;
-  --color-mushroom: #d94e4e;
-  --color-canopy: #8fbf7a;
-  --color-glow: #dabd63;
-  --color-outline: #324a3a;
-  --color-card: #f8faf9;
-  --color-card-alt: #eef2ef;
-  --color-success: #3d8247;
-  --color-danger: #ba3f3f;
-  --color-warning: #d19b2d;
-  --color-info: #3f6fb8;
-  --color-disabled: #e3e7e4;
-  --color-disabled-text: #9aa9a3;
+  --color-mushroom: #b8432e;
+  --color-canopy: #8a7a4a;
+  --color-glow: #d4a942;
+  --color-outline: #4a3a24;
+  --color-card: #f0e4c4;
+  --color-card-alt: #e8dcba;
+  --color-success: #4a7a3a;
+  --color-danger: #a83a2a;
+  --color-warning: #b8862c;
+  --color-info: #3a5a9a;
+  --color-disabled: #d8ccaa;
+  --color-disabled-text: #96885f;
+  --color-panel-shadow: rgba(74, 58, 36, 0.5);
+  --frame-src: url("/assets/ui/frame-light.png");
 }
 
 .dark {
   /* Dark Theme */
-  --color-background: #0e1512;
-  --color-surface: #18231d;
-  --color-text: #e3ece8;
-  --color-primary: #3c8c54;
-  --color-secondary: #547a4b;
-  --color-accent: #d7a645;
+  --color-background: #0b0d1e;
+  --color-surface: #161936;
+  --color-text: #e8e4d0;
+  --color-primary: #4a62c8;
+  --color-secondary: #8a94cc;
+  --color-accent: #d8b04a;
   --color-magical: #a184ff;
   --color-firefly: #ffe87a;
-  --color-mushroom: #ff6d6d;
-  --color-canopy: #2e5c3c;
+  --color-mushroom: #e86a5a;
+  --color-canopy: #3a4a8a;
   --color-glow: #e2c676;
-  --color-outline: #264232;
-  --color-card: #151f1a;
-  --color-card-alt: #1b2822;
-  --color-success: #64c980;
-  --color-danger: #f07a7a;
+  --color-outline: #b8bcd8;
+  --color-card: #12142c;
+  --color-card-alt: #1a1d3e;
+  --color-success: #6ac980;
+  --color-danger: #f08a7a;
   --color-warning: #e5ba52;
-  --color-info: #6fa8ff;
-  --color-disabled: #1f2c26;
-  --color-disabled-text: #4a5d55;
+  --color-info: #7fa8ff;
+  --color-disabled: #1e2140;
+  --color-disabled-text: #5a5f85;
+  --color-panel-shadow: transparent; /* flat FF-menu look, no drop shadow */
+  --frame-src: url("/assets/ui/frame-dark.png");
+}
+
+/* JRPG window: 9-slice pixel frame with stepped corners + gold inner line */
+@utility pixel-frame {
+  border: 8px solid transparent;
+  border-image: var(--frame-src) 8 / 8px round;
+  image-rendering: pixelated;
+  background-clip: padding-box;
+  box-shadow: 6px 6px 0 var(--color-panel-shadow);
+}
+
+/* Cards share the same window chrome */
+@utility shadow-neumorphic {
+  border: 8px solid transparent;
+  border-image: var(--frame-src) 8 / 8px round;
+  image-rendering: pixelated;
+  background-clip: padding-box;
+  box-shadow: 6px 6px 0 var(--color-panel-shadow);
+}
+
+/* Small controls: simple 2px ring + hard shadow (a full window would swallow them) */
+@utility shadow-pixel-ring {
+  box-shadow:
+    0 0 0 2px var(--color-outline),
+    4px 4px 0 var(--color-panel-shadow);
+}
+
+@utility shadow-pixel-pressed {
+  box-shadow:
+    0 0 0 2px var(--color-outline),
+    2px 2px 0 var(--color-panel-shadow);
 }
 
 @layer base {
   html {
     background: var(--color-background);
+    /* keep the scrollbar's space so locking scroll doesn't shift layout */
+    scrollbar-gutter: stable;
+  }
+
+  /* an open modal <dialog> owns the screen: the page behind can't scroll */
+  html:has(dialog:modal) {
+    overflow: hidden;
   }
 
   body {
@@ -100,6 +175,18 @@
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgZmlsbD0nbm9uZSc+PGZpbHRlciBpZD0nbicgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSc4MCcgaGVpZ2h0PSc4MCcgZmlsdGVyPSd1cmwoI24pJyBvcGFjaXR5PScwLjA1Jy8+PC9zdmc+");
   }
 
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border: 2px solid var(--color-background);
+  }
+
   ::selection {
     background: color-mix(in srgb, var(--color-magical), transparent 66%);
     color: var(--color-text);
@@ -111,22 +198,63 @@
   }
 
   .animate-glow {
-    animation: glow 3s ease-in-out infinite;
+    animation: glow 1s steps(2, jump-none) infinite;
   }
 
   @keyframes glow {
     0%,
     100% {
-      box-shadow:
-        0 0 5px rgba(218, 165, 32, 0.4),
-        0 0 10px rgba(218, 165, 32, 0.2);
+      box-shadow: 0 0 0 2px var(--color-glow);
     }
     50% {
-      box-shadow:
-        0 0 10px rgba(218, 165, 32, 0.7),
-        0 0 20px rgba(218, 165, 32, 0.5);
+      box-shadow: 0 0 0 3px var(--color-glow);
     }
   }
+
+  /* flag on the SVG castle towers */
+  .castle-flag {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: pennantWave 1s steps(1, end) infinite;
+  }
+
+  /* CV dialog: JRPG window unfolds in hard steps, backdrop fades in */
+  @keyframes windowUnfold {
+    from {
+      transform: scaleY(0.1);
+    }
+  }
+  @keyframes backdropFade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pennantWave {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-10deg) scaleY(0.88);
+    }
+  }
+
+  .sprite-idle {
+    image-rendering: pixelated;
+    animation: spriteIdle 0.9s steps(1, end) infinite;
+  }
+
+  @keyframes spriteIdle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
 
   .animate-celebration {
     animation: celebration 0.5s ease-in-out;

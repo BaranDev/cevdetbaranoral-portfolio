@@ -43,7 +43,7 @@ const SkillsSection = ({
             <div className="p-4 bg-card rounded-xl shadow-neumorphic">
               <div className="flex items-center gap-2 mb-2">
                 <Icon size={18} className="text-primary" />
-                <h4 className="font-heading m-0 text-primary text-[0.85rem] font-semibold">
+                <h4 className="font-heading m-0 text-primary text-[0.92rem] font-semibold">
                   {name}
                 </h4>
               </div>

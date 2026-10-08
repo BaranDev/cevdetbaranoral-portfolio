@@ -18,7 +18,7 @@ const StatsSection = ({ quickStats }: { quickStats: QuickStats }) => {
               <div className="text-xl md:text-2xl font-bold text-primary font-heading">
                 {s.value}
               </div>
-              <div className="text-[0.7rem] text-secondary uppercase tracking-wide mt-0.5">
+              <div className="text-[0.8rem] text-secondary uppercase tracking-wide mt-0.5">
                 {s.label}
               </div>
             </div>

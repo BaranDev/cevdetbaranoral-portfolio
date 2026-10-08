@@ -27,7 +27,7 @@ const ContactItem = ({
     </div>
     <div>
       <div className="text-[0.72rem] text-secondary">{label}</div>
-      <div className="font-medium text-[0.88rem]">{children}</div>
+      <div className="font-medium text-[0.95rem]">{children}</div>
     </div>
   </div>
 );

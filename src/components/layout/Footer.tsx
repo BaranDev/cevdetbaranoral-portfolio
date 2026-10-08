@@ -111,7 +111,7 @@ const Footer = () => {
 
       <div className="my-8 w-full h-[1px] bg-gradient-to-r from-transparent via-text/10 to-transparent" />
 
-      <p className="text-center text-secondary text-sm">
+      <p className="text-center text-secondary text-[0.95rem]">
         © {currentYear} Cevdet Baran Oral. All rights reserved. Designed with
         React and Neumorphism.
       </p>

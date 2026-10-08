@@ -1,5 +1,6 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { Link } from "react-router-dom";
+import CastlePanel from "./castle/CastlePanel";
 
 /* ── Shared UI primitives used across pages ────────────────── */
 
@@ -26,11 +27,11 @@ export const Btn = ({
 }: BtnProps) => {
   const classes = `
     inline-flex items-center justify-center gap-1.5 px-[18px] py-2 cursor-pointer
-    text-[0.82rem] font-semibold rounded-xl transition-all duration-300
+    text-[0.92rem] font-semibold rounded-xl transition-all duration-100
     ${
       primary
-        ? "bg-primary text-white shadow-md hover:-translate-y-[2px] hover:animate-glow"
-        : "bg-background text-text shadow-neumorphic hover:-translate-y-[2px] hover:animate-glow"
+        ? "bg-primary text-white shadow-pixel-ring hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pixel-pressed"
+        : "bg-background text-text shadow-pixel-ring hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pixel-pressed"
     }
     ${className}
   `;
@@ -61,13 +62,13 @@ export const Chips = ({ children }: { children: ReactNode }) => (
 );
 
 export const Chip = ({ children }: { children: ReactNode }) => (
-  <span className="bg-primary/10 text-primary px-2 py-[2px] rounded-xl text-[0.7rem] font-medium border border-primary/20">
+  <span className="bg-primary/10 text-primary px-2 py-[2px] rounded-xl text-[0.8rem] font-medium border border-primary/20">
     {children}
   </span>
 );
 
 export const Badge = ({ children }: { children: ReactNode }) => (
-  <span className="bg-primary/20 text-primary px-2 py-[1px] rounded-xl text-[0.65rem] font-semibold uppercase tracking-wide whitespace-nowrap">
+  <span className="bg-primary/20 text-primary px-2 py-[1px] rounded-xl font-ornament text-[0.92rem] tracking-wide whitespace-nowrap">
     {children}
   </span>
 );
@@ -79,12 +80,16 @@ export const SectionHeading = ({
   children: ReactNode;
   style?: CSSProperties;
 }) => (
-  <h2
-    className="flex items-center justify-center gap-2.5 font-heading text-text text-[clamp(1.2rem,3vw,1.6rem)] font-semibold tracking-tight mb-4 text-center sticky top-0 z-10 py-3.5 backdrop-blur-md bg-card/80 rounded-b-xl -mx-4 md:-mx-8 px-4 md:px-8 shadow-sm"
-    style={style}
-  >
-    {children}
-  </h2>
+  <CastlePanel className="sticky top-3 z-10 mt-24 mb-8 mx-2 md:mx-6">
+    <div
+      className="bg-card pixel-frame text-center py-2.5 px-4"
+      style={style}
+    >
+      <h2 className="flex items-center justify-center gap-2.5 font-heading text-text text-[clamp(1.2rem,3vw,1.6rem)] font-semibold tracking-tight">
+        {children}
+      </h2>
+    </div>
+  </CastlePanel>
 );
 
 export const Card = ({
